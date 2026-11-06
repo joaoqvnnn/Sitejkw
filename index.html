@@ -127,7 +127,7 @@
   /* =========================================================
      INPUTS
      ========================================================= */
-  .input-group { margin-bottom: 20px; }
+  .input-group { margin-bottom: 16px; }
   
   .input-pill {
     width: 100%;
@@ -143,6 +143,7 @@
   }
   .input-pill::placeholder { color: #5C5C60; }
   .input-pill:focus { border-color: var(--text-main); }
+  .input-pill:disabled { opacity: 0.5; }
   
   select.input-pill { 
     appearance: none; 
@@ -178,7 +179,7 @@
   .footer-actions { margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding-top: 20px;}
 
   /* =========================================================
-     OPÇÕES (CARTÕES)
+     OPÇÕES E LISTAS
      ========================================================= */
   .option-card {
     display: flex;
@@ -219,16 +220,13 @@
     border-radius: var(--radius-pill);
   }
 
-  /* =========================================================
-     LISTAS E BUSCA
-     ========================================================= */
   .search-bar {
     background: var(--bg-input);
     border-radius: var(--radius-pill);
     padding: 16px 20px;
     display: flex;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .search-bar input {
     background: transparent;
@@ -246,6 +244,7 @@
     flex-direction: column;
     gap: 8px;
     overflow-y: auto;
+    padding-bottom: 20px;
   }
   .list-item {
     padding: 16px 20px;
@@ -253,14 +252,19 @@
     border-radius: 12px;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     border: 2px solid transparent;
   }
-  .list-item.selected {
-    border-color: var(--text-main);
+  .list-item.selected { border-color: var(--text-main); }
+  
+  /* Bandeiras */
+  .flag-img {
+    width: 28px;
+    height: 20px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 12px;
   }
-  .list-item .country-code { color: var(--text-muted); font-size: 14px; }
 
   /* =========================================================
      OTP
@@ -303,13 +307,13 @@
   .welcome-actions { width: 100%; margin-top: 40px; display: flex; flex-direction: column; gap: 12px; }
 
   /* =========================================================
-     CHECKLIST E AVISOS
+     CHECKLIST
      ========================================================= */
   .checklist {
     background: var(--bg-input);
     border-radius: var(--radius-lg);
     padding: 24px;
-    margin: 24px 0;
+    margin: 16px 0;
   }
   .checklist-item {
     display: flex;
@@ -359,86 +363,123 @@
 
 <script>
 /* =========================================================
-   DADOS E ESTADO
+   BASE DE DADOS (PAÍSES, ESTADOS)
    ========================================================= */
-const $ = (s) => document.querySelector(s);
-
 const COUNTRIES = [
-  { n: 'Brasil', c: 'BR', d: '55' },
-  { n: 'Alemanha', c: 'DE', d: '49' },
-  { n: 'Argentina', c: 'AR', d: '54' },
-  { n: 'Estados Unidos', c: 'US', d: '1' },
-  { n: 'Espanha', c: 'ES', d: '34' },
-  { n: 'França', c: 'FR', d: '33' },
-  { n: 'Itália', c: 'IT', d: '39' },
-  { n: 'Japão', c: 'JP', d: '81' },
-  { n: 'Portugal', c: 'PT', d: '351' },
-  { n: 'Reino Unido', c: 'GB', d: '44' }
+  { n: 'Brasil', c: 'BR', d: '55' }, { n: 'Alemanha', c: 'DE', d: '49' },
+  { n: 'Argentina', c: 'AR', d: '54' }, { n: 'Austrália', c: 'AU', d: '61' },
+  { n: 'Áustria', c: 'AT', d: '43' }, { n: 'Bélgica', c: 'BE', d: '32' },
+  { n: 'Canadá', c: 'CA', d: '1' }, { n: 'Chile', c: 'CL', d: '56' },
+  { n: 'China', c: 'CN', d: '86' }, { n: 'Colômbia', c: 'CO', d: '57' },
+  { n: 'Coreia do Sul', c: 'KR', d: '82' }, { n: 'Espanha', c: 'ES', d: '34' },
+  { n: 'Estados Unidos', c: 'US', d: '1' }, { n: 'França', c: 'FR', d: '33' },
+  { n: 'Itália', c: 'IT', d: '39' }, { n: 'Japão', c: 'JP', d: '81' },
+  { n: 'México', c: 'MX', d: '52' }, { n: 'Portugal', c: 'PT', d: '351' },
+  { n: 'Reino Unido', c: 'GB', d: '44' }, { n: 'Suíça', c: 'CH', d: '41' },
+  { n: 'Angola', c: 'AO', d: '244' }, { n: 'Moçambique', c: 'MZ', d: '258' }
+].sort((a, b) => a.n.localeCompare(b.n));
+
+const BR_STATES = [
+  { uf: 'AC', name: 'Acre' }, { uf: 'AL', name: 'Alagoas' }, { uf: 'AP', name: 'Amapá' },
+  { uf: 'AM', name: 'Amazonas' }, { uf: 'BA', name: 'Bahia' }, { uf: 'CE', name: 'Ceará' },
+  { uf: 'DF', name: 'Distrito Federal' }, { uf: 'ES', name: 'Espírito Santo' }, { uf: 'GO', name: 'Goiás' },
+  { uf: 'MA', name: 'Maranhão' }, { uf: 'MT', name: 'Mato Grosso' }, { uf: 'MS', name: 'Mato Grosso do Sul' },
+  { uf: 'MG', name: 'Minas Gerais' }, { uf: 'PA', name: 'Pará' }, { uf: 'PB', name: 'Paraíba' },
+  { uf: 'PR', name: 'Paraná' }, { uf: 'PE', name: 'Pernambuco' }, { uf: 'PI', name: 'Piauí' },
+  { uf: 'RJ', name: 'Rio de Janeiro' }, { uf: 'RN', name: 'Rio Grande do Norte' }, { uf: 'RS', name: 'Rio Grande do Sul' },
+  { uf: 'RO', name: 'Rondônia' }, { uf: 'RR', name: 'Roraima' }, { uf: 'SC', name: 'Santa Catarina' },
+  { uf: 'SP', name: 'São Paulo' }, { uf: 'SE', name: 'Sergipe' }, { uf: 'TO', name: 'Tocantins' }
 ];
 
 const PROFESSIONS = [
   'Advogado', 'Analista de dados', 'Analista de sistemas', 'Arquiteto', 'Assistente administrativo',
-  'Atendente', 'Auditor', 'Autônomo', 'Aposentado', 'Comerciante', 'Consultor jurídico', 'Contador',
-  'Dentista', 'Desempregado', 'Desenvolvedor', 'Designer gráfico', 'Diretor escolar', 'Dona ou dono de casa',
-  'Eletricista', 'Empresário', 'Enfermeiro', 'Engenheiro civil', 'Engenheiro de software', 'Entregador',
+  'Atendente', 'Auditor', 'Autônomo', 'Aposentado', 'Comerciante', 'Consultor', 'Contador',
+  'Dentista', 'Desempregado', 'Desenvolvedor', 'Designer', 'Diretor', 'Dona(o) de casa',
+  'Eletricista', 'Empresário', 'Enfermeiro', 'Engenheiro', 'Entregador',
   'Estudante', 'Fisioterapeuta', 'Gerente', 'Jornalista', 'Médico', 'Motorista', 'Nutricionista',
-  'Pedagogo', 'Pedreiro', 'Professor', 'Programador', 'Psicólogo', 'Publicitário', 'Servidor público',
-  'Trabalhador informal', 'Vendedor'
+  'Professor', 'Pedreiro', 'Programador', 'Psicólogo', 'Publicitário', 'Servidor público',
+  'Vendedor'
 ].sort();
 
+/* =========================================================
+   ESTADO GLOBAL
+   ========================================================= */
 const defaultData = {
-  phoneCountry: 'BR',
-  phoneNumber: '',
-  phoneCode: '',
-  nationality: 'BR',
-  residence: 'BR',
-  docType: '',
-  fullName: '',
-  birthDate: '',
-  addressZip: '',
-  addressStreet: '',
-  addressNumber: '',
-  addressCity: '',
-  addressState: '',
-  profession: '',
-  income: '',
-  password: '',
+  phoneCountry: 'BR', phoneNumber: '', phoneCode: '',
+  nationality: 'BR', residence: 'BR',
+  docType: '', fullName: '', birthDate: '',
+  addressZip: '', addressStreet', addressNumber: '', addressDistrict: '', addressCity: '', addressState: '',
+  profession: '', income: '', password: '',
   contracts: { account: false, privacy: false }
 };
 
-let state = {
-  step: 0,
-  data: { ...defaultData }
-};
+let state = { step: 0, data: { ...defaultData } };
 
-// Recuperar progresso com segurança
 try {
-  const saved = localStorage.getItem('aurora_fintech_v2');
+  const saved = localStorage.getItem('aurora_fintech_v3');
   if (saved) {
     const parsed = JSON.parse(saved);
-    if (typeof parsed.step === 'number' && parsed.step >= 0 && parsed.step <= 15) {
-      state = parsed;
-    }
+    if (parsed.step >= 0 && parsed.step <= 15) state = parsed;
   }
 } catch(e){}
 
-function save() {
-  try { localStorage.setItem('aurora_fintech_v2', JSON.stringify(state)); } catch(e){}
+function save() { localStorage.setItem('aurora_fintech_v3', JSON.stringify(state)); }
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+
+/* =========================================================
+   HELPERS (BANDEIRAS E MÁSCARAS)
+   ========================================================= */
+function getFlagUrl(isoCode) {
+  return `https://flagcdn.com/w40/${isoCode.toLowerCase()}.png`;
+}
+
+function getCountryData(iso) {
+  return COUNTRIES.find(c => c.c === iso) || COUNTRIES[0];
+}
+
+// Máscara de Telefone Dinâmica
+function maskPhone(value, iso) {
+  let v = value.replace(/\D/g, '');
+  const ddi = getCountryData(iso).d;
+
+  if (ddi === '55') { // Brasil
+    v = v.substring(0, 11);
+    v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
+    v = v.replace(/(\d)(\d{4})$/, '$1-$2');
+    if (v.length === 15) v = v.replace(/(\d)(\d{4})$/, '$1-$2'); // 9 dígitos
+  } else if (ddi === '1') { // EUA / Canadá
+    v = v.substring(0, 10);
+    v = v.replace(/^(\d{3})(\d)/g, '($1) $2');
+    v = v.replace(/(\d)(\d{4})$/, '$1-$2');
+  } else if (ddi === '351') { // Portugal
+    v = v.substring(0, 9);
+    v = v.replace(/(\d{3})(\d)/g, '$1 $2');
+  } else {
+    v = v.substring(0, 15); // Genérico
+  }
+  return v;
+}
+
+// Máscara de CEP
+function maskCEP(value) {
+  let v = value.replace(/\D/g, '');
+  v = v.substring(0, 8);
+  if (v.length > 5) v = v.replace(/^(\d{5})(\d)/, '$1-$2');
+  return v;
 }
 
 /* =========================================================
-   CONTROLE DE TELAS
+   RENDERIZAÇÃO
    ========================================================= */
 function render() {
   const app = $('#app');
-  app.innerHTML = ''; // Limpa a tela
+  app.innerHTML = ''; 
 
-  // Cria a tela e JÁ INSERE no DOM (evita erro de querySelector nulo)
   const screen = document.createElement('div');
   screen.className = 'screen';
   app.appendChild(screen);
 
-  // Barra de progresso
   if (state.step > 0 && state.step < 15) {
     const pct = (state.step / 14) * 100;
     const progress = document.createElement('div');
@@ -447,7 +488,6 @@ function render() {
     screen.appendChild(progress);
   }
 
-  // Renderiza o conteúdo baseado no step
   switch (state.step) {
     case 0: renderWelcome(screen); break;
     case 1: renderPhone(screen); break;
@@ -465,40 +505,26 @@ function render() {
     case 13: renderReview(screen); break;
     case 14: renderContracts(screen); break;
     case 15: renderStatus(screen); break;
-    default: renderWelcome(screen); break;
   }
-
   window.scrollTo(0, 0);
 }
 
-function go(step) {
-  state.step = step;
-  save();
-  render();
-}
-
+function go(step) { state.step = step; save(); render(); }
 function next() { go(state.step + 1); }
-function back() {
-  if (state.step > 0) go(state.step - 1);
-}
+function back() { if (state.step > 0) go(state.step - 1); }
 
 function headerNav() {
-  return `
-    <div class="header-nav">
-      <button class="btn-back" onclick="back()"></button>
-    </div>
-  `;
+  return `<div class="header-nav"><button class="btn-back" onclick="back()"></button></div>`;
 }
 
 /* =========================================================
-   TELAS (PASSO A PASSO)
+   TELAS
    ========================================================= */
 
 function renderWelcome(screen) {
   screen.className = 'screen welcome-screen';
   screen.innerHTML = `
     <div class="logo-text">Aurora</div>
-    
     <div class="welcome-actions">
       <button class="btn btn-primary" onclick="go(1)">Criar conta</button>
       <button class="btn btn-secondary" onclick="alert('Módulo de login separado.')">Fazer login</button>
@@ -513,13 +539,13 @@ function renderPhone(screen) {
     <p class="subtitle">Insira seu número de celular para começar</p>
     
     <div class="row" style="margin-top: 10px;">
-      <div style="flex: 0 0 90px;">
-        <select class="input-pill" id="phoneCountry">
+      <div style="flex: 0 0 110px;">
+        <select class="input-pill" id="phoneCountry" style="padding-left: 16px;">
           ${COUNTRIES.map(c => `<option value="${c.c}" ${state.data.phoneCountry === c.c ? 'selected' : ''}>+${c.d}</option>`).join('')}
         </select>
       </div>
       <div style="flex: 1;">
-        <input type="tel" class="input-pill" id="phoneNumber" placeholder="Insira seu celular" value="${state.data.phoneNumber}">
+        <input type="tel" class="input-pill" id="phoneNumber" placeholder="Celular" value="${state.data.phoneNumber}">
       </div>
     </div>
     
@@ -528,13 +554,20 @@ function renderPhone(screen) {
     </div>
   `;
 
+  const select = $('#phoneCountry');
   const input = $('#phoneNumber');
   const btn = $('#btnContinue');
   
-  if (input.value.length >= 8) btn.disabled = false;
+  if (input.value.length >= 10) btn.disabled = false;
+
   input.addEventListener('input', (e) => {
+    e.target.value = maskPhone(e.target.value, select.value);
     state.data.phoneNumber = e.target.value;
-    btn.disabled = e.target.value.length < 8;
+    btn.disabled = e.target.value.replace(/\D/g, '').length < 10;
+  });
+
+  select.addEventListener('change', () => {
+    input.value = maskPhone(input.value, select.value);
   });
 }
 
@@ -546,11 +579,11 @@ function submitPhone() {
 }
 
 function renderOTP(screen) {
-  const ddi = COUNTRIES.find(c=>c.c===state.data.phoneCountry).d;
+  const c = getCountryData(state.data.phoneCountry);
   screen.innerHTML = `
     ${headerNav()}
     <h1>Código de seis dígitos</h1>
-    <p class="subtitle">Insira o código enviado para +${ddi} *****-${state.data.phoneNumber.slice(-4)}</p>
+    <p class="subtitle">Insira o código enviado para +${c.d} ${state.data.phoneNumber}</p>
     
     <div class="otp-container">
       <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
@@ -568,7 +601,7 @@ function renderOTP(screen) {
     </div>
   `;
 
-  const inputs = document.querySelectorAll('.otp-input');
+  const inputs = $$('.otp-input');
   inputs[0].focus();
   inputs.forEach((inp, idx) => {
     inp.addEventListener('input', () => {
@@ -581,15 +614,10 @@ function renderOTP(screen) {
 }
 
 function verifyOTP() {
-  const inputs = document.querySelectorAll('.otp-input');
   let code = '';
-  inputs.forEach(i => code += i.value);
-  
-  if (code === state.data.phoneCode) {
-    next();
-  } else {
-    alert('Código incorreto. Use o código simulado exibido na tela.');
-  }
+  $$('.otp-input').forEach(i => code += i.value);
+  if (code === state.data.phoneCode) next();
+  else alert('Código incorreto. Use o código simulado.');
 }
 
 function renderNationality(screen) {
@@ -602,11 +630,12 @@ function renderNationality(screen) {
       <input type="text" id="searchCountry" placeholder="Pesquisar">
     </div>
     
-    <div class="list-container" id="countryList" style="max-height: 380px;">
+    <div class="list-container" id="countryList" style="max-height: 400px;">
       ${COUNTRIES.map(c => `
         <div class="list-item ${state.data.nationality === c.c ? 'selected' : ''}" onclick="selectNationality('${c.c}')">
-          <span>${c.n}</span>
-          ${state.data.nationality === c.c ? '<div class="check-mark"></div>' : ''}
+          <img src="${getFlagUrl(c.c)}" class="flag-img" alt="">
+          <span style="flex: 1;">${c.n}</span>
+          ${state.data.nationality === c.c ? '<div class="check-mark" style="margin:0;"></div>' : ''}
         </div>
       `).join('')}
     </div>
@@ -618,8 +647,9 @@ function renderNationality(screen) {
     const filtered = COUNTRIES.filter(c => c.n.toLowerCase().includes(q));
     list.innerHTML = filtered.map(c => `
       <div class="list-item ${state.data.nationality === c.c ? 'selected' : ''}" onclick="selectNationality('${c.c}')">
-        <span>${c.n}</span>
-        ${state.data.nationality === c.c ? '<div class="check-mark"></div>' : ''}
+        <img src="${getFlagUrl(c.c)}" class="flag-img" alt="">
+        <span style="flex: 1;">${c.n}</span>
+        ${state.data.nationality === c.c ? '<div class="check-mark" style="margin:0;"></div>' : ''}
       </div>
     `).join('');
   });
@@ -635,7 +665,7 @@ function selectNationality(iso) {
 function renderDocType(screen) {
   screen.innerHTML = `
     ${headerNav()}
-    <h1>Escolha uma opção de verificação</h1>
+    <h1>Documento de verificação</h1>
     <p class="subtitle">Selecione um documento para verificarmos sua identidade.</p>
     
     <div style="margin-top: 10px;">
@@ -646,7 +676,7 @@ function renderDocType(screen) {
       </div>
       <div class="option-card ${state.data.docType === 'RG' ? 'selected' : ''}" onclick="selectDoc('RG')">
         <div class="radio-circle"></div>
-        <div class="option-text">Documento de identificação</div>
+        <div class="option-text">Documento de identidade</div>
       </div>
       <div class="option-card ${state.data.docType === 'PASSAPORTE' ? 'selected' : ''}" onclick="selectDoc('PASSAPORTE')">
         <div class="radio-circle"></div>
@@ -660,17 +690,13 @@ function renderDocType(screen) {
   `;
 }
 
-function selectDoc(doc) {
-  state.data.docType = doc;
-  save();
-  render();
-}
+function selectDoc(doc) { state.data.docType = doc; save(); render(); }
 
 function renderName(screen) {
   screen.innerHTML = `
     ${headerNav()}
-    <h1>Nome conforme identificação</h1>
-    <p class="subtitle">Seu nome completo conforme documento oficial de identificação.</p>
+    <h1>Nome oficial</h1>
+    <p class="subtitle">Seu nome completo conforme documento oficial.</p>
     
     <div class="input-group" style="margin-top: 20px;">
       <input type="text" class="input-pill" id="fullName" placeholder="Nome completo" value="${state.data.fullName}">
@@ -683,7 +709,6 @@ function renderName(screen) {
 
   const input = $('#fullName');
   const btn = $('#btnName');
-  
   if (input.value.trim().split(' ').length >= 2) btn.disabled = false;
   input.addEventListener('input', (e) => {
     state.data.fullName = e.target.value;
@@ -691,10 +716,7 @@ function renderName(screen) {
   });
 }
 
-function submitName() {
-  save();
-  next();
-}
+function submitName() { save(); next(); }
 
 function renderBirthDate(screen) {
   screen.innerHTML = `
@@ -712,7 +734,6 @@ function renderBirthDate(screen) {
 
   const input = $('#birthDate');
   const btn = $('#btnDate');
-  
   if (input.value.length === 10) btn.disabled = false;
   input.addEventListener('input', (e) => {
     let v = e.target.value.replace(/\D/g, '');
@@ -724,43 +745,108 @@ function renderBirthDate(screen) {
   });
 }
 
-function submitDate() {
-  save();
-  next();
-}
+function submitDate() { save(); next(); }
 
+/* ETAPA DE ENDEREÇO COM BUSCA AUTOMÁTICA DE CEP */
 function renderAddress(screen) {
   screen.innerHTML = `
     ${headerNav()}
     <h1>Endereço residencial</h1>
     <p class="subtitle">Precisamos do seu endereço para abrir sua conta.</p>
     
-    <div class="search-bar">
-      <input type="text" placeholder="Pesquisar endereço">
+    <div class="input-group">
+      <input type="tel" class="input-pill" id="zip" placeholder="CEP" maxlength="9" value="${state.data.addressZip}">
+      <p id="cepStatus" style="font-size: 12px; color: var(--text-muted); margin-top: 8px; margin-left: 16px; display: none;">Buscando CEP...</p>
     </div>
     
     <div class="input-group">
-      <input type="text" class="input-pill" id="street" placeholder="Rua ou avenida" value="${state.data.addressStreet}">
+      <input type="text" class="input-pill" id="street" placeholder="Rua ou avenida" value="${state.data.addressStreet}" disabled>
     </div>
     <div class="row input-group">
       <input type="text" class="input-pill" id="number" placeholder="Número" value="${state.data.addressNumber}">
-      <input type="text" class="input-pill" id="zip" placeholder="CEP" value="${state.data.addressZip}">
+      <input type="text" class="input-pill" id="district" placeholder="Bairro" value="${state.data.addressDistrict}" disabled>
     </div>
     <div class="row input-group">
-      <input type="text" class="input-pill" id="city" placeholder="Cidade" value="${state.data.addressCity}">
-      <input type="text" class="input-pill" id="state" placeholder="Estado" value="${state.data.addressState}">
+      <input type="text" class="input-pill" id="city" placeholder="Cidade" value="${state.data.addressCity}" disabled>
+      <select class="input-pill" id="state" style="padding-left: 16px;" disabled>
+        <option value="">UF</option>
+        ${BR_STATES.map(s => `<option value="${s.uf}" ${state.data.addressState === s.uf ? 'selected' : ''}>${s.uf}</option>`).join('')}
+      </select>
     </div>
     
     <div class="footer-actions">
-      <button class="btn btn-primary" onclick="submitAddress()">Continuar</button>
+      <button class="btn btn-primary" id="btnAddress" onclick="submitAddress()" disabled>Continuar</button>
     </div>
   `;
+
+  const zipInput = $('#zip');
+  const numberInput = $('#number');
+  const btn = $('#btnAddress');
+  const cepStatus = $('#cepStatus');
+
+  // Restaurar estado inicial
+  if (state.data.addressStreet) {
+    $('#street').disabled = false;
+    $('#district').disabled = false;
+    $('#city').disabled = false;
+    $('#state').disabled = false;
+  }
+
+  zipInput.addEventListener('input', (e) => {
+    e.target.value = maskCEP(e.target.value);
+    state.data.addressZip = e.target.value;
+    checkCEP();
+  });
+
+  numberInput.addEventListener('input', checkBtn);
+  
+  function checkBtn() {
+    const isFilled = zipInput.value.length === 9 && 
+                     $('#street').value && 
+                     numberInput.value && 
+                     $('#city').value && 
+                     $('#state').value;
+    btn.disabled = !isFilled;
+  }
+
+  async function checkCEP() {
+    const cep = zipInput.value.replace(/\D/g, '');
+    if (cep.length === 8) {
+      cepStatus.style.display = 'block';
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await res.json();
+        
+        if (!data.erro) {
+          $('#street').value = data.logradouro;
+          $('#district').value = data.bairro;
+          $('#city').value = data.localidade;
+          $('#state').value = data.uf;
+          
+          $('#street').disabled = false;
+          $('#district').disabled = false;
+          $('#city').disabled = false;
+          $('#state').disabled = false;
+          
+          // Foca no número após achar o CEP
+          numberInput.focus();
+        } else {
+          alert('CEP não encontrado.');
+        }
+      } catch(err) {
+        console.error(err);
+      } finally {
+        cepStatus.style.display = 'none';
+        checkBtn();
+      }
+    }
+  }
 }
 
 function submitAddress() {
   state.data.addressStreet = $('#street').value;
   state.data.addressNumber = $('#number').value;
-  state.data.addressZip = $('#zip').value;
+  state.data.addressDistrict = $('#district').value;
   state.data.addressCity = $('#city').value;
   state.data.addressState = $('#state').value;
   save();
@@ -771,17 +857,16 @@ function renderProfession(screen) {
   screen.innerHTML = `
     ${headerNav()}
     <h1>Sua profissão</h1>
-    <p class="subtitle">Selecione sua ocupação atual.</p>
     
     <div class="search-bar">
       <input type="text" id="searchProf" placeholder="Pesquisar">
     </div>
     
-    <div class="list-container" id="profList" style="max-height: 350px;">
+    <div class="list-container" id="profList" style="max-height: 380px;">
       ${PROFESSIONS.map(p => `
         <div class="list-item ${state.data.profession === p ? 'selected' : ''}" onclick="selectProf('${p}')">
-          <span>${p}</span>
-          ${state.data.profession === p ? '<div class="check-mark"></div>' : ''}
+          <span style="flex: 1;">${p}</span>
+          ${state.data.profession === p ? '<div class="check-mark" style="margin:0;"></div>' : ''}
         </div>
       `).join('')}
     </div>
@@ -793,18 +878,14 @@ function renderProfession(screen) {
     const filtered = PROFESSIONS.filter(p => p.toLowerCase().includes(q));
     list.innerHTML = filtered.map(p => `
       <div class="list-item ${state.data.profession === p ? 'selected' : ''}" onclick="selectProf('${p}')">
-        <span>${p}</span>
-        ${state.data.profession === p ? '<div class="check-mark"></div>' : ''}
+        <span style="flex: 1;">${p}</span>
+        ${state.data.profession === p ? '<div class="check-mark" style="margin:0;"></div>' : ''}
       </div>
     `).join('');
   });
 }
 
-function selectProf(prof) {
-  state.data.profession = prof;
-  save();
-  next();
-}
+function selectProf(prof) { state.data.profession = prof; save(); next(); }
 
 function renderIncome(screen) {
   screen.innerHTML = `
@@ -836,7 +917,6 @@ function renderIncome(screen) {
 
   const input = $('#income');
   const btn = $('#btnIncome');
-  
   if (input.value) btn.disabled = false;
   input.addEventListener('input', (e) => {
     state.data.income = e.target.value;
@@ -844,10 +924,7 @@ function renderIncome(screen) {
   });
 }
 
-function submitIncome() {
-  save();
-  next();
-}
+function submitIncome() { save(); next(); }
 
 function renderIdentity(screen) {
   screen.innerHTML = `
@@ -914,17 +991,13 @@ function renderPassword(screen) {
 
   const input = $('#pwd');
   const btn = $('#btnPwd');
-  
   input.addEventListener('input', (e) => {
     state.data.password = e.target.value;
     btn.disabled = e.target.value.length < 8;
   });
 }
 
-function submitPassword() {
-  save();
-  next();
-}
+function submitPassword() { save(); next(); }
 
 function renderReview(screen) {
   screen.innerHTML = `
@@ -942,8 +1015,9 @@ function renderReview(screen) {
     
     <div class="contract-box">
       <div class="contract-title">Contato e Endereço</div>
-      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Telefone:</strong> +${COUNTRIES.find(c=>c.c===state.data.phoneCountry).d} ${state.data.phoneNumber}</p>
-      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Endereço:</strong> ${state.data.addressStreet}, ${state.data.addressNumber} - ${state.data.addressCity}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Telefone:</strong> +${getCountryData(state.data.phoneCountry).d} ${state.data.phoneNumber}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>CEP:</strong> ${state.data.addressZip}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Endereço:</strong> ${state.data.addressStreet}, ${state.data.addressNumber} - ${state.data.addressDistrict}, ${state.data.addressCity} - ${state.data.addressState}</p>
     </div>
     
     <div class="footer-actions">
@@ -984,20 +1058,12 @@ function renderContracts(screen) {
   `;
 }
 
-function toggleCheck(type) {
-  state.data.contracts[type] = !state.data.contracts[type];
-  save();
-  render();
-}
-
-function submitContracts() {
-  next();
-}
+function toggleCheck(type) { state.data.contracts[type] = !state.data.contracts[type]; save(); render(); }
+function submitContracts() { next(); }
 
 function renderStatus(screen) {
   screen.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center;">
-      
       <div style="width: 90px; height: 90px; border-radius: 50%; background: var(--bg-input); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
         <div class="check-mark" style="border-color: var(--text-main); width: 24px; height: 45px; margin: 0;"></div>
       </div>
@@ -1011,14 +1077,12 @@ function renderStatus(screen) {
 }
 
 function resetApp() {
-  localStorage.removeItem('aurora_fintech_v2');
+  localStorage.removeItem('aurora_fintech_v3');
   state = { step: 0, data: { ...defaultData } };
   render();
 }
 
-/* =========================================================
-   INICIALIZAÇÃO
-   ========================================================= */
+/* INICIALIZAÇÃO */
 render();
 </script>
 </body>
