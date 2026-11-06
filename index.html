@@ -1,832 +1,2113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeoBank - Abertura de Conta</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aurora — Abertura de Conta</title>
+<style>
+  :root{
+    --bg:#070A10;
+    --card:rgba(17,23,34,.78);
+    --line:rgba(255,255,255,.09);
+    --line-strong:rgba(255,255,255,.18);
+    --text:#E8EDF5;
+    --muted:#8FA3BF;
+    --accent:#5EEAD4;
+    --accent2:#38BDF8;
+    --danger:#F87171;
+    --radius:14px;
+  }
 
-        :root {
-            --bg-main: #000000;
-            --bg-bot: #1c1c1e;
-            --bg-input: #1c1c1e;
-            --text-light: #ffffff;
-            --text-dark: #000000;
-            --text-gray: #8e8e93;
-            --accent: #00e676; /* Verde Esmeralda Neon */
-            --accent-text: #000000;
-            --border-color: #333333;
-            --danger: #ff453a;
-        }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    color-scheme:dark;
+    overflow-x:hidden;
+  }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+  /* ---------- fundo animado ---------- */
+  .bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.34;animation:float 20s ease-in-out infinite}
+  .b1{width:520px;height:520px;background:#157F6E;top:-180px;left:-140px}
+  .b2{width:480px;height:480px;background:#2B4C8C;bottom:-180px;right:-150px;animation-delay:-7s}
+  .b3{width:400px;height:400px;background:#6B4B9E;top:38%;left:58%;animation-delay:-13s;opacity:.22}
+  @keyframes float{
+    0%,100%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(28px,-42px,0) scale(1.14)}
+  }
 
-        body {
-            background-color: #111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+  #app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
 
-        /* Container principal (Simula a tela do celular) */
-        .app-container {
-            width: 100%;
-            max-width: 420px;
-            height: 100vh;
-            max-height: 900px;
-            background-color: var(--bg-main);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+  /* ---------- layout ---------- */
+  .shell{width:100%;max-width:460px;margin:0 auto;padding:22px 18px 40px;flex:1;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand-mark{
+    width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#04121A;font-weight:800;font-size:15px;letter-spacing:-.02em;
+  }
+  .brand-name{font-weight:700;letter-spacing:.24em;font-size:12px;color:#CBD8EA}
 
-        @media (min-width: 420px) {
-            .app-container {
-                height: 90vh;
-                border-radius: 40px;
-                border: 1px solid #222;
-                box-shadow: 0 0 30px rgba(0, 230, 118, 0.1);
-            }
-        }
+  .progress{margin-bottom:16px}
+  .progress-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .progress-track{height:3px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+  .progress-track span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .45s cubic-bezier(.4,0,.2,1)}
 
-        /* Barra de Status (Com SVGs Reais) */
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px 10px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 10;
-        }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:26px 20px 22px;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    box-shadow:0 26px 70px rgba(0,0,0,.5);
+  }
+  .step{animation:fadeUp .45s cubic-bezier(.22,.8,.3,1)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-        .status-icons {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        
-        .status-icons svg {
-            fill: white;
-            height: 14px;
-        }
+  .foot{margin-top:20px;text-align:center;font-size:11px;color:#5F718B;line-height:1.6}
 
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 20px;
-            z-index: 10;
-        }
+  /* ---------- tipografia ---------- */
+  .eyebrow{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.01em}
+  h2{font-size:21px;line-height:1.28}
+  .sub{margin:8px 0 0;color:var(--muted);font-size:13.5px;line-height:1.55}
+  .step-head{margin-bottom:20px}
+  .label{display:block;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;font-weight:600}
+  .hint{font-size:12px;color:#6F86A3;margin-top:8px;line-height:1.5}
+  .warn{font-size:12.5px;color:#FCA5A5;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:11px 13px;margin-top:12px;line-height:1.5}
 
-        .close-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: transparent;
-            border: 1px solid #333;
-            color: #888;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
+  /* ---------- formulários ---------- */
+  .field{margin-bottom:20px}
+  .input,select.input{
+    width:100%;padding:13px 14px;border-radius:12px;
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--line-strong);
+    color:var(--text);font-size:15px;font-family:inherit;
+    outline:none;transition:border-color .2s,background .2s;
+    appearance:none;
+  }
+  select.input{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 19px) 21px,calc(100% - 14px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:38px}
+  .input::placeholder{color:#5C6E88}
+  .input:focus{border-color:rgba(94,234,212,.6);background:rgba(94,234,212,.05)}
+  .input:disabled{opacity:.5}
 
-        /* Área do Chat */
-        .chat-container {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            scroll-behavior: smooth;
-        }
+  .row{display:flex;gap:10px}
+  .row>*{flex:1;min-width:0}
 
-        .chat-container::-webkit-scrollbar { display: none; }
+  .options{display:flex;flex-wrap:wrap;gap:8px}
+  .options.col{flex-direction:column}
+  .opt{
+    flex:1 1 auto;min-width:calc(50% - 4px);
+    padding:12px 14px;border-radius:12px;text-align:left;
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--line-strong);
+    color:var(--text);font-size:14px;font-family:inherit;cursor:pointer;
+    transition:border-color .18s,background .18s,transform .12s;
+  }
+  .opt:active{transform:scale(.985)}
+  .opt.selected{border-color:var(--accent);background:rgba(94,234,212,.1);color:#D8FFF7}
 
-        /* Bolhas de Mensagem */
-        .message {
-            max-width: 85%;
-            padding: 16px 20px;
-            border-radius: 20px;
-            font-size: 15px;
-            line-height: 1.4;
-            animation: slideUp 0.3s ease forwards;
-            word-wrap: break-word;
-            position: relative;
-        }
+  .list{
+    max-height:190px;overflow-y:auto;margin-top:10px;
+    border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.22);
+  }
+  .list::-webkit-scrollbar{width:5px}
+  .list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:99px}
+  .list-item{
+    display:block;width:100%;text-align:left;padding:11px 14px;
+    background:none;border:0;border-bottom:1px solid rgba(255,255,255,.05);
+    color:var(--text);font-size:14px;font-family:inherit;cursor:pointer;
+  }
+  .list-item:last-child{border-bottom:0}
+  .list-item:hover,.list-item:active{background:rgba(94,234,212,.09)}
+  .empty{padding:14px;color:var(--muted);font-size:13px;text-align:center}
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 13px;border-radius:99px;font-size:13px;
+    background:rgba(94,234,212,.12);border:1px solid rgba(94,234,212,.38);color:#C7FFF6;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .selection{margin-top:10px;min-height:0}
+  .chip button{background:none;border:0;color:#7FE9D8;cursor:pointer;font-size:14px;padding:0 0 0 2px;font-family:inherit}
 
-        .bot-message {
-            background-color: var(--bg-bot);
-            color: var(--text-light);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
+  /* ---------- botões ---------- */
+  .btn{
+    display:block;width:100%;padding:15px 18px;border-radius:13px;
+    font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.09em;
+    cursor:pointer;border:1px solid transparent;transition:transform .12s,filter .2s,background .2s;
+  }
+  .btn:active{transform:scale(.985)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04121A}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--text)}
+  .btn-ghost:hover{background:rgba(255,255,255,.05)}
+  .btn+.btn{margin-top:10px}
+  .nav{display:flex;gap:10px;margin-top:26px}
+  .nav .btn{margin-top:0}
+  .nav .btn-ghost{flex:0 0 34%}
+  .link{
+    background:none;border:0;padding:0;color:var(--accent);font-family:inherit;
+    font-size:12px;letter-spacing:.09em;font-weight:600;cursor:pointer;text-transform:uppercase;
+  }
+  .link.center{display:block;width:100%;text-align:center;margin-top:18px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--muted)}
+  .link.center:hover{color:var(--text)}
 
-        .user-message-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            align-self: flex-end;
-            max-width: 85%;
-        }
+  /* ---------- tela inicial ---------- */
+  .hero{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:40px 24px;max-width:460px;margin:0 auto;width:100%;
+  }
+  .brand-mark.big{width:76px;height:76px;border-radius:24px;font-size:34px;box-shadow:0 18px 50px rgba(94,234,212,.28);animation:pop .7s cubic-bezier(.22,.9,.3,1.2)}
+  @keyframes pop{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:scale(1)}}
+  .hero-name{margin-top:22px;font-size:26px;letter-spacing:.34em;font-weight:700;animation:fadeUp .6s .1s both}
+  .hero-tag{margin:14px 0 0;font-size:15.5px;color:#C3D2E6;animation:fadeUp .6s .2s both}
+  .hero-rotate{margin:10px 0 0;font-size:13px;color:var(--muted);min-height:20px;transition:opacity .4s;animation:fadeUp .6s .3s both}
+  .hero-actions{width:100%;margin-top:38px;animation:fadeUp .6s .4s both}
+  .about{
+    width:100%;margin-top:22px;text-align:left;padding:16px 18px;border-radius:16px;
+    background:rgba(255,255,255,.035);border:1px solid var(--line);
+    font-size:13px;color:#A9BBD2;line-height:1.65;
+  }
+  .about strong{color:var(--text);display:block;margin-bottom:6px;font-size:13px;letter-spacing:.04em}
 
-        .user-message {
-            background-color: var(--text-light);
-            color: var(--text-dark);
-            border-bottom-right-radius: 4px;
-            font-weight: 500;
-        }
+  /* ---------- revisão ---------- */
+  .review-block{border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:12px;background:rgba(255,255,255,.022)}
+  .review-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+  .review-head>span{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .review-row{display:flex;justify-content:space-between;gap:14px;padding:5px 0;font-size:13px}
+  .review-row .rk{color:var(--muted);flex:0 0 42%}
+  .review-row .rv{text-align:right;color:var(--text);word-break:break-word}
 
-        .change-btn {
-            color: #0a84ff;
-            font-size: 13px;
-            margin-top: 5px;
-            margin-right: 10px;
-            cursor: pointer;
-            font-weight: 500;
-            display: none; /* Controlado via JS */
-        }
+  /* ---------- contratos ---------- */
+  .contract{border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}
+  .contract-head{padding:12px 15px;font-size:13px;font-weight:600;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+  .contract-body{max-height:130px;overflow-y:auto;padding:13px 15px;font-size:12.5px;color:#9FB2CA;line-height:1.65}
+  .contract-body::-webkit-scrollbar{width:5px}
+  .contract-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:99px}
+  .contract-body p{margin:0 0 9px}
+  .contract-body p:last-child{margin-bottom:0}
+  .contract-check{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-top:1px solid var(--line);cursor:pointer;font-size:13px}
+  .contract-check input{
+    appearance:none;width:19px;height:19px;flex:0 0 19px;margin-top:1px;
+    border:1px solid var(--line-strong);border-radius:6px;background:rgba(255,255,255,.05);
+    cursor:pointer;position:relative;transition:.18s;
+  }
+  .contract-check input:checked{background:var(--accent);border-color:var(--accent)}
+  .contract-check input:checked::after{
+    content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid #04121A;border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .contract-check span{color:#B9C8DC;line-height:1.5}
 
-        /* Typing Indicator */
-        .typing {
-            display: flex;
-            gap: 5px;
-            padding: 16px 20px;
-            background-color: var(--bg-bot);
-            border-radius: 20px;
-            border-bottom-left-radius: 4px;
-            align-self: flex-start;
-            width: fit-content;
-        }
-        .typing span {
-            width: 6px;
-            height: 6px;
-            background-color: #888;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing span:nth-child(1) { animation-delay: -0.32s; }
-        .typing span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
+  /* ---------- força de senha ---------- */
+  .strength{display:flex;gap:5px;margin-top:11px}
+  .strength span{height:3px;flex:1;border-radius:99px;background:rgba(255,255,255,.1);transition:background .3s}
+  .strength.s1 span:nth-child(1){background:#F87171}
+  .strength.s2 span:nth-child(-n+2){background:#FBBF24}
+  .strength.s3 span:nth-child(-n+3){background:#34D399}
+  .strength.s4 span{background:var(--accent)}
+  .reqs{margin-top:11px;font-size:12px;color:var(--muted);line-height:1.9}
+  .reqs .ok{color:#5EEAD4}
 
-        /* Área de Controle (Inputs e Botões) */
-        .bottom-control {
-            padding: 15px 20px 25px;
-            background: var(--bg-main);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 10;
-        }
+  /* ---------- linha do tempo ---------- */
+  .timeline{margin:22px 0 0}
+  .tl-item{
+    position:relative;padding:0 0 22px 26px;font-size:14px;color:#647991;transition:color .4s;
+  }
+  .tl-item::before{
+    content:"";position:absolute;left:0;top:5px;width:11px;height:11px;border-radius:50%;
+    border:2px solid #2C3A4E;background:transparent;transition:.4s;
+  }
+  .tl-item::after{content:"";position:absolute;left:5px;top:19px;bottom:0;width:1px;background:#1E2A3A}
+  .tl-item:last-child::after{display:none}
+  .tl-item.done{color:var(--text)}
+  .tl-item.done::before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 14px rgba(94,234,212,.6)}
+  .tl-item.current{color:var(--accent)}
+  .tl-item.current::before{border-color:var(--accent);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(94,234,212,.5)}50%{box-shadow:0 0 0 8px rgba(94,234,212,0)}}
 
-        .primary-btn {
-            width: 100%;
-            background-color: var(--accent);
-            color: var(--accent-text);
-            border: none;
-            padding: 18px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            display: none;
-        }
+  .capture-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:13px;margin-bottom:10px;background:rgba(255,255,255,.02)}
+  .capture-row .ct{font-size:13.5px}
+  .capture-row .cs{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .capture-btn{
+    padding:9px 14px;border-radius:9px;font-size:11px;letter-spacing:.09em;font-weight:700;
+    background:rgba(255,255,255,.06);border:1px solid var(--line-strong);color:var(--text);
+    font-family:inherit;cursor:pointer;white-space:nowrap;flex:0 0 auto;
+  }
+  .capture-btn.done{background:rgba(94,234,212,.16);border-color:var(--accent);color:#B9FFF4}
 
-        .primary-btn:active { opacity: 0.8; }
-        .primary-btn:disabled { background-color: #333; color: #666; cursor: not-allowed; }
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,24px);
+    background:#101A27;border:1px solid var(--line-strong);color:var(--text);
+    padding:13px 20px;border-radius:12px;font-size:13px;max-width:88vw;text-align:center;
+    opacity:0;pointer-events:none;transition:.3s;z-index:50;box-shadow:0 18px 40px rgba(0,0,0,.55);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
 
-        .input-group {
-            display: none;
-            background-color: var(--bg-input);
-            border-radius: 25px;
-            align-items: center;
-            padding: 5px 5px 5px 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .input-group input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            outline: none;
-            padding: 12px 0;
-        }
-
-        .input-group input::placeholder { color: var(--text-gray); }
-
-        .send-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .send-btn svg { fill: var(--accent-text); width: 20px; }
-
-        /* Modais Full Screen */
-        .fullscreen-modal {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--bg-main);
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
-        }
-
-        .fullscreen-modal.active {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            color: white;
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        .back-btn {
-            background: transparent; border: none; color: white; font-size: 24px; margin-right: 15px; cursor: pointer;
-        }
-
-        .modal-body {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Modal de Seleção (PF/PJ) */
-        .bottom-sheet {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 40;
-            display: none;
-            justify-content: flex-end;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .bottom-sheet.active { display: flex; opacity: 1; }
-        
-        .sheet-content {
-            background-color: #1c1c1e;
-            width: 100%;
-            border-radius: 30px 30px 0 0;
-            padding: 30px 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s;
-        }
-        .bottom-sheet.active .sheet-content { transform: translateY(0); }
-
-        .sheet-title {
-            color: white; font-size: 20px; margin-bottom: 25px;
-        }
-
-        .radio-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 0; color: white; font-size: 16px; cursor: pointer;
-        }
-
-        .radio-circle {
-            width: 24px; height: 24px; border-radius: 50%; border: 2px solid #555;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .radio-item.selected .radio-circle { border-color: var(--accent); }
-        .radio-item.selected .radio-circle::after {
-            content: ''; width: 14px; height: 14px; background: var(--accent); border-radius: 50%;
-        }
-
-        /* Tela de Senha (Bolinhas) */
-        .password-dots {
-            display: flex; justify-content: center; gap: 15px; margin-top: 40px;
-        }
-        .dot {
-            width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;
-            transition: background 0.2s;
-        }
-        .dot.filled { background: white; }
-
-        /* Formulário de Endereço */
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block; color: var(--text-gray); font-size: 13px; margin-bottom: 5px;
-        }
-        .form-group input {
-            width: 100%; background: transparent; border: none; border-bottom: 1px solid #333;
-            color: white; font-size: 16px; padding: 10px 0; outline: none;
-        }
-        .form-group input:focus { border-bottom-color: var(--accent); }
-        .error-text { color: var(--danger); font-size: 12px; display: none; margin-top: 5px; align-items: center; gap: 5px;}
-        
-        /* Câmera Selfie */
-        .camera-view {
-            flex: 1; background: #222; border-radius: 20px; margin: 20px 0;
-            display: flex; justify-content: center; align-items: center; position: relative;
-            overflow: hidden;
-        }
-        .face-outline {
-            width: 200px; height: 260px; border: 2px dashed rgba(255,255,255,0.5);
-            border-radius: 50%; position: absolute;
-        }
-        .scan-line {
-            width: 100%; height: 2px; background: var(--accent); position: absolute;
-            top: 0; box-shadow: 0 0 10px var(--accent); display: none;
-        }
-        .camera-text {
-            position: absolute; bottom: 30px; color: white; font-size: 14px;
-        }
-
-        /* Barra de Loading Final */
-        .loading-bar-container {
-            width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 10px;
-            overflow: hidden; display: none;
-        }
-        .loading-bar {
-            height: 100%; width: 0%; background: var(--accent); transition: width 0.3s;
-        }
-
-    </style>
+  [hidden]{display:none !important}
+</style>
 </head>
 <body>
 
-<div class="app-container">
-    <!-- Barra de Status (Ícones SVG Reais) -->
-    <div class="status-bar">
-        <span>19:33</span>
-        <div class="status-icons">
-            <!-- Sinal -->
-            <svg viewBox="0 0 24 24"><path d="M2,22h20V2L2,22z M17,17h-2v-2h2V17z M17,12h-2V7h2V12z"/></svg>
-            <!-- Wi-Fi -->
-            <svg viewBox="0 0 24 24"><path d="M12,21L15.6,16.2C14.6,15.45 13.35,15 12,15C10.65,15 9.4,15.45 8.4,16.2L12,21ZM12,3C7.95,3 4.21,4.34 1.2,6.6L3,9C5.5,7.12 8.62,6 12,6C15.38,6 18.5,7.12 21,9L22.8,6.6C19.79,4.34 16.05,3 12,3ZM12,9C9.3,9 6.81,9.89 4.8,11.4L6.6,13.8C8.1,12.67 9.97,12 12,12C14.03,12 15.9,12.67 17.4,13.8L19.2,11.4C17.19,9.89 14.7,9 12,9Z"/></svg>
-            <!-- Bateria -->
-            <svg viewBox="0 0 24 24" style="width: 22px;"><path d="M16,4H8C6.9,4 6,4.9 6,6v12c0,1.1 0.9,2 2,2h8c1.1,0 2-0.9 2-2V6C18,4.9 17.1,4 16,4z M16,18H8V6h8V18z"/></svg>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <div class="header">
-        <div class="close-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </div>
-    </div>
-
-    <!-- Chat -->
-    <div class="chat-container" id="chat-container">
-        <!-- Mensagens aparecerão aqui -->
-    </div>
-
-    <!-- Área de Controle (Fica fixa no fundo) -->
-    <div class="bottom-control" id="bottom-control">
-        <button class="primary-btn" id="main-action-btn">Selecionar</button>
-        
-        <div class="input-group" id="chat-input-group">
-            <input type="text" id="chat-input" placeholder="Digite..." autocomplete="off">
-            <button class="send-btn" id="send-btn">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL: Seleção PF/PJ -->
-    <div class="bottom-sheet" id="modal-pf-pj">
-        <div class="sheet-content">
-            <h2 class="sheet-title">Que tipo de conta você quer abrir?</h2>
-            <div class="radio-item" onclick="selectAccountType('PF', this)">
-                <span>Abrir uma conta pessoal (PF)</span>
-                <div class="radio-circle"></div>
-            </div>
-            <div class="radio-item" onclick="selectAccountType('PJ', this)">
-                <span>Abrir uma conta empresarial (PJ)</span>
-                <div class="radio-circle"></div>
-            </div>
-            <button class="primary-btn" style="display: block; margin-top: 20px;" id="confirm-pf-pj" disabled onclick="confirmAccountType()">Confirmar</button>
-        </div>
-    </div>
-
-    <!-- MODAL FULLSCREEN: Senha -->
-    <div class="fullscreen-modal" id="modal-password">
-        <div class="modal-header">
-            <button class="back-btn" onclick="closeModal('modal-password')">←</button>
-        </div>
-        <div class="modal-body" style="text-align: center;">
-            <p style="color: var(--text-gray); margin-bottom: 10px;">Agora, crie uma senha de 6 números para acessar o app.</p>
-            <p style="color: var(--text-gray); font-size: 13px;">Ela será diferente da senha transacional e do seu cartão.</p>
-            
-            <h3 style="color: white; margin-top: 40px; font-size: 20px;">Crie sua senha de acesso</h3>
-            <div class="password-dots" id="password-dots">
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-            </div>
-            <input type="tel" id="hidden-password-input" maxlength="6" style="opacity: 0; position: absolute; top: 50%;">
-        </div>
-    </div>
-
-    <!-- MODAL FULLSCREEN: Endereço -->
-    <div class="fullscreen-modal" id="modal-address">
-        <div class="modal-header">
-            <button class="back-btn" onclick="closeModal('modal-address')">←</button>
-            Endereço residencial
-        </div>
-        <div class="modal-body">
-            <p style="color: var(--text-gray); margin-bottom: 20px;">Verifique os dados abaixo e preencha os campos restantes.</p>
-            
-            <div class="form-group">
-                <label>CEP</label>
-                <input type="text" value="87708-721" readonly>
-            </div>
-            <div class="form-group">
-                <label>Endereço</label>
-                <input type="text" value="Rua Antonio da Costa Cordeiro" readonly>
-            </div>
-            <div class="form-group">
-                <label style="color: var(--danger);">Número</label>
-                <input type="text" id="address-number" placeholder="Preencha seu número">
-                <div class="error-text" id="address-error">⚠ Preencha seu número</div>
-            </div>
-            <div class="form-group">
-                <label>Complemento (Opcional)</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Bairro</label>
-                <input type="text" value="Subdivisão do Lote 19-A" readonly>
-            </div>
-            <div class="form-group">
-                <label>Estado</label>
-                <input type="text" value="PR" readonly>
-            </div>
-            
-            <button class="primary-btn" style="display: block; margin-top: auto;" onclick="confirmAddress()">Confirmar</button>
-        </div>
-    </div>
-
-    <!-- MODAL FULLSCREEN: Câmera Selfie -->
-    <div class="fullscreen-modal" id="modal-camera">
-        <div class="modal-header">
-            <button class="close-btn" onclick="closeModal('modal-camera')">✕</button>
-        </div>
-        <div class="modal-body" style="padding-top: 0;">
-            <div class="camera-view" id="camera-view">
-                <div class="face-outline"></div>
-                <div class="scan-line" id="scan-line"></div>
-                <span class="camera-text" id="camera-text">Mova sua cabeça para cima e para baixo</span>
-            </div>
-            <button class="primary-btn" style="display: block;" id="btn-selfie" onclick="startFaceScan()">Tirar Selfie</button>
-        </div>
-    </div>
-
+<div class="bg">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
 </div>
 
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+
 <script>
-    // --- ESTADO GLOBAL ---
-    const chatContainer = document.getElementById('chat-container');
-    const bottomControl = document.getElementById('bottom-control');
-    const mainActionBtn = document.getElementById('main-action-btn');
-    const chatInputGroup = document.getElementById('chat-input-group');
-    const chatInput = document.getElementById('chat-input');
-    
-    let currentStep = 0;
-    let isTyping = false;
-    let tempData = {};
+/* =========================================================
+   AURORA — MÓDULO 1 — ABERTURA DE CONTA
+   ========================================================= */
 
-    // --- FUNÇÕES BASE DO CHAT ---
-    function addMessage(text, sender = 'bot', showChangeBtn = false) {
-        return new Promise((resolve) => {
-            if (sender === 'bot') {
-                isTyping = true;
-                const typingDiv = document.createElement('div');
-                typingDiv.className = 'typing';
-                typingDiv.innerHTML = '<span></span><span></span><span></span>';
-                chatContainer.appendChild(typingDiv);
-                scrollToBottom();
+/* ---------- utilitários ---------- */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-                setTimeout(() => {
-                    chatContainer.removeChild(typingDiv);
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = `message bot-message`;
-                    msgDiv.innerText = text;
-                    chatContainer.appendChild(msgDiv);
-                    isTyping = false;
-                    scrollToBottom();
-                    resolve();
-                }, 1200);
-            } else {
-                const container = document.createElement('div');
-                container.className = 'user-message-container';
-                
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message user-message`;
-                msgDiv.innerText = text;
-                container.appendChild(msgDiv);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+  { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+));
 
-                if (showChangeBtn) {
-                    const changeBtn = document.createElement('span');
-                    changeBtn.className = 'change-btn';
-                    changeBtn.innerText = 'Alterar';
-                    changeBtn.style.display = 'block';
-                    changeBtn.onclick = () => goBackStep();
-                    container.appendChild(changeBtn);
-                }
-                
-                chatContainer.appendChild(container);
-                scrollToBottom();
-                resolve();
-            }
-        });
+const norm = s => (s || '').toString().toLowerCase()
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+function getPath(obj, path){
+  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+}
+function setPath(obj, path, value){
+  const parts = path.split('.');
+  let o = obj;
+  for (let i = 0; i < parts.length - 1; i++){
+    if (typeof o[parts[i]] !== 'object' || o[parts[i]] === null) o[parts[i]] = {};
+    o = o[parts[i]];
+  }
+  o[parts[parts.length - 1]] = value;
+}
+
+/* ---------- catálogo de países (fallback local completo) ---------- */
+const COUNTRIES_RAW = `Afeganistão|AF|93
+África do Sul|ZA|27
+Albânia|AL|355
+Alemanha|DE|49
+Andorra|AD|376
+Angola|AO|244
+Antígua e Barbuda|AG|1
+Arábia Saudita|SA|966
+Argélia|DZ|213
+Argentina|AR|54
+Armênia|AM|374
+Austrália|AU|61
+Áustria|AT|43
+Azerbaijão|AZ|994
+Bahamas|BS|1
+Bahrain|BH|973
+Bangladesh|BD|880
+Barbados|BB|1
+Bélgica|BE|32
+Belize|BZ|501
+Benin|BJ|229
+Bielorrússia|BY|375
+Bolívia|BO|591
+Bósnia e Herzegovina|BA|387
+Botsuana|BW|267
+Brasil|BR|55
+Brunei|BN|673
+Bulgária|BG|359
+Burkina Faso|BF|226
+Burundi|BI|257
+Butão|BT|975
+Cabo Verde|CV|238
+Camarões|CM|237
+Camboja|KH|855
+Canadá|CA|1
+Catar|QA|974
+Cazaquistão|KZ|7
+Chade|TD|235
+Chile|CL|56
+China|CN|86
+Chipre|CY|357
+Colômbia|CO|57
+Comores|KM|269
+Congo|CG|242
+Coreia do Norte|KP|850
+Coreia do Sul|KR|82
+Costa do Marfim|CI|225
+Costa Rica|CR|506
+Croácia|HR|385
+Cuba|CU|53
+Dinamarca|DK|45
+Djibuti|DJ|253
+Dominica|DM|1
+Egito|EG|20
+El Salvador|SV|503
+Emirados Árabes Unidos|AE|971
+Equador|EC|593
+Eritreia|ER|291
+Eslováquia|SK|421
+Eslovênia|SI|386
+Espanha|ES|34
+Estados Unidos|US|1
+Estônia|EE|372
+Essuatíni|SZ|268
+Etiópia|ET|251
+Fiji|FJ|679
+Filipinas|PH|63
+Finlândia|FI|358
+França|FR|33
+Gabão|GA|241
+Gâmbia|GM|220
+Gana|GH|233
+Geórgia|GE|995
+Granada|GD|1
+Grécia|GR|30
+Groenlândia|GL|299
+Guatemala|GT|502
+Guiana|GY|592
+Guiné|GN|224
+Guiné-Bissau|GW|245
+Guiné Equatorial|GQ|240
+Haiti|HT|509
+Holanda|NL|31
+Honduras|HN|504
+Hong Kong|HK|852
+Hungria|HU|36
+Iêmen|YE|967
+Ilhas Marshall|MH|692
+Ilhas Salomão|SB|677
+Índia|IN|91
+Indonésia|ID|62
+Irã|IR|98
+Iraque|IQ|964
+Irlanda|IE|353
+Islândia|IS|354
+Israel|IL|972
+Itália|IT|39
+Jamaica|JM|1
+Japão|JP|81
+Jordânia|JO|962
+Kiribati|KI|686
+Kosovo|XK|383
+Kuwait|KW|965
+Laos|LA|856
+Lesoto|LS|266
+Letônia|LV|371
+Líbano|LB|961
+Libéria|LR|231
+Líbia|LY|218
+Liechtenstein|LI|423
+Lituânia|LT|370
+Luxemburgo|LU|352
+Macau|MO|853
+Macedônia do Norte|MK|389
+Madagascar|MG|261
+Malásia|MY|60
+Malawi|MW|265
+Maldivas|MV|960
+Mali|ML|223
+Malta|MT|356
+Marrocos|MA|212
+Maurício|MU|230
+Mauritânia|MR|222
+México|MX|52
+Mianmar|MM|95
+Micronésia|FM|691
+Moçambique|MZ|258
+Moldávia|MD|373
+Mônaco|MC|377
+Mongólia|MN|976
+Montenegro|ME|382
+Namíbia|NA|264
+Nauru|NR|674
+Nepal|NP|977
+Nicarágua|NI|505
+Níger|NE|227
+Nigéria|NG|234
+Noruega|NO|47
+Nova Zelândia|NZ|64
+Omã|OM|968
+Palau|PW|680
+Palestina|PS|970
+Panamá|PA|507
+Papua-Nova Guiné|PG|675
+Paquistão|PK|92
+Paraguai|PY|595
+Peru|PE|51
+Polônia|PL|48
+Porto Rico|PR|1
+Portugal|PT|351
+Quênia|KE|254
+Quirguistão|KG|996
+Reino Unido|GB|44
+República Centro-Africana|CF|236
+República Democrática do Congo|CD|243
+República Dominicana|DO|1
+República Tcheca|CZ|420
+Romênia|RO|40
+Ruanda|RW|250
+Rússia|RU|7
+Samoa|WS|685
+San Marino|SM|378
+Santa Lúcia|LC|1
+São Cristóvão e Névis|KN|1
+São Tomé e Príncipe|ST|239
+São Vicente e Granadinas|VC|1
+Seicheles|SC|248
+Senegal|SN|221
+Serra Leoa|SL|232
+Sérvia|RS|381
+Singapura|SG|65
+Síria|SY|963
+Somália|SO|252
+Sri Lanka|LK|94
+Sudão|SD|249
+Sudão do Sul|SS|211
+Suécia|SE|46
+Suíça|CH|41
+Suriname|SR|597
+Tailândia|TH|66
+Taiwan|TW|886
+Tajiquistão|TJ|992
+Tanzânia|TZ|255
+Timor-Leste|TL|670
+Togo|TG|228
+Tonga|TO|676
+Trinidad e Tobago|TT|1
+Tunísia|TN|216
+Turcomenistão|TM|993
+Turquia|TR|90
+Tuvalu|TV|688
+Ucrânia|UA|380
+Uganda|UG|256
+Uruguai|UY|598
+Uzbequistão|UZ|998
+Vanuatu|VU|678
+Vaticano|VA|379
+Venezuela|VE|58
+Vietnã|VN|84
+Zâmbia|ZM|260
+Zimbábue|ZW|263`;
+
+let COUNTRIES = COUNTRIES_RAW.trim().split('\n').map(line => {
+  const [n, c, d] = line.split('|');
+  return { n, c, d };
+}).sort((a, b) => a.n.localeCompare(b.n, 'pt-BR'));
+
+/* API gratuita de países (RestCountries) — atualiza o catálogo local */
+(async function loadCountriesAPI(){
+  try{
+    const res = await fetch('https://restcountries.com/v3.1/all?fields=name,translations,cca2,idd');
+    if (!res.ok) return;
+    const json = await res.json();
+    const list = json.map(c => {
+      const name = (c.translations && c.translations.por && c.translations.por.common) || c.name.common;
+      const dial = c.idd && c.idd.root ? (c.idd.root + ((c.idd.suffixes && c.idd.suffixes[0]) || '')).replace('+', '') : '';
+      return { n: name, c: c.cca2, d: dial };
+    }).filter(x => x.c && x.n);
+    if (list.length > 150){
+      COUNTRIES = list.sort((a, b) => a.n.localeCompare(b.n, 'pt-BR'));
     }
+  }catch(e){ /* mantém catálogo local */ }
+})();
 
-    function scrollToBottom() {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+function countryName(iso){
+  const c = COUNTRIES.find(x => x.c === iso);
+  return c ? c.n : iso;
+}
+function countryDial(iso){
+  const c = COUNTRIES.find(x => x.c === iso);
+  return c ? c.d : '';
+}
+
+/* ---------- catálogo de profissões (mais de 200) ---------- */
+const PROFESSIONS = Array.from(new Set([
+  // Saúde
+  'Médico','Enfermeiro','Dentista','Psicólogo','Fisioterapeuta','Nutricionista','Farmacêutico',
+  'Biomédico','Veterinário','Fonoaudiólogo','Terapeuta ocupacional','Radiologista',
+  'Técnico de enfermagem','Auxiliar de enfermagem','Optometrista','Acupunturista','Massoterapeuta',
+  'Educador físico','Sanitarista','Anestesista','Cardiologista','Pediatra','Psiquiatra',
+  'Farmacêutico hospitalar','Técnico em radiologia',
+  // Educação
+  'Professor','Pedagogo','Diretor escolar','Coordenador pedagógico','Orientador educacional',
+  'Psicopedagogo','Instrutor de cursos','Professor de idiomas','Professor de música',
+  'Professor de educação física','Tutor','Monitor escolar','Bibliotecário','Pesquisador',
+  'Professor universitário','Auxiliar de classe',
+  // Tecnologia
+  'Desenvolvedor','Programador','Analista de sistemas','Engenheiro de software','Analista de dados',
+  'Cientista de dados','Engenheiro de dados','Administrador de redes',
+  'Analista de segurança da informação','Designer de UX/UI','Product Manager','Scrum Master',
+  'Analista de suporte','Técnico de informática','Especialista em DevOps','Especialista em cloud',
+  'Analista de BI','Testador de software','Arquiteto de software',
+  'Especialista em inteligência artificial','Analista de infraestrutura','Gestor de TI',
+  // Administração
+  'Administrador','Gerente','Assistente administrativo','Analista financeiro','Contador','Auditor',
+  'Controller','Analista de RH','Recrutador','Secretária executiva','Analista de logística',
+  'Comprador','Almoxarife','Recepcionista','Analista de planejamento','Gestor de projetos',
+  'Analista de processos','Assistente financeiro',
+  // Comércio
+  'Vendedor','Comerciante','Atendente','Operador de caixa','Gerente de loja',
+  'Representante comercial','Consultor de vendas','Promotor de vendas','Corretor de imóveis',
+  'Corretor de seguros','Vendedor externo','Operador de telemarketing','Repositor','Estoquista',
+  // Construção
+  'Pedreiro','Eletricista','Encanador','Pintor de obras','Carpinteiro','Marceneiro','Serralheiro',
+  'Soldador','Armador','Montador','Gesseiro','Azulejista','Engenheiro civil','Arquiteto',
+  'Mestre de obras','Técnico em edificações','Topógrafo','Vidraceiro',
+  // Transporte
+  'Motorista','Entregador','Motoboy','Piloto','Comissário de bordo','Maquinista','Cobrador',
+  'Frentista','Operador de logística','Motorista de aplicativo','Caminhoneiro','Taxista',
+  'Controlador de tráfego aéreo','Estivador',
+  // Segurança
+  'Vigilante','Bombeiro','Policial','Segurança patrimonial','Agente penitenciário',
+  'Guarda municipal','Investigador','Porteiro','Controlador de acesso','Socorrista',
+  'Agente de trânsito',
+  // Beleza
+  'Cabeleireiro','Barbeiro','Esteticista','Manicure','Maquiador','Depilador',
+  'Designer de sobrancelhas','Massagista','Podólogo','Tatuador','Penteadista',
+  // Comunicação
+  'Jornalista','Publicitário','Designer gráfico','Redator','Editor','Fotógrafo','Cinegrafista',
+  'Locutor','Apresentador','Produtor de conteúdo','Social media','Relações públicas','Revisor',
+  'Tradutor','Ilustrador',
+  // Direito
+  'Advogado','Consultor jurídico','Juiz','Promotor','Defensor público','Delegado','Paralegal',
+  'Escrivão','Tabelião','Perito judicial','Analista jurídico',
+  // Indústria
+  'Operador de produção','Mecânico industrial','Técnico em manutenção','Eletromecânico',
+  'Torneiro mecânico','Fresador','Controlador de qualidade','Supervisor de produção',
+  'Engenheiro de produção','Engenheiro mecânico','Engenheiro elétrico','Engenheiro químico',
+  'Químico','Técnico em segurança do trabalho','Operador de empilhadeira','Caldeireiro',
+  // Alimentação
+  'Cozinheiro','Chef de cozinha','Confeiteiro','Padeiro','Açougueiro','Garçom','Barman','Barista',
+  'Atendente de lanchonete','Gerente de restaurante','Churrasqueiro','Sushiman','Auxiliar de cozinha',
+  // Agropecuária
+  'Agricultor','Pecuarista','Agrônomo','Zootecnista','Tratorista','Trabalhador rural',
+  'Floricultor','Pescador','Técnico agrícola',
+  // Artes
+  'Ator','Músico','Dançarino','Artista plástico','Escultor','Artesão','Cantor','DJ',
+  'Diretor de arte','Figurinista',
+  // Esporte
+  'Atleta','Personal trainer','Treinador esportivo','Árbitro','Instrutor de academia',
+  // Ciências
+  'Biólogo','Físico','Matemático','Estatístico','Geólogo','Astrônomo','Arqueólogo','Historiador',
+  'Sociólogo','Filósofo','Antropólogo','Geógrafo','Oceanógrafo',
+  // Outros
+  'Autônomo','Empresário','Servidor público','Estudante','Aposentado','Desempregado',
+  'Dona ou dono de casa','Trabalhador informal','Microempreendedor','Freelancer',
+  'Influenciador digital','Criador de conteúdo','Gestor de tráfego','Analista de marketing',
+  'Diarista','Cuidador de idosos','Babá','Jardineiro','Zelador','Caseiro','Governanta',
+  'Auxiliar de serviços gerais','Office boy','Gestor de recursos humanos','Analista de qualidade',
+  'Consultor','Diplomata','Militar','Piloto de drone','Operador de câmera','Cerimonialista'
+])).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+/* ---------- validações ---------- */
+function validCPF(cpf){
+  cpf = (cpf || '').replace(/\D/g, '');
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  let s = 0;
+  for (let i = 0; i < 9; i++) s += parseInt(cpf[i]) * (10 - i);
+  let d1 = (s * 10) % 11; if (d1 === 10) d1 = 0;
+  if (d1 !== parseInt(cpf[9])) return false;
+  s = 0;
+  for (let i = 0; i < 10; i++) s += parseInt(cpf[i]) * (11 - i);
+  let d2 = (s * 10) % 11; if (d2 === 10) d2 = 0;
+  return d2 === parseInt(cpf[10]);
+}
+function calcAge(dateStr){
+  if (!dateStr) return -1;
+  const b = new Date(dateStr + 'T00:00:00');
+  if (isNaN(b.getTime())) return -1;
+  const t = new Date();
+  let a = t.getFullYear() - b.getFullYear();
+  const m = t.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && t.getDate() < b.getDate())) a--;
+  return a;
+}
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim()); }
+
+/* ---------- estado ---------- */
+const STORAGE_KEY = 'aurora_modulo1_v1';
+
+const DEFAULT_DATA = {
+  nationality: '', otherNationality: null, otherNationalities: [], residence: '',
+  docType: '', docNumber: '', cpf: '', docName: '', docIssue: '', docIssuer: '',
+  docCountry: '', docExpiry: '',
+  fullName: '', socialName: '', birthDate: '', sex: '', maritalStatus: '', motherName: '',
+  fatherName: '', naturality: '', birthCountry: '',
+  addr: { country: '', zip: '', state: '', city: '', district: '', street: '', number: '',
+          complement: '', type: '' },
+  phone: { dial: '', ddd: '', number: '', code: '', sentCode: '', verified: false },
+  email: { value: '', code: '', sentCode: '', verified: false },
+  profession: '', professionOther: '', situation: '',
+  income: '', extraIncome: null, extraSources: [], extraValue: '',
+  patrimony: '', patrimonyRange: '',
+  idv: { front: false, back: false, face: false, live: false },
+  pep: null, pepRelated: null, purpose: [], movement: '',
+  password: '', passwordConfirm: '',
+  contracts: { account: false, terms: false, privacy: false, fees: false },
+  protocol: ''
+};
+
+let state = { step: 0, data: JSON.parse(JSON.stringify(DEFAULT_DATA)) };
+let syncAll = () => {};
+let phraseTimer = null;
+
+function save(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    const merged = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    const src = parsed.data || {};
+    for (const k in merged){
+      if (src[k] === undefined) continue;
+      if (typeof merged[k] === 'object' && merged[k] !== null && !Array.isArray(merged[k])){
+        merged[k] = Object.assign({}, merged[k], src[k]);
+      } else {
+        merged[k] = src[k];
+      }
     }
+    state = { step: typeof parsed.step === 'number' ? parsed.step : 0, data: merged };
+  }catch(e){}
+}
+function resetAll(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  state = { step: 0, data: JSON.parse(JSON.stringify(DEFAULT_DATA)) };
+  render(true);
+}
 
-    function showInput(placeholder, type = 'text') {
-        chatInputGroup.style.display = 'flex';
-        mainActionBtn.style.display = 'none';
-        chatInput.placeholder = placeholder;
-        chatInput.type = type;
-        chatInput.value = '';
-        chatInput.focus();
+/* ---------- toast ---------- */
+let toastTimer = null;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3400);
+}
+
+/* ---------- meta das etapas ---------- */
+const STEP_META = {
+  1:  { next: 'CONTINUAR' },
+  2:  { next: 'CONTINUAR' },
+  3:  { next: 'CONTINUAR' },
+  4:  { next: 'CONTINUAR' },
+  5:  { next: 'CONTINUAR' },
+  6:  { next: 'CONTINUAR' },
+  7:  { next: 'CONTINUAR' },
+  8:  { next: 'CONTINUAR' },
+  9:  { next: 'CONTINUAR' },
+  10: { next: 'CONTINUAR' },
+  11: { next: 'CONTINUAR' },
+  12: { next: 'CONTINUAR' },
+  13: { next: 'CONTINUAR' },
+  14: { next: 'ENVIAR SOLICITAÇÃO' }
+};
+const TOTAL_STEPS = 14;
+
+/* =========================================================
+   COMPONENTES REUTILIZÁVEIS
+   ========================================================= */
+
+function optGroup(group, items, current, extraClass){
+  return `<div class="options ${extraClass || ''}" data-group="${group}">` + items.map(it => {
+    const v = typeof it === 'string' ? it : it.v;
+    const l = typeof it === 'string' ? it : it.l;
+    const sel = String(current) === String(v) ? 'selected' : '';
+    return `<button type="button" class="opt ${sel}" data-value="${esc(v)}">${esc(l)}</button>`;
+  }).join('') + `</div>`;
+}
+
+function multiGroup(group, items, current){
+  const cur = current || [];
+  return `<div class="options" data-multi="${group}">` + items.map(it => {
+    const v = typeof it === 'string' ? it : it.v;
+    const l = typeof it === 'string' ? it : it.l;
+    const sel = cur.includes(v) ? 'selected' : '';
+    return `<button type="button" class="opt ${sel}" data-value="${esc(v)}">${esc(l)}</button>`;
+  }).join('') + `</div>`;
+}
+
+function countrySelectOptions(selected){
+  return `<option value="">Selecione</option>` + COUNTRIES.map(c =>
+    `<option value="${c.c}" ${c.c === selected ? 'selected' : ''}>${esc(c.n)}</option>`
+  ).join('');
+}
+
+function chipCountry(iso){
+  return iso ? `<span class="chip">${esc(countryName(iso))}</span>` : '';
+}
+
+function renderCountryList(container, query, onPick, limit){
+  if (!container) return;
+  const q = norm(query);
+  const items = COUNTRIES.filter(c => !q || norm(c.n).includes(q)).slice(0, limit || 80);
+  container.innerHTML = items.length
+    ? items.map(c => `<button type="button" class="list-item" data-iso="${c.c}">${esc(c.n)}</button>`).join('')
+    : '<div class="empty">Nenhum resultado encontrado</div>';
+  $$('[data-iso]', container).forEach(btn => {
+    btn.onclick = () => onPick(btn.dataset.iso);
+  });
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render(scrollTop){
+  clearInterval(phraseTimer);
+  const app = document.getElementById('app');
+
+  if (state.step === 0){
+    app.innerHTML = welcomeHTML();
+    bindWelcome();
+  } else if (state.step === 15){
+    app.innerHTML = statusHTML();
+    bindStatus();
+  } else {
+    syncAll = () => {};
+    app.innerHTML = shellHTML(stepBody());
+    bindStep();
+    bindCommon();
+    syncAll();
+  }
+  if (scrollTop) window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function go(step){
+  state.step = step;
+  save();
+  render(true);
+}
+function rerender(){
+  render(false);
+}
+
+/* ---------- estrutura base ---------- */
+function shellHTML(content){
+  const pct = Math.round(((state.step - 1) / TOTAL_STEPS) * 100);
+  const meta = STEP_META[state.step] || {};
+  return `
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">A</span>
+        <span class="brand-name">AURORA</span>
+      </div>
+      <button class="link" id="btnExit">SAIR</button>
+    </header>
+
+    <div class="progress">
+      <div class="progress-label">Etapa ${state.step} de ${TOTAL_STEPS}</div>
+      <div class="progress-track"><span style="width:${pct}%"></span></div>
+    </div>
+
+    <section class="card step">
+      ${content}
+      <div class="nav">
+        <button class="btn btn-ghost" id="btnBack">VOLTAR</button>
+        <button class="btn btn-primary" id="btnNext">${meta.next || 'CONTINUAR'}</button>
+      </div>
+    </section>
+
+    <p class="foot">Ambiente de demonstração. Nenhum dado é enviado a instituições financeiras.</p>
+  </div>`;
+}
+
+/* =========================================================
+   TELA INICIAL
+   ========================================================= */
+const PHRASES = [
+  'Conta digital completa, sem burocracia.',
+  'Abertura de conta em poucos minutos.',
+  'Segurança e controle em um só aplicativo.',
+  'Seu dinheiro, suas regras.'
+];
+
+function welcomeHTML(){
+  const hasProgress = state.step > 0 && state.step < 15;
+  return `
+  <div class="hero">
+    <div class="brand-mark big">A</div>
+    <h1 class="hero-name">AURORA</h1>
+    <p class="hero-tag">Sua vida financeira em um só lugar.</p>
+    <p class="hero-rotate" id="rotate">${PHRASES[0]}</p>
+
+    <div class="hero-actions">
+      <button class="btn btn-primary" id="btnOpen">ABRIR MINHA CONTA</button>
+      ${hasProgress ? '<button class="btn btn-ghost" id="btnResume">CONTINUAR CADASTRO</button>' : ''}
+      <button class="btn btn-ghost" id="btnLogin">JÁ TENHO CONTA</button>
+      <button class="link center" id="btnAbout">Conheça o banco</button>
+    </div>
+
+    <div class="about" id="about" hidden>
+      <strong>AURORA BANCO DIGITAL</strong>
+      Plataforma de conta digital com abertura de conta por etapas, verificação de identidade e
+      análise cadastral. Este ambiente é uma demonstração do fluxo do produto.
+      Para operar como instituição financeira no Brasil é necessária autorização regulatória
+      aplicável ou atuação por meio de instituição parceira autorizada.
+    </div>
+  </div>`;
+}
+
+function bindWelcome(){
+  let i = 0;
+  const rotate = document.getElementById('rotate');
+  phraseTimer = setInterval(() => {
+    if (!document.body.contains(rotate)) { clearInterval(phraseTimer); return; }
+    i = (i + 1) % PHRASES.length;
+    rotate.style.opacity = '0';
+    setTimeout(() => {
+      rotate.textContent = PHRASES[i];
+      rotate.style.opacity = '1';
+    }, 380);
+  }, 3800);
+
+  const open = document.getElementById('btnOpen');
+  if (open) open.onclick = () => {
+    if (state.step === 0) state.step = 1;
+    save();
+    render(true);
+  };
+
+  const resume = document.getElementById('btnResume');
+  if (resume) resume.onclick = () => render(true);
+
+  const login = document.getElementById('btnLogin');
+  if (login) login.onclick = () => toast('O acesso à conta faz parte de outro módulo do aplicativo.');
+
+  const about = document.getElementById('btnAbout');
+  if (about) about.onclick = () => {
+    const box = document.getElementById('about');
+    box.hidden = !box.hidden;
+  };
+}
+
+/* =========================================================
+   ETAPAS
+   ========================================================= */
+
+function stepBody(){
+  switch (state.step){
+    case 1:  return stepNacionalidade();
+    case 2:  return stepDocumentos();
+    case 3:  return stepDadosPessoais();
+    case 4:  return stepEndereco();
+    case 5:  return stepContato();
+    case 6:  return stepProfissao();
+    case 7:  return stepRenda();
+    case 8:  return stepRendaExtra();
+    case 9:  return stepPatrimonio();
+    case 10: return stepIdentidade();
+    case 11: return stepSeguranca();
+    case 12: return stepSenha();
+    case 13: return stepRevisao();
+    case 14: return stepContratos();
+    default: return '';
+  }
+}
+
+/* ---------- ETAPA 1 — Nacionalidade ---------- */
+function stepNacionalidade(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 1</span>
+    <h2>Qual é a sua nacionalidade?</h2>
+    <p class="sub">Pesquise e selecione o país ou território no catálogo internacional.</p>
+  </div>
+
+  <div class="field">
+    <input class="input" id="natSearch" placeholder="Pesquisar país ou território" autocomplete="off">
+    <div class="list" id="natList"></div>
+    <div class="selection" id="natSel">${chipCountry(d.nationality)}</div>
+  </div>
+
+  <div class="field">
+    <label class="label">Você possui outra nacionalidade?</label>
+    ${optGroup('otherNationality', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.otherNationality)}
+  </div>
+
+  <div class="field" id="otherBox">
+    <label class="label">Outras nacionalidades</label>
+    <input class="input" id="otherSearch" placeholder="Pesquisar país" autocomplete="off">
+    <div class="list" id="otherList"></div>
+    <div class="chips" id="otherChips">
+      ${(d.otherNationalities || []).map(iso => `
+        <span class="chip">${esc(countryName(iso))}<button type="button" data-remove="${iso}">remover</button></span>
+      `).join('')}
+    </div>
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">Qual é o seu país de residência atual?</label>
+    <input class="input" id="resSearch" placeholder="Pesquisar país" autocomplete="off">
+    <div class="list" id="resList"></div>
+    <div class="selection" id="resSel">${chipCountry(d.residence)}</div>
+  </div>`;
+}
+
+/* ---------- ETAPA 2 — Documentação ---------- */
+function docOptions(){
+  const d = state.data;
+  const brNat = d.nationality === 'BR';
+  const brRes = d.residence === 'BR';
+  if (brRes && brNat) return [
+    { v: 'CPF', l: 'CPF' },
+    { v: 'RG', l: 'RG' },
+    { v: 'CIN', l: 'CIN (Carteira de Identidade Nacional)' },
+    { v: 'CNH', l: 'CNH' },
+    { v: 'PASSAPORTE_BR', l: 'Passaporte brasileiro' }
+  ];
+  if (brRes && !brNat) return [
+    { v: 'CRNM', l: 'CRNM (Carteira de Registro Nacional Migratório)' },
+    { v: 'PROTOCOLO', l: 'Protocolo de solicitação de residência' },
+    { v: 'PASSAPORTE', l: 'Passaporte' },
+    { v: 'DOC_ESTRANGEIRO', l: 'Documento de identidade estrangeiro' }
+  ];
+  return [
+    { v: 'PASSAPORTE', l: 'Passaporte' },
+    { v: 'ID_NACIONAL', l: 'Documento de identidade nacional' },
+    { v: 'CNH', l: 'Carteira de habilitação' },
+    { v: 'DOC_RESIDENCIA', l: 'Documento de residência' }
+  ];
+}
+
+function stepDocumentos(){
+  const d = state.data;
+  const opts = docOptions();
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 2</span>
+    <h2>Qual documento de identificação você possui?</h2>
+    <p class="sub">As opções abaixo são carregadas conforme a nacionalidade e o país de residência informados.</p>
+  </div>
+
+  <div class="field">
+    ${optGroup('docType', opts, d.docType)}
+  </div>
+
+  <div class="field">
+    <label class="label">Número do documento</label>
+    <input class="input" data-bind="docNumber" placeholder="Informe o número" autocomplete="off">
+  </div>
+
+  <div class="field" id="cpfBox">
+    <label class="label">CPF</label>
+    <input class="input" data-bind="cpf" placeholder="000.000.000-00" inputmode="numeric" autocomplete="off">
+    <div class="hint">Obrigatório para residentes no Brasil.</div>
+  </div>
+
+  <div class="field">
+    <label class="label">Nome conforme o documento</label>
+    <input class="input" data-bind="docName" placeholder="Nome completo sem abreviações" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Data de emissão (quando aplicável)</label>
+    <input class="input" type="date" data-bind="docIssue">
+  </div>
+
+  <div class="field">
+    <label class="label">Órgão emissor (quando aplicável)</label>
+    <input class="input" data-bind="docIssuer" placeholder="Ex.: SSP, DPF, Consulado" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">País emissor</label>
+    <select class="input" data-bind="docCountry">${countrySelectOptions(d.docCountry || d.residence)}</select>
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">Data de validade (quando aplicável)</label>
+    <input class="input" type="date" data-bind="docExpiry">
+  </div>`;
+}
+
+/* ---------- ETAPA 3 — Dados pessoais ---------- */
+function stepDadosPessoais(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 3</span>
+    <h2>Dados pessoais</h2>
+    <p class="sub">Preencha exatamente como consta no documento apresentado.</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Nome completo</label>
+    <input class="input" data-bind="fullName" placeholder="Nome e sobrenomes" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Nome social (opcional)</label>
+    <input class="input" data-bind="socialName" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Data de nascimento</label>
+    <input class="input" type="date" data-bind="birthDate" id="birthDate">
+    <div id="minorWarn" hidden class="warn">
+      Cadastro de menor de idade. O sistema encaminha para o fluxo próprio de conta de menor,
+      com participação do responsável legal conforme as regras aplicáveis.
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Sexo (para fins cadastrais)</label>
+    ${optGroup('sex', ['Feminino','Masculino','Outro','Prefiro não informar'], d.sex)}
+  </div>
+
+  <div class="field">
+    <label class="label">Estado civil</label>
+    <select class="input" data-bind="maritalStatus">
+      <option value="">Selecione</option>
+      ${['Solteiro(a)','Casado(a)','Divorciado(a)','Viúvo(a)','União estável','Separado(a)']
+        .map(v => `<option value="${v}" ${d.maritalStatus === v ? 'selected' : ''}>${v}</option>`).join('')}
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="label">Nome da mãe</label>
+    <input class="input" data-bind="motherName" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Nome do pai (quando necessário)</label>
+    <input class="input" data-bind="fatherName" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Naturalidade</label>
+    <input class="input" data-bind="naturality" placeholder="Cidade e estado de nascimento" autocomplete="off">
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">País de nascimento</label>
+    <select class="input" data-bind="birthCountry">${countrySelectOptions(d.birthCountry || d.nationality)}</select>
+  </div>`;
+}
+
+/* ---------- ETAPA 4 — Endereço ---------- */
+function stepEndereco(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 4</span>
+    <h2>Onde você mora atualmente?</h2>
+    <p class="sub">O endereço é adaptado ao país selecionado.</p>
+  </div>
+
+  <div class="field">
+    <label class="label">País</label>
+    <select class="input" data-bind="addr.country">${countrySelectOptions(d.addr.country || d.residence)}</select>
+  </div>
+
+  <div class="field">
+    <label class="label">CEP ou código postal</label>
+    <input class="input" data-bind="addr.zip" inputmode="numeric" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Estado ou província</label>
+    <input class="input" data-bind="addr.state" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Cidade</label>
+    <input class="input" data-bind="addr.city" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Bairro ou distrito</label>
+    <input class="input" data-bind="addr.district" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label class="label">Rua ou avenida</label>
+    <input class="input" data-bind="addr.street" autocomplete="off">
+  </div>
+
+  <div class="row field">
+    <div>
+      <label class="label">Número</label>
+      <input class="input" data-bind="addr.number" autocomplete="off">
+    </div>
+    <div>
+      <label class="label">Complemento</label>
+      <input class="input" data-bind="addr.complement" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">Tipo de residência</label>
+    ${optGroup('addr.type', [
+      'Casa própria','Casa alugada','Apartamento próprio','Apartamento alugado',
+      'Mora com familiares','Outra situação'
+    ], d.addr.type)}
+  </div>`;
+}
+
+/* ---------- ETAPA 5 — Contato ---------- */
+function stepContato(){
+  const d = state.data;
+  if (!d.phone.dial) d.phone.dial = countryDial(d.residence || d.nationality);
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 5</span>
+    <h2>Qual é o seu telefone?</h2>
+    <p class="sub">Os dois contatos precisam ser verificados por código.</p>
+  </div>
+
+  <div class="row field">
+    <div style="flex:0 0 92px">
+      <label class="label">Código</label>
+      <input class="input" data-bind="phone.dial" inputmode="numeric" autocomplete="off">
+    </div>
+    <div style="flex:0 0 78px">
+      <label class="label">DDD</label>
+      <input class="input" data-bind="phone.ddd" inputmode="numeric" maxlength="3" autocomplete="off">
+    </div>
+    <div>
+      <label class="label">Celular</label>
+      <input class="input" data-bind="phone.number" inputmode="numeric" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="field">
+    <button type="button" class="btn btn-ghost" id="btnSendPhone">ENVIAR CÓDIGO POR SMS</button>
+    ${d.phone.sentCode ? `<div class="hint">Ambiente de teste — código simulado: <strong>${d.phone.sentCode}</strong></div>` : ''}
+    ${d.phone.sentCode ? `
+      <div style="margin-top:10px">
+        <label class="label">Código recebido</label>
+        <input class="input" data-bind="phone.code" inputmode="numeric" maxlength="6" placeholder="000000">
+        <button type="button" class="btn btn-ghost" id="btnConfirmPhone" style="margin-top:10px">CONFIRMAR TELEFONE</button>
+      </div>` : ''}
+    ${d.phone.verified ? `<div class="hint" style="color:#5EEAD4">Telefone verificado.</div>` : ''}
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">Qual é o seu endereço de e-mail?</label>
+    <input class="input" data-bind="email.value" type="email" placeholder="nome@dominio.com" autocomplete="off">
+    <button type="button" class="btn btn-ghost" id="btnSendEmail" style="margin-top:10px">ENVIAR CÓDIGO POR E-MAIL</button>
+    ${d.email.sentCode ? `<div class="hint">Ambiente de teste — código simulado: <strong>${d.email.sentCode}</strong></div>` : ''}
+    ${d.email.sentCode ? `
+      <div style="margin-top:10px">
+        <label class="label">Código recebido</label>
+        <input class="input" data-bind="email.code" inputmode="numeric" maxlength="6" placeholder="000000">
+        <button type="button" class="btn btn-ghost" id="btnConfirmEmail" style="margin-top:10px">CONFIRMAR E-MAIL</button>
+      </div>` : ''}
+    ${d.email.verified ? `<div class="hint" style="color:#5EEAD4">E-mail verificado.</div>` : ''}
+  </div>`;
+}
+
+/* ---------- ETAPA 6 — Profissão ---------- */
+function stepProfissao(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 6</span>
+    <h2>Qual é a sua profissão atualmente?</h2>
+    <p class="sub">Pesquise no catálogo com mais de 200 profissões.</p>
+  </div>
+
+  <div class="field">
+    <input class="input" id="profSearch" placeholder="Pesquisar profissão" autocomplete="off">
+    <div class="list" id="profList"></div>
+    <div class="selection" id="profSel">
+      ${d.profession ? `<span class="chip">${esc(d.profession)}<button type="button" id="clearProf">remover</button></span>` : ''}
+      ${d.professionOther ? `<span class="chip">${esc(d.professionOther)}<button type="button" id="clearProfOther">remover</button></span>` : ''}
+    </div>
+    <button type="button" class="btn btn-ghost" id="btnOtherProf" style="margin-top:12px">MINHA PROFISSÃO NÃO ESTÁ NA LISTA</button>
+    <div id="otherProfBox" hidden style="margin-top:12px">
+      <label class="label">Informe sua profissão</label>
+      <input class="input" data-bind="professionOther" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">Qual é sua situação profissional?</label>
+    ${optGroup('situation', [
+      'Trabalho com carteira assinada','Sou autônomo','Sou empresário','Sou servidor público',
+      'Trabalho informalmente','Sou estudante','Estou desempregado','Sou aposentado','Outra situação'
+    ], d.situation, 'col')}
+  </div>`;
+}
+
+/* ---------- ETAPA 7 — Renda ---------- */
+function stepRenda(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 7</span>
+    <h2>Quanto você recebe mensalmente?</h2>
+    <p class="sub">Selecione a faixa aproximada. Não é necessário informar valor exato.</p>
+  </div>
+  <div class="field" style="margin-bottom:0">
+    ${optGroup('income', [
+      'Sem renda','Até R$ 1.000','R$ 1.000 a R$ 2.000','R$ 2.000 a R$ 3.000',
+      'R$ 3.000 a R$ 5.000','R$ 5.000 a R$ 10.000','R$ 10.000 a R$ 20.000',
+      'R$ 20.000 a R$ 50.000','Acima de R$ 50.000'
+    ], d.income, 'col')}
+  </div>`;
+}
+
+/* ---------- ETAPA 8 — Renda extra ---------- */
+function stepRendaExtra(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 8</span>
+    <h2>Você possui alguma outra fonte de renda?</h2>
+  </div>
+
+  <div class="field">
+    ${optGroup('extraIncome', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.extraIncome)}
+  </div>
+
+  <div id="extraBox">
+    <div class="field">
+      <label class="label">De onde vem sua renda extra?</label>
+      ${multiGroup('extraSources', [
+        'Vendas pela internet','Comércio','Marketing digital','Redes sociais',
+        'Prestação de serviços','Aluguel de imóveis','Investimentos','Trabalho freelancer',
+        'Comissões','Aplicativos de transporte','Entregas','Atividades autônomas','Outros'
+      ], d.extraSources)}
+    </div>
+
+    <div class="field" style="margin-bottom:0">
+      <label class="label">Valor aproximado da renda extra mensal</label>
+      ${optGroup('extraValue', [
+        'Até R$ 500','R$ 500 a R$ 1.000','R$ 1.000 a R$ 2.000',
+        'R$ 2.000 a R$ 5.000','R$ 5.000 a R$ 10.000','Acima de R$ 10.000'
+      ], d.extraValue, 'col')}
+    </div>
+  </div>`;
+}
+
+/* ---------- ETAPA 9 — Patrimônio ---------- */
+function stepPatrimonio(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 9</span>
+    <h2>Você possui patrimônio?</h2>
+    <p class="sub">Os dados são tratados com confidencialidade e utilizados para finalidades regulatórias e de avaliação de perfil.</p>
+  </div>
+
+  <div class="field">
+    ${optGroup('patrimony', [
+      {v:'sim',l:'Sim'},{v:'nao',l:'Não'},{v:'posterior',l:'Prefiro informar posteriormente'}
+    ], d.patrimony)}
+  </div>
+
+  <div id="patrimonyBox">
+    <div class="field" style="margin-bottom:0">
+      <label class="label">Faixa aproximada</label>
+      ${optGroup('patrimonyRange', [
+        'Até R$ 10 mil','R$ 10 mil a R$ 50 mil','R$ 50 mil a R$ 100 mil',
+        'R$ 100 mil a R$ 500 mil','R$ 500 mil a R$ 1 milhão','Acima de R$ 1 milhão'
+      ], d.patrimonyRange, 'col')}
+    </div>
+  </div>`;
+}
+
+/* ---------- ETAPA 10 — Verificação de identidade ---------- */
+function stepIdentidade(){
+  const d = state.data;
+  const items = [
+    { key: 'front', title: 'Frente do documento', sub: 'Fotografe a frente do documento escolhido' },
+    { key: 'back',  title: 'Verso do documento', sub: 'Quando aplicável ao documento' },
+    { key: 'face',  title: 'Reconhecimento facial', sub: 'Comparação da fotografia com o documento' },
+    { key: 'live',  title: 'Prova de vida', sub: 'Confirmação de que você está presente' }
+  ];
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 10</span>
+    <h2>Precisamos confirmar sua identidade</h2>
+    <p class="sub">As capturas abaixo são simuladas neste ambiente de demonstração.</p>
+  </div>
+
+  ${items.map(it => `
+    <div class="capture-row">
+      <div>
+        <div class="ct">${it.title}</div>
+        <div class="cs">${it.sub}</div>
+      </div>
+      <button type="button" class="capture-btn ${d.idv[it.key] ? 'done' : ''}" data-capture="${it.key}">
+        ${d.idv[it.key] ? 'REGISTRADA' : 'CAPTURAR'}
+      </button>
+    </div>
+  `).join('')}
+
+  <div class="hint">A verificação de autenticidade, a comparação biométrica e a prova de vida
+  são executadas por fornecedor especializado em ambiente de produção.</div>`;
+}
+
+/* ---------- ETAPA 11 — Segurança ---------- */
+function stepSeguranca(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 11</span>
+    <h2>Informações adicionais de segurança</h2>
+    <p class="sub">Perguntas obrigatórias conforme o perfil de risco e as obrigações legais.</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Você é uma pessoa exposta politicamente (PEP)?</label>
+    ${optGroup('pep', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.pep)}
+  </div>
+
+  <div class="field">
+    <label class="label">Possui relação próxima ou familiar com uma pessoa exposta politicamente?</label>
+    ${optGroup('pepRelated', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.pepRelated)}
+  </div>
+
+  <div class="field">
+    <label class="label">Qual é a finalidade principal da conta?</label>
+    ${multiGroup('purpose', [
+      'Receber salário','Fazer pagamentos','Guardar dinheiro','Receber transferências',
+      'Utilizar Pix','Receber pagamentos de clientes','Outras finalidades'
+    ], d.purpose)}
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="label">Qual movimentação mensal aproximada espera realizar?</label>
+    ${optGroup('movement', [
+      'Até R$ 1.000','R$ 1.000 a R$ 5.000','R$ 5.000 a R$ 10.000',
+      'R$ 10.000 a R$ 50.000','Acima de R$ 50.000'
+    ], d.movement, 'col')}
+  </div>`;
+}
+
+/* ---------- ETAPA 12 — Senha ---------- */
+function stepSenha(){
+  const d = state.data;
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 12</span>
+    <h2>Crie sua senha de acesso</h2>
+    <p class="sub">A senha protege o acesso ao aplicativo.</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Senha</label>
+    <input class="input" type="password" id="pwd" data-bind="password" autocomplete="new-password">
+    <div class="strength" id="strength"><span></span><span></span><span></span><span></span></div>
+    <div class="reqs" id="reqs">
+      <div data-req="len">Mínimo de 8 caracteres</div>
+      <div data-req="upper">Uma letra maiúscula</div>
+      <div data-req="lower">Uma letra minúscula</div>
+      <div data-req="digit">Um número</div>
+      <div data-req="special">Um caractere especial</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Confirmação da senha</label>
+    <input class="input" type="password" id="pwd2" data-bind="passwordConfirm" autocomplete="new-password">
+  </div>
+
+  <div class="field" style="margin-bottom:0">
+    <label class="contract-check" style="border:1px solid var(--line);border-radius:12px">
+      <input type="checkbox" id="showPwd">
+      <span>Visualizar senha</span>
+    </label>
+    <div class="hint">A recuperação de acesso é feita por procedimento seguro com validação de identidade.
+    O sistema bloqueia temporariamente após tentativas excessivas.</div>
+  </div>`;
+}
+
+/* ---------- ETAPA 13 — Revisão ---------- */
+function reviewSection(title, target, rows){
+  return `
+  <div class="review-block">
+    <div class="review-head">
+      <span>${title}</span>
+      <button type="button" class="link" data-goto="${target}">EDITAR</button>
+    </div>
+    ${rows.map(r => `<div class="review-row"><span class="rk">${r[0]}</span><span class="rv">${esc(r[1] || '—')}</span></div>`).join('')}
+  </div>`;
+}
+
+function stepRevisao(){
+  const d = state.data;
+  const otherNats = (d.otherNationalities || []).map(countryName).join(', ');
+  const cpfMasked = d.cpf ? d.cpf.replace(/\d(?=\d{2})/g, '•') : '';
+
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 13</span>
+    <h2>Revisão dos dados</h2>
+    <p class="sub">Confira as informações antes de enviar a solicitação.</p>
+  </div>
+
+  ${reviewSection('Nacionalidade', 1, [
+    ['Nacionalidade', countryName(d.nationality)],
+    ['Outra nacionalidade', otherNats],
+    ['Residência', countryName(d.residence)]
+  ])}
+
+  ${reviewSection('Documentação', 2, [
+    ['Documento', d.docType],
+    ['Número', d.docNumber],
+    ['CPF', cpfMasked],
+    ['Nome no documento', d.docName],
+    ['Órgão emissor', d.docIssuer],
+    ['País emissor', d.docCountry ? countryName(d.docCountry) : '']
+  ])}
+
+  ${reviewSection('Dados pessoais', 3, [
+    ['Nome completo', d.fullName],
+    ['Nome social', d.socialName],
+    ['Nascimento', d.birthDate],
+    ['Sexo', d.sex],
+    ['Estado civil', d.maritalStatus],
+    ['Nome da mãe', d.motherName],
+    ['Nome do pai', d.fatherName],
+    ['Naturalidade', d.naturality],
+    ['País de nascimento', d.birthCountry ? countryName(d.birthCountry) : '']
+  ])}
+
+  ${reviewSection('Endereço', 4, [
+    ['País', d.addr.country ? countryName(d.addr.country) : ''],
+    ['CEP / código postal', d.addr.zip],
+    ['Estado / província', d.addr.state],
+    ['Cidade', d.addr.city],
+    ['Bairro / distrito', d.addr.district],
+    ['Logradouro', [d.addr.street, d.addr.number, d.addr.complement].filter(Boolean).join(', ')],
+    ['Tipo de residência', d.addr.type]
+  ])}
+
+  ${reviewSection('Contatos', 5, [
+    ['Telefone', [d.phone.dial ? '+' + d.phone.dial : '', d.phone.ddd, d.phone.number].filter(Boolean).join(' ')],
+    ['Telefone verificado', d.phone.verified ? 'Sim' : 'Não'],
+    ['E-mail', d.email.value],
+    ['E-mail verificado', d.email.verified ? 'Sim' : 'Não']
+  ])}
+
+  ${reviewSection('Profissão', 6, [
+    ['Profissão', d.profession || d.professionOther],
+    ['Situação profissional', d.situation]
+  ])}
+
+  ${reviewSection('Renda', 7, [
+    ['Renda mensal', d.income]
+  ])}
+
+  ${reviewSection('Renda extra', 8, [
+    ['Possui renda extra', d.extraIncome === 'sim' ? 'Sim' : (d.extraIncome === 'nao' ? 'Não' : '')],
+    ['Fontes', (d.extraSources || []).join(', ')],
+    ['Valor aproximado', d.extraValue]
+  ])}
+
+  ${reviewSection('Informações adicionais', 11, [
+    ['PEP', d.pep === 'sim' ? 'Sim' : (d.pep === 'nao' ? 'Não' : '')],
+    ['Relação com PEP', d.pepRelated === 'sim' ? 'Sim' : (d.pepRelated === 'nao' ? 'Não' : '')],
+    ['Finalidade', (d.purpose || []).join(', ')],
+    ['Movimentação esperada', d.movement]
+  ])}`;
+}
+
+/* ---------- ETAPA 14 — Contratos e envio ---------- */
+function stepContratos(){
+  const d = state.data;
+  const blocks = [
+    { key: 'account', title: 'Contrato de abertura de conta',
+      text: 'Este contrato estabelece as condições de abertura e manutenção da conta digital, os direitos e as obrigações do titular e da instituição, as hipóteses de bloqueio e encerramento, além dos canais de atendimento disponíveis. A contratação é realizada de forma eletrônica, com registro de aceite e trilha de auditoria.' },
+    { key: 'terms', title: 'Termos e condições de uso',
+      text: 'Os termos descrevem as regras de utilização do aplicativo, as responsabilidades do usuário quanto à guarda de senhas e dispositivos, os limites operacionais e as condições de suspensão do acesso por motivo de segurança.' },
+    { key: 'privacy', title: 'Política de privacidade',
+      text: 'Os dados pessoais são tratados para fins de identificação, qualificação, prevenção a fraudes, cumprimento de obrigações regulatórias e prestação dos serviços contratados. O titular pode exercer os direitos previstos na legislação aplicável pelos canais oficiais de atendimento.' },
+    { key: 'fees', title: 'Informações sobre tarifas',
+      text: 'A instituição informa previamente os serviços sujeitos a cobrança, os valores praticados e os canais para consulta da tabela vigente. Serviços essenciais permanecem disponíveis conforme a regulamentação aplicável.' }
+  ];
+
+  return `
+  <div class="step-head">
+    <span class="eyebrow">Etapa 14</span>
+    <h2>Contratos e envio</h2>
+    <p class="sub">Leia os documentos e confirme os consentimentos necessários.</p>
+  </div>
+
+  ${blocks.map(b => `
+    <div class="contract">
+      <div class="contract-head">${b.title}</div>
+      <div class="contract-body">
+        <p>${b.text}</p>
+        <p>Documento de demonstração. O texto completo deve ser disponibilizado para leitura antes do aceite.</p>
+      </div>
+      <label class="contract-check">
+        <input type="checkbox" data-bind="contracts.${b.key}">
+        <span>Li e concordo com o documento acima.</span>
+      </label>
+    </div>
+  `).join('')}
+
+  <div class="hint">Ao enviar, a solicitação entra na fila de análise. A aprovação não é automática.</div>`;
+}
+
+/* =========================================================
+   PAINEL DE STATUS (ETAPA 16)
+   ========================================================= */
+const STATUS_STEPS = [
+  'Solicitação recebida',
+  'Verificando documentos',
+  'Verificando identidade',
+  'Análise cadastral'
+];
+
+function statusHTML(){
+  const protocol = state.data.protocol || '—';
+  return `
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">A</span>
+        <span class="brand-name">AURORA</span>
+      </div>
+    </header>
+
+    <section class="card step">
+      <span class="eyebrow">Solicitação</span>
+      <h2>Recebemos sua solicitação</h2>
+      <p class="sub">Protocolo ${esc(protocol)}</p>
+
+      <div class="timeline" id="timeline">
+        ${STATUS_STEPS.map(s => `<div class="tl-item">${s}</div>`).join('')}
+      </div>
+
+      <p class="hint" id="statusNote" hidden>
+        A solicitação permanece em análise pelo time responsável. O status exibido é simulado
+        neste ambiente. Em produção, o status viria do sistema real de análise cadastral.
+      </p>
+
+      <div style="margin-top:24px">
+        <button class="btn btn-ghost" id="btnCancel">CANCELAR SOLICITAÇÃO</button>
+        <button class="btn btn-primary" id="btnHome">VOLTAR AO INÍCIO</button>
+      </div>
+    </section>
+
+    <p class="foot">Ambiente de demonstração. Nenhum dado é enviado a instituições financeiras.</p>
+  </div>`;
+}
+
+function bindStatus(){
+  const items = $$('#timeline .tl-item');
+  let i = 0;
+  const run = () => {
+    if (i >= items.length){
+      const note = document.getElementById('statusNote');
+      if (note) note.hidden = false;
+      return;
     }
+    items[i].classList.add('current');
+    setTimeout(() => {
+      items[i].classList.remove('current');
+      items[i].classList.add('done');
+      i++;
+      run();
+    }, 1100);
+  };
+  setTimeout(run, 400);
 
-    function showButton(text) {
-        chatInputGroup.style.display = 'none';
-        mainActionBtn.style.display = 'block';
-        mainActionBtn.innerText = text;
+  const home = document.getElementById('btnHome');
+  if (home) home.onclick = () => {
+    state.step = 0;
+    save();
+    render(true);
+  };
+
+  const cancel = document.getElementById('btnCancel');
+  if (cancel) cancel.onclick = () => {
+    if (confirm('Deseja cancelar a solicitação e apagar os dados preenchidos?')){
+      resetAll();
     }
+  };
+}
 
-    function hideControls() {
-        chatInputGroup.style.display = 'none';
-        mainActionBtn.style.display = 'none';
+/* =========================================================
+   BINDINGS
+   ========================================================= */
+
+function bindCommon(){
+  // campos com data-bind
+  $$('[data-bind]').forEach(inp => {
+    const p = inp.dataset.bind;
+    const v = getPath(state.data, p);
+    if (inp.type === 'checkbox'){
+      inp.checked = !!v;
+    } else if (v !== undefined && v !== null && document.activeElement !== inp){
+      inp.value = v;
     }
-
-    // --- LÓGICA DE INPUT ---
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') submitInput();
-    });
-    document.getElementById('send-btn').onclick = submitInput;
-
-    function submitInput() {
-        if (isTyping) return; // O "LOCK" que você mencionou. Não deixa enviar se o bot estiver digitando
-        const val = chatInput.value.trim();
-        if (!val) return;
-
-        addMessage(val, 'user', true);
-        chatInput.value = '';
-        hideControls();
-        processStep(val);
-    }
-
-    // --- FLUXO DO BANCO (STATE MACHINE) ---
-    async function startFlow() {
-        currentStep = 1;
-        await addMessage("Olá! 😊");
-        await addMessage("Que bom ver você aqui!");
-        await addMessage("A abertura da sua conta é rápida, segura e leva poucos minutos.");
-        await addMessage("Primeiro, qual tipo de conta você quer abrir?");
-        
-        showButton("Selecionar");
-        mainActionBtn.onclick = () => document.getElementById('modal-pf-pj').classList.add('active');
-    }
-
-    // Modal PF/PJ
-    function selectAccountType(type, el) {
-        tempData.accountType = type;
-        document.querySelectorAll('.radio-item').forEach(item => item.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('confirm-pf-pj').disabled = false;
-    }
-
-    async function confirmAccountType() {
-        document.getElementById('modal-pf-pj').classList.remove('active');
-        await addMessage(tempData.accountType === 'PF' ? 'Abrir uma conta pessoal (PF)' : 'Abrir uma conta empresarial (PJ)', 'user');
-        
-        await addMessage("As contas do NeoBank são para clientes acima de 18 anos e ficam vinculadas ao CPF.");
-        await addMessage("Por isso, digite o número do seu CPF.");
-        
-        showInput("Digite seu CPF...", "tel");
-        currentStep = 2;
-    }
-
-    // Processamento de cada etapa
-    async function processStep(value) {
-        switch (currentStep) {
-            case 2: // CPF
-                tempData.cpf = value;
-                await addMessage("Como podemos chamar você?");
-                await addMessage("Pode ser seu primeiro nome ou apelido.");
-                showInput("Digite seu nome...");
-                currentStep = 3;
-                break;
-
-            case 3: // Nome
-                tempData.name = value;
-                await addMessage("Para continuar, você precisa aceitar os Termos de Uso e Política de Privacidade.");
-                showButton("Li e estou de acordo");
-                mainActionBtn.onclick = acceptTerms;
-                currentStep = 4;
-                break;
-
-            case 4: // Pós-Termos
-                await addMessage("Legal! Agora crie uma senha de 6 números.");
-                setTimeout(() => openModal('modal-password'), 1500);
-                currentStep = 5;
-                break;
-
-            case 5: // Pós-Senha
-                await addMessage("Qual seu e-mail pessoal?");
-                showInput("exemplo@email.com", "email");
-                currentStep = 6;
-                break;
-
-            case 6: // Email
-                tempData.email = value;
-                await addMessage("E qual é o número do seu celular?");
-                showInput("(DD) 99999-9999", "tel");
-                currentStep = 7;
-                break;
-
-            case 7: // Celular
-                tempData.phone = value;
-                await addMessage("Vamos continuar com o cadastro do seu endereço residencial.");
-                setTimeout(() => openModal('modal-address'), 1500);
-                currentStep = 8;
-                break;
-
-            case 8: // Pós-Endereço
-                await addMessage("Quanto você recebe por mês?");
-                await addMessage("Digite apenas a sua renda mensal, sem considerar o valor de outras pessoas da sua família.");
-                showInput("R$ 0,00", "tel");
-                currentStep = 9;
-                break;
-
-            case 9: // Renda
-                tempData.income = value;
-                await addMessage("Para continuar, envie uma selfie para confirmar quem é você.");
-                await addMessage("O acesso à câmera é necessário para seguir com essa etapa.");
-                setTimeout(() => openModal('modal-camera'), 2000);
-                currentStep = 10;
-                break;
-
-            case 10: // Pós-Selfie
-                await addMessage("Você tem um convite ou código de indicação para abertura de conta?");
-                showInput("Digite o código ou 'Não'");
-                currentStep = 11;
-                break;
-
-            case 11: // Finalização
-                await addMessage("Para terminar, você precisa aceitar os termos de abertura de conta.");
-                showButton("Enviar meus dados");
-                mainActionBtn.onclick = finishFlow;
-                currentStep = 12;
-                break;
-        }
-    }
-
-    // --- TELAS E MODAIS ---
-
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
-        if(id === 'modal-password') {
-            const hiddenInput = document.getElementById('hidden-password-input');
-            hiddenInput.focus();
-            hiddenInput.oninput = (e) => {
-                const dots = document.querySelectorAll('.dot');
-                const val = e.target.value;
-                dots.forEach((dot, index) => {
-                    if(index < val.length) dot.classList.add('filled');
-                    else dot.classList.remove('filled');
-                });
-                if(val.length === 6) {
-                    setTimeout(() => {
-                        closeModal('modal-password');
-                        addMessage("🔒 ••••••", "user");
-                        processStep("senha_criada");
-                    }, 300);
-                }
-            };
-        }
-    }
-
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
-    }
-
-    // Endereço
-    function confirmAddress() {
-        const num = document.getElementById('address-number').value;
-        if(!num) {
-            document.getElementById('address-number').style.borderBottom = '1px solid var(--danger)';
-            document.getElementById('address-error').style.display = 'flex';
-            return;
-        }
-        document.getElementById('address-error').style.display = 'none';
-        document.getElementById('address-number').style.borderBottom = '1px solid #333';
-        closeModal('modal-address');
-        addMessage(`Rua Antonio da Costa Cordeiro, ${num}`, "user");
-        processStep("endereco_ok");
-    }
-
-    // Câmera
-    function startFaceScan() {
-        const btn = document.getElementById('btn-selfie');
-        const scanLine = document.getElementById('scan-line');
-        const text = document.getElementById('camera-text');
-        
-        btn.innerText = "Analisando...";
-        btn.style.opacity = "0.5";
-        scanLine.style.display = 'block';
-        text.innerText = "Mantenha o rosto no quadro";
-        
-        // Animação fake da linha de scan
-        let pos = 0;
-        let anim = setInterval(() => {
-            pos += 5;
-            scanLine.style.top = pos + 'px';
-            if(pos > 260) pos = 0;
-        }, 30);
-
-        setTimeout(() => {
-            clearInterval(anim);
-            scanLine.style.display = 'none';
-            text.innerText = "Rosto verificado com sucesso";
-            btn.innerText = "Concluir";
-            btn.style.opacity = "1";
-            btn.onclick = () => {
-                closeModal('modal-camera');
-                addMessage("Selfie enviada", "user");
-                processStep("selfie_ok");
-            };
-        }, 3000);
-    }
-
-    // Finalização
-    async function finishFlow() {
-        hideControls();
-        const userProgress = document.createElement('div');
-        userProgress.className = 'message user-message';
-        userProgress.innerHTML = `Enviando meus dados...<div class="loading-bar-container" style="display:block;"><div class="loading-bar" id="final-bar"></div></div>`;
-        chatContainer.appendChild(userProgress);
-        scrollToBottom();
-
-        setTimeout(() => document.getElementById('final-bar').style.width = '100%', 500);
-
-        setTimeout(async () => {
-            await addMessage("Pronto!");
-            await addMessage("Vamos analisar essas informações e te responderemos em breve por e-mail e push no seu celular.");
-            await addMessage("Obrigado por escolher o NeoBank. 💚");
-            showButton("Mostrar próximos passos");
-        }, 2500);
-    }
-
-    // Função genérica para avançar nos termos
-    function acceptTerms() {
-        addMessage("Li e estou de acordo", "user");
-        hideControls();
-        processStep("termos_ok");
-    }
-
-    // Inicialização
-    window.onload = () => {
-        startFlow();
+    const handler = () => {
+      const value = inp.type === 'checkbox' ? inp.checked : inp.value;
+      setPath(state.data, p, value);
+      save();
+      if (typeof syncAll === 'function') syncAll();
     };
+    inp.addEventListener('input', handler);
+    inp.addEventListener('change', handler);
+  });
 
+  bindOptions();
+
+  // navegação
+  const back = document.getElementById('btnBack');
+  if (back) back.onclick = () => {
+    if (state.step <= 1) { state.step = 0; save(); render(true); return; }
+    go(state.step - 1);
+  };
+
+  const next = document.getElementById('btnNext');
+  if (next) next.onclick = () => {
+    const res = validateStep(state.step);
+    if (!res.ok){ toast(res.msg); return; }
+    if (state.step === 14){ submitRequest(); return; }
+    go(state.step + 1);
+  };
+
+  const exit = document.getElementById('btnExit');
+  if (exit) exit.onclick = () => {
+    state.step = 0;
+    save();
+    render(true);
+  };
+
+  // botões de edição na revisão
+  $$('[data-goto]').forEach(btn => {
+    btn.onclick = () => go(parseInt(btn.dataset.goto, 10));
+  });
+}
+
+function bindOptions(){
+  $$('.options[data-group]').forEach(box => {
+    const g = box.dataset.group;
+    const refresh = () => {
+      const cur = String(getPath(state.data, g));
+      $$('.opt', box).forEach(b => b.classList.toggle('selected', cur === b.dataset.value));
+    };
+    refresh();
+    $$('.opt', box).forEach(btn => {
+      btn.onclick = () => {
+        setPath(state.data, g, btn.dataset.value);
+        save();
+        refresh();
+        syncAll();
+      };
+    });
+  });
+
+  $$('.options[data-multi]').forEach(box => {
+    const g = box.dataset.multi;
+    const refresh = () => {
+      const cur = getPath(state.data, g) || [];
+      $$('.opt', box).forEach(b => b.classList.toggle('selected', cur.includes(b.dataset.value)));
+    };
+    refresh();
+    $$('.opt', box).forEach(btn => {
+      btn.onclick = () => {
+        const cur = (getPath(state.data, g) || []).slice();
+        const i = cur.indexOf(btn.dataset.value);
+        if (i >= 0) cur.splice(i, 1); else cur.push(btn.dataset.value);
+        setPath(state.data, g, cur);
+        save();
+        refresh();
+        syncAll();
+      };
+    });
+  });
+}
+
+/* ---------- bindings específicos por etapa ---------- */
+function bindStep(){
+  const d = state.data;
+
+  switch (state.step){
+
+    /* ETAPA 1 */
+    case 1: {
+      const natSearch = document.getElementById('natSearch');
+      const natList = document.getElementById('natList');
+      const resSearch = document.getElementById('resSearch');
+      const resList = document.getElementById('resList');
+      const otherSearch = document.getElementById('otherSearch');
+      const otherList = document.getElementById('otherList');
+
+      renderCountryList(natList, '', iso => { d.nationality = iso; save(); rerender(); });
+      natSearch.oninput = () => renderCountryList(natList, natSearch.value, iso => { d.nationality = iso; save(); rerender(); });
+
+      renderCountryList(resList, '', iso => { d.residence = iso; save(); rerender(); });
+      resSearch.oninput = () => renderCountryList(resList, resSearch.value, iso => { d.residence = iso; save(); rerender(); });
+
+      renderCountryList(otherList, '', iso => {
+        if (iso === d.nationality) { toast('A nacionalidade principal já foi informada.'); return; }
+        if (!d.otherNationalities.includes(iso)) d.otherNationalities.push(iso);
+        save(); rerender();
+      });
+      otherSearch.oninput = () => renderCountryList(otherList, otherSearch.value, iso => {
+        if (iso === d.nationality) { toast('A nacionalidade principal já foi informada.'); return; }
+        if (!d.otherNationalities.includes(iso)) d.otherNationalities.push(iso);
+        save(); rerender();
+      });
+
+      $$('[data-remove]').forEach(btn => {
+        btn.onclick = () => {
+          d.otherNationalities = d.otherNationalities.filter(x => x !== btn.dataset.remove);
+          save(); rerender();
+        };
+      });
+
+      syncAll = () => {
+        const box = document.getElementById('otherBox');
+        if (box) box.hidden = d.otherNationality !== 'sim';
+      };
+      break;
+    }
+
+    /* ETAPA 2 */
+    case 2: {
+      syncAll = () => {
+        const box = document.getElementById('cpfBox');
+        if (!box) return;
+        const br = d.nationality === 'BR' || d.residence === 'BR';
+        box.hidden = !(br && d.docType !== 'CPF');
+      };
+      break;
+    }
+
+    /* ETAPA 3 */
+    case 3: {
+      const birth = document.getElementById('birthDate');
+      syncAll = () => {
+        const warn = document.getElementById('minorWarn');
+        if (!warn) return;
+        const a = calcAge(d.birthDate);
+        warn.hidden = !(a >= 0 && a < 18);
+      };
+      if (birth) birth.addEventListener('change', syncAll);
+      break;
+    }
+
+    /* ETAPA 5 */
+    case 5: {
+      const sendPhone = document.getElementById('btnSendPhone');
+      if (sendPhone) sendPhone.onclick = () => {
+        if (!d.phone.ddd || !d.phone.number){ toast('Informe DDD e número do celular.'); return; }
+        d.phone.sentCode = String(Math.floor(100000 + Math.random() * 900000));
+        d.phone.verified = false;
+        save();
+        toast('Código simulado enviado por SMS: ' + d.phone.sentCode);
+        rerender();
+      };
+
+      const confirmPhone = document.getElementById('btnConfirmPhone');
+      if (confirmPhone) confirmPhone.onclick = () => {
+        if (d.phone.code === d.phone.sentCode && d.phone.sentCode){
+          d.phone.verified = true;
+          save();
+          toast('Telefone verificado.');
+        } else {
+          toast('Código incorreto.');
+        }
+        rerender();
+      };
+
+      const sendEmail = document.getElementById('btnSendEmail');
+      if (sendEmail) sendEmail.onclick = () => {
+        if (!validEmail(d.email.value)){ toast('Informe um e-mail válido.'); return; }
+        d.email.sentCode = String(Math.floor(100000 + Math.random() * 900000));
+        d.email.verified = false;
+        save();
+        toast('Código simulado enviado por e-mail: ' + d.email.sentCode);
+        rerender();
+      };
+
+      const confirmEmail = document.getElementById('btnConfirmEmail');
+      if (confirmEmail) confirmEmail.onclick = () => {
+        if (d.email.code === d.email.sentCode && d.email.sentCode){
+          d.email.verified = true;
+          save();
+          toast('E-mail verificado.');
+        } else {
+          toast('Código incorreto.');
+        }
+        rerender();
+      };
+
+      syncAll = () => {};
+      break;
+    }
+
+    /* ETAPA 6 */
+    case 6: {
+      const search = document.getElementById('profSearch');
+      const list = document.getElementById('profList');
+      const otherBox = document.getElementById('otherProfBox');
+      if (otherBox) otherBox.hidden = !d.professionOther;
+
+      const renderList = (q) => {
+        const query = norm(q);
+        const items = PROFESSIONS.filter(p => !query || norm(p).includes(query)).slice(0, 200);
+        list.innerHTML = items.length
+          ? items.map(p => `<button type="button" class="list-item" data-prof="${esc(p)}">${esc(p)}</button>`).join('')
+          : '<div class="empty">Nenhuma profissão encontrada. Use a opção abaixo.</div>';
+        $$('[data-prof]', list).forEach(btn => {
+          btn.onclick = () => {
+            d.profession = btn.dataset.prof;
+            d.professionOther = '';
+            save();
+            rerender();
+          };
+        });
+      };
+      renderList('');
+      search.oninput = () => renderList(search.value);
+
+      const otherBtn = document.getElementById('btnOtherProf');
+      if (otherBtn) otherBtn.onclick = () => {
+        const box = document.getElementById('otherProfBox');
+        box.hidden = !box.hidden;
+        if (!box.hidden) setTimeout(() => $('[data-bind="professionOther"]', box).focus(), 60);
+      };
+
+      const clearProf = document.getElementById('clearProf');
+      if (clearProf) clearProf.onclick = () => { d.profession = ''; save(); rerender(); };
+
+      const clearOther = document.getElementById('clearProfOther');
+      if (clearOther) clearOther.onclick = () => { d.professionOther = ''; save(); rerender(); };
+
+      syncAll = () => {};
+      break;
+    }
+
+    /* ETAPA 8 */
+    case 8: {
+      syncAll = () => {
+        const box = document.getElementById('extraBox');
+        if (box) box.hidden = d.extraIncome !== 'sim';
+      };
+      break;
+    }
+
+    /* ETAPA 9 */
+    case 9: {
+      syncAll = () => {
+        const box = document.getElementById('patrimonyBox');
+        if (box) box.hidden = d.patrimony !== 'sim';
+      };
+      break;
+    }
+
+    /* ETAPA 10 */
+    case 10: {
+      $$('[data-capture]').forEach(btn => {
+        btn.onclick = () => {
+          const key = btn.dataset.capture;
+          d.idv[key] = !d.idv[key];
+          save();
+          rerender();
+        };
+      });
+      syncAll = () => {};
+      break;
+    }
+
+    /* ETAPA 12 */
+    case 12: {
+      const pwd = document.getElementById('pwd');
+      const pwd2 = document.getElementById('pwd2');
+      const bar = document.getElementById('strength');
+      const reqs = document.getElementById('reqs');
+      const show = document.getElementById('showPwd');
+
+      const evaluate = () => {
+        const v = pwd.value || '';
+        const checks = {
+          len: v.length >= 8,
+          upper: /[A-Z]/.test(v),
+          lower: /[a-z]/.test(v),
+          digit: /\d/.test(v),
+          special: /[^A-Za-z0-9]/.test(v)
+        };
+        let score = 0;
+        Object.keys(checks).forEach(k => {
+          const el = reqs.querySelector(`[data-req="${k}"]`);
+          if (el) el.classList.toggle('ok', checks[k]);
+          if (checks[k]) score++;
+        });
+        bar.className = 'strength s' + Math.min(score, 4);
+      };
+
+      if (pwd) pwd.addEventListener('input', evaluate);
+      evaluate();
+
+      if (show) show.addEventListener('change', () => {
+        const t = show.checked ? 'text' : 'password';
+        if (pwd) pwd.type = t;
+        if (pwd2) pwd2.type = t;
+      });
+
+      syncAll = () => {};
+      break;
+    }
+  }
+}
+
+/* =========================================================
+   VALIDAÇÃO POR ETAPA
+   ========================================================= */
+function validateStep(step){
+  const d = state.data;
+
+  switch (step){
+    case 1:
+      if (!d.nationality) return { ok: false, msg: 'Selecione sua nacionalidade.' };
+      if (!d.otherNationality) return { ok: false, msg: 'Informe se possui outra nacionalidade.' };
+      if (d.otherNationality === 'sim' && (!d.otherNationalities || d.otherNationalities.length === 0))
+        return { ok: false, msg: 'Adicione ao menos uma outra nacionalidade.' };
+      if (!d.residence) return { ok: false, msg: 'Selecione o país de residência atual.' };
+      return { ok: true };
+
+    case 2:
+      if (!d.docType) return { ok: false, msg: 'Selecione o documento de identificação.' };
+      if (!d.docNumber || d.docNumber.length < 4) return { ok: false, msg: 'Informe o número do documento.' };
+      if (!d.docName || d.docName.trim().length < 5) return { ok: false, msg: 'Informe o nome conforme o documento.' };
+      {
+        const br = d.nationality === 'BR' || d.residence === 'BR';
+        if (br && d.docType !== 'CPF' && !validCPF(d.cpf))
+          return { ok: false, msg: 'Informe um CPF válido.' };
+        if (d.docType === 'CPF' && !validCPF(d.docNumber))
+          return { ok: false, msg: 'Informe um CPF válido.' };
+      }
+      return { ok: true };
+
+    case 3:
+      if (!d.fullName || d.fullName.trim().split(' ').length < 2)
+        return { ok: false, msg: 'Informe o nome completo.' };
+      if (!d.birthDate) return { ok: false, msg: 'Informe a data de nascimento.' };
+      {
+        const a = calcAge(d.birthDate);
+        if (a < 0) return { ok: false, msg: 'Data de nascimento inválida.' };
+        if (a < 18) return { ok: false, msg: 'Cadastro de menor de idade segue fluxo próprio com responsável legal.' };
+        if (a > 120) return { ok: false, msg: 'Data de nascimento inválida.' };
+      }
+      if (!d.sex) return { ok: false, msg: 'Selecione a opção de sexo para fins cadastrais.' };
+      if (!d.maritalStatus) return { ok: false, msg: 'Selecione o estado civil.' };
+      if (!d.motherName || d.motherName.trim().length < 3) return { ok: false, msg: 'Informe o nome da mãe.' };
+      if (!d.birthCountry) return { ok: false, msg: 'Selecione o país de nascimento.' };
+      return { ok: true };
+
+    case 4:
+      if (!d.addr.country) return { ok: false, msg: 'Selecione o país do endereço.' };
+      if (!d.addr.zip) return { ok: false, msg: 'Informe o CEP ou código postal.' };
+      if (!d.addr.state) return { ok: false, msg: 'Informe o estado ou província.' };
+      if (!d.addr.city) return { ok: false, msg: 'Informe a cidade.' };
+      if (!d.addr.district) return { ok: false, msg: 'Informe o bairro ou distrito.' };
+      if (!d.addr.street) return { ok: false, msg: 'Informe a rua ou avenida.' };
+      if (!d.addr.number) return { ok: false, msg: 'Informe o número do endereço.' };
+      if (!d.addr.type) return { ok: false, msg: 'Selecione o tipo de residência.' };
+      return { ok: true };
+
+    case 5:
+      if (!d.phone.dial || !d.phone.ddd || !d.phone.number)
+        return { ok: false, msg: 'Preencha código internacional, DDD e número.' };
+      if (!d.phone.verified) return { ok: false, msg: 'Confirme o código enviado ao telefone.' };
+      if (!validEmail(d.email.value)) return { ok: false, msg: 'Informe um e-mail válido.' };
+      if (!d.email.verified) return { ok: false, msg: 'Confirme o código enviado ao e-mail.' };
+      return { ok: true };
+
+    case 6:
+      if (!d.profession && !(d.professionOther && d.professionOther.trim()))
+        return { ok: false, msg: 'Selecione ou informe sua profissão.' };
+      if (!d.situation) return { ok: false, msg: 'Selecione sua situação profissional.' };
+      return { ok: true };
+
+    case 7:
+      if (!d.income) return { ok: false, msg: 'Selecione a faixa de renda mensal.' };
+      return { ok: true };
+
+    case 8:
+      if (!d.extraIncome) return { ok: false, msg: 'Informe se possui outra fonte de renda.' };
+      if (d.extraIncome === 'sim'){
+        if (!d.extraSources || d.extraSources.length === 0)
+          return { ok: false, msg: 'Selecione ao menos uma fonte de renda extra.' };
+        if (!d.extraValue) return { ok: false, msg: 'Selecione o valor aproximado da renda extra.' };
+      }
+      return { ok: true };
+
+    case 9:
+      if (!d.patrimony) return { ok: false, msg: 'Responda sobre a existência de patrimônio.' };
+      if (d.patrimony === 'sim' && !d.patrimonyRange)
+        return { ok: false, msg: 'Selecione a faixa aproximada do patrimônio.' };
+      return { ok: true };
+
+    case 10:
+      if (!d.idv.front) return { ok: false, msg: 'Registre a frente do documento.' };
+      if (!d.idv.face) return { ok: false, msg: 'Realize o reconhecimento facial.' };
+      if (!d.idv.live) return { ok: false, msg: 'Realize a prova de vida.' };
+      return { ok: true };
+
+    case 11:
+      if (!d.pep) return { ok: false, msg: 'Responda à pergunta sobre PEP.' };
+      if (!d.pepRelated) return { ok: false, msg: 'Responda à pergunta sobre relação com PEP.' };
+      if (!d.purpose || d.purpose.length === 0) return { ok: false, msg: 'Selecione a finalidade principal da conta.' };
+      if (!d.movement) return { ok: false, msg: 'Selecione a movimentação mensal esperada.' };
+      return { ok: true };
+
+    case 12: {
+      const v = d.password || '';
+      if (v.length < 8) return { ok: false, msg: 'A senha precisa ter no mínimo 8 caracteres.' };
+      if (!/[A-Z]/.test(v) || !/[a-z]/.test(v) || !/\d/.test(v) || !/[^A-Za-z0-9]/.test(v))
+        return { ok: false, msg: 'A senha precisa conter maiúscula, minúscula, número e caractere especial.' };
+      if (v !== d.passwordConfirm) return { ok: false, msg: 'A confirmação da senha não confere.' };
+      return { ok: true };
+    }
+
+    case 13:
+      return { ok: true };
+
+    case 14: {
+      const c = d.contracts;
+      if (!c.account || !c.terms || !c.privacy || !c.fees)
+        return { ok: false, msg: 'É necessário aceitar todos os documentos para enviar.' };
+      return { ok: true };
+    }
+
+    default:
+      return { ok: true };
+  }
+}
+
+/* ---------- envio da solicitação ---------- */
+function submitRequest(){
+  const d = state.data;
+  d.protocol = 'AU' + Date.now().toString().slice(-9);
+  save();
+  state.step = 15;
+  save();
+  render(true);
+}
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+load();
+render(true);
 </script>
 </body>
 </html>
