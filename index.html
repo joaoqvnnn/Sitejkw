@@ -2,2453 +2,1037 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Aurora — Abertura de Conta</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Aurora - Abertura de Conta</title>
 <style>
   /* =========================================================
-     DESIGN SYSTEM — BANCO DIGITAL (TEMA CLARO PROFISSIONAL)
+     DESIGN SYSTEM - PADRÃO FINTECH INTERNACIONAL (DARK MODE)
      ========================================================= */
-  :root{
-    --bg: #FFFFFF;
-    --bg-subtle: #F8FAFC;
-    --bg-muted: #F1F5F9;
-    --border: #E2E8F0;
-    --border-strong: #CBD5E1;
-    --border-input: #D6DDE6;
-    --text: #0B1220;
-    --text-secondary: #475569;
-    --text-tertiary: #64748B;
-    --text-muted: #94A3B8;
-    --primary: #0B1220;
-    --primary-hover: #1E293B;
-    --accent: #1D4ED8;
-    --accent-hover: #1E40AF;
-    --accent-soft: #EFF6FF;
-    --accent-border: #BFDBFE;
-    --success: #047857;
-    --success-soft: #ECFDF5;
-    --danger: #B91C1C;
-    --danger-soft: #FEF2F2;
-    --radius-sm: 8px;
-    --radius: 12px;
-    --radius-lg: 16px;
-    --shadow-card: 0 1px 2px rgba(11,18,32,.04), 0 1px 3px rgba(11,18,32,.06);
-    --shadow-elev: 0 4px 12px rgba(11,18,32,.06), 0 2px 4px rgba(11,18,32,.04);
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  :root {
+    --bg: #000000;
+    --bg-input: #1C1C1E;
+    --bg-input-hover: #2C2C2E;
+    --text-main: #FFFFFF;
+    --text-muted: #8E8E93;
+    --primary: #FFFFFF;
+    --primary-text: #000000;
+    --btn-secondary: #2C2C2E;
+    --border-color: #38383A;
+    --radius-pill: 9999px;
+    --radius-lg: 24px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
-  *, *::before, *::after{ box-sizing: border-box; }
-  html, body{ margin: 0; padding: 0; }
-  body{
-    background: var(--bg);
-    color: var(--text);
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--text-main);
     font-family: var(--font);
-    font-size: 15px;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    line-height: 1.4;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* =========================================================
+     ESTRUTURA E LAYOUT
+     ========================================================= */
+  #app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
     position: relative;
   }
-  body::before{
-    content:"";
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(circle at 88% -10%, rgba(29,78,216,.06), transparent 42%),
-      radial-gradient(circle at -5% 105%, rgba(29,78,216,.04), transparent 40%);
-    pointer-events: none;
-    z-index: 0;
+
+  .screen {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 24px 20px;
+    animation: slideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  [hidden]{ display: none !important; }
-  button{ font-family: inherit; }
-
-  /* =========================================================
-     ESTRUTURA
-     ========================================================= */
-  #app{ position: relative; z-index: 1; min-height: 100vh; }
-
-  .appbar{
-    position: sticky; top: 0; z-index: 20;
-    background: rgba(255,255,255,.92);
-    backdrop-filter: saturate(180%) blur(8px);
-    -webkit-backdrop-filter: saturate(180%) blur(8px);
-    border-bottom: 1px solid var(--border);
-  }
-  .appbar-inner{
-    max-width: 480px; margin: 0 auto;
-    padding: 14px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .brand{ display: flex; align-items: center; gap: 10px; }
-  .brand-mark{
-    width: 30px; height: 30px; border-radius: 8px;
-    background: var(--primary); color: #fff;
-    display: grid; place-items: center;
-    font-weight: 800; font-size: 14px; letter-spacing: -.02em;
-  }
-  .brand-name{
-    font-weight: 700; font-size: 13px;
-    letter-spacing: .28em; color: var(--text);
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
-  .shell{
-    max-width: 480px; margin: 0 auto;
-    padding: 22px 20px 48px;
+  .header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    height: 40px;
   }
 
-  /* =========================================================
-     PROGRESSO
-     ========================================================= */
-  .progress{ margin-bottom: 18px; }
-  .progress-head{
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  .progress-label{
-    font-size: 11px; font-weight: 700;
-    letter-spacing: .16em; text-transform: uppercase;
-    color: var(--text-tertiary);
-  }
-  .progress-pct{
-    font-size: 12px; font-weight: 600;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-  }
-  .progress-track{
-    height: 4px; background: var(--bg-muted);
-    border-radius: 99px; overflow: hidden;
-  }
-  .progress-fill{
-    height: 100%; border-radius: 99px;
-    background: var(--accent);
-    transition: width .5s cubic-bezier(.4,0,.2,1);
-  }
-
-  /* =========================================================
-     CARTÃO PRINCIPAL
-     ========================================================= */
-  .card{
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px 24px 24px;
-    box-shadow: var(--shadow-card);
-  }
-  .step{ animation: stepIn .35s cubic-bezier(.22,.8,.3,1); }
-  @keyframes stepIn{
-    from{ opacity: 0; transform: translateY(8px); }
-    to{ opacity: 1; transform: translateY(0); }
-  }
-
-  /* =========================================================
-     TIPOGRAFIA DENTRO DO CARTÃO
-     ========================================================= */
-  .eyebrow{
-    display: inline-block;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: .16em; text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 10px;
-  }
-  h1, h2, h3{ margin: 0; color: var(--text); }
-  h2{
-    font-size: 22px; line-height: 1.3;
-    font-weight: 700; letter-spacing: -.015em;
-  }
-  .sub{
-    margin: 8px 0 0; color: var(--text-tertiary);
-    font-size: 14px; line-height: 1.55;
-  }
-  .step-head{ margin-bottom: 22px; }
-  .label{
-    display: block;
-    font-size: 12px; font-weight: 600;
-    letter-spacing: .02em;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-  }
-  .hint{
-    margin-top: 8px;
-    font-size: 12.5px; color: var(--text-tertiary);
-    line-height: 1.5;
-  }
-  .hint strong{ color: var(--text); }
-  .warn{
-    margin-top: 12px; padding: 12px 14px;
-    background: var(--danger-soft);
-    border: 1px solid #FECACA;
-    border-radius: var(--radius);
-    color: var(--danger);
-    font-size: 13px; line-height: 1.5;
-  }
-  .foot{
-    margin: 24px auto 0; max-width: 480px;
-    text-align: center;
-    font-size: 11.5px; color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  /* =========================================================
-     CAMPOS
-     ========================================================= */
-  .field{ margin-bottom: 20px; }
-  .field:last-child{ margin-bottom: 0; }
-  .row{ display: flex; gap: 10px; }
-  .row > *{ flex: 1; min-width: 0; }
-
-  .input, select.input{
-    width: 100%;
-    padding: 12px 14px;
-    min-height: 46px;
-    background: var(--bg);
-    border: 1px solid var(--border-input);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 15px;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s, background .15s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  .input::placeholder{ color: var(--text-muted); }
-  .input:hover{ border-color: var(--border-strong); }
-  .input:focus{
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(29,78,216,.12);
-  }
-  .input:disabled{ background: var(--bg-subtle); color: var(--text-muted); }
-
-  select.input{
-    background-image:
-      linear-gradient(45deg, transparent 50%, var(--text-tertiary) 50%),
-      linear-gradient(135deg, var(--text-tertiary) 50%, transparent 50%);
-    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
-    padding-right: 36px;
-  }
-
-  /* =========================================================
-     OPÇÕES (BOTÕES DE SELEÇÃO)
-     ========================================================= */
-  .options{ display: flex; flex-wrap: wrap; gap: 8px; }
-  .options.col{ flex-direction: column; }
-  .opt{
-    flex: 1 1 auto;
-    min-width: calc(50% - 4px);
-    padding: 12px 14px;
-    text-align: left;
-    background: var(--bg);
-    border: 1px solid var(--border-input);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    line-height: 1.4;
+  /* Seta de voltar puramente em CSS */
+  .btn-back {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg-input);
+    border: none;
     cursor: pointer;
-    transition: border-color .15s, background .15s, color .15s, box-shadow .15s;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
   }
-  .opt:hover{
-    border-color: var(--border-strong);
-    background: var(--bg-subtle);
+  .btn-back:hover { background: var(--bg-input-hover); }
+  .btn-back::before {
+    content: "";
+    width: 10px; height: 10px;
+    border-top: 2px solid var(--text-main);
+    border-left: 2px solid var(--text-main);
+    transform: rotate(-45deg);
+    margin-left: 4px;
   }
-  .opt.selected{
-    border-color: var(--accent);
-    background: var(--accent-soft);
-    color: var(--accent-hover);
-    font-weight: 600;
-    box-shadow: 0 0 0 3px rgba(29,78,216,.08);
-  }
-  .options.col .opt{ min-width: 100%; }
 
-  /* =========================================================
-     LISTAS
-     ========================================================= */
-  .list{
-    margin-top: 8px;
-    max-height: 200px;
-    overflow-y: auto;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+  .btn-close {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg-input);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
   }
-  .list::-webkit-scrollbar{ width: 6px; }
-  .list::-webkit-scrollbar-thumb{
-    background: var(--border-strong); border-radius: 99px;
+  .btn-close::before, .btn-close::after {
+    content: "";
+    position: absolute;
+    width: 14px; height: 2px;
+    background: var(--text-main);
   }
-  .list-item{
-    display: block; width: 100%; text-align: left;
-    padding: 11px 14px;
-    background: none; border: 0;
-    border-bottom: 1px solid var(--border);
-    color: var(--text); font-family: inherit;
-    font-size: 14px; cursor: pointer;
-    transition: background .12s;
-  }
-  .list-item:last-child{ border-bottom: 0; }
-  .list-item:hover{ background: var(--bg-subtle); }
-  .empty{
-    padding: 16px; text-align: center;
-    font-size: 13px; color: var(--text-tertiary);
+  .btn-close::before { transform: rotate(45deg); }
+  .btn-close::after { transform: rotate(-45deg); }
+
+  .progress-line {
+    position: absolute;
+    top: 0; left: 0; height: 3px;
+    background: var(--text-main);
+    transition: width 0.4s ease;
+    border-radius: 0 4px 4px 0;
   }
 
   /* =========================================================
-     CHIPS
+     TIPOGRAFIA
      ========================================================= */
-  .chips{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .selection{ margin-top: 10px; min-height: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip{
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    font-size: 13px;
-    background: var(--accent-soft);
-    border: 1px solid var(--accent-border);
-    color: var(--accent-hover);
-    border-radius: 99px;
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    line-height: 1.4;
+  }
+  .label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
     font-weight: 500;
   }
-  .chip button{
-    background: none; border: 0; padding: 0;
-    color: var(--accent); cursor: pointer;
-    font-family: inherit; font-size: 12px;
-    text-decoration: underline;
+
+  /* =========================================================
+     CAMPOS E INPUTS
+     ========================================================= */
+  .input-group { margin-bottom: 20px; }
+  
+  .input-pill {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    padding: 18px 20px;
+    color: var(--text-main);
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
   }
+  .input-pill::placeholder { color: #5C5C60; }
+  .input-pill:focus { border-color: var(--text-main); background: var(--bg-input-hover); }
+  select.input-pill { appearance: none; cursor: pointer; }
+
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
 
   /* =========================================================
      BOTÕES
      ========================================================= */
-  .btn{
-    display: block; width: 100%;
-    padding: 14px 18px;
-    min-height: 50px;
-    border-radius: var(--radius);
+  .btn {
+    width: 100%;
+    padding: 18px;
+    border-radius: var(--radius-pill);
+    font-size: 16px;
+    font-weight: 700;
     font-family: inherit;
-    font-size: 14px; font-weight: 600;
-    letter-spacing: .04em;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: auto;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--primary); color: var(--primary-text); }
+  .btn-primary:disabled { background: var(--btn-secondary); color: #5C5C60; cursor: not-allowed; }
+  .btn-secondary { background: var(--btn-secondary); color: var(--text-main); }
+  
+  .footer-actions { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* =========================================================
+     SELEÇÕES (RÁDIO / CHECK)
+     ========================================================= */
+  .option-card {
+    display: flex;
+    align-items: center;
+    background: var(--bg-input);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
     cursor: pointer;
     border: 1px solid transparent;
-    transition: background .15s, border-color .15s, color .15s, transform .1s;
+    transition: all 0.2s;
   }
-  .btn:active{ transform: translateY(1px); }
-  .btn-primary{
-    background: var(--primary);
-    color: #fff;
+  .option-card:hover { background: var(--bg-input-hover); }
+  .option-card.selected { border-color: var(--text-main); }
+  
+  /* Círculo de seleção */
+  .radio-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+    margin-right: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
   }
-  .btn-primary:hover{ background: var(--primary-hover); }
-  .btn-ghost{
-    background: var(--bg);
-    color: var(--text);
-    border-color: var(--border-strong);
+  .option-card.selected .radio-circle { border-color: var(--text-main); }
+  .option-card.selected .radio-circle::after {
+    content: "";
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--text-main);
   }
-  .btn-ghost:hover{ background: var(--bg-subtle); }
-  .btn + .btn{ margin-top: 10px; }
 
-  .nav{ display: flex; gap: 10px; margin-top: 26px; }
-  .nav .btn{ margin-top: 0; }
-  .nav .btn-ghost{ flex: 0 0 34%; }
+  .option-text { font-size: 16px; font-weight: 500; flex: 1; }
+  .option-badge {
+    background: var(--text-main);
+    color: var(--bg);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+  }
 
-  .link{
-    background: none; border: 0; padding: 0;
-    color: var(--accent);
-    font-family: inherit; font-size: 13px;
-    font-weight: 600; cursor: pointer;
-    text-decoration: none;
+  /* =========================================================
+     LISTAS E BUSCA
+     ========================================================= */
+  .search-bar {
+    background: var(--bg-input);
+    border-radius: var(--radius-pill);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
   }
-  .link:hover{ text-decoration: underline; }
-  .link.center{
-    display: block; width: 100%; text-align: center;
-    margin-top: 16px; color: var(--text-tertiary);
-    font-weight: 500; font-size: 13px;
+  .search-bar input {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
   }
-  .link.center:hover{ color: var(--text); }
+  .search-bar input::placeholder { color: var(--text-muted); }
+
+  .list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .list-item {
+    padding: 16px 20px;
+    background: var(--bg-input);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .list-item:hover { background: var(--bg-input-hover); }
+  .list-item.selected {
+    background: var(--text-main);
+    color: var(--bg);
+  }
+  .list-item .country-code { color: var(--text-muted); font-size: 14px; }
+  .list-item.selected .country-code { color: #555; }
+
+  /* =========================================================
+     OTP (CÓDIGO DE VERIFICAÇÃO)
+     ========================================================= */
+  .otp-container {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+  .otp-input {
+    width: 48px;
+    height: 56px;
+    background: var(--bg-input);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .otp-input:focus { border-color: var(--text-main); }
 
   /* =========================================================
      TELA INICIAL (WELCOME)
      ========================================================= */
-  .welcome{
-    max-width: 480px; margin: 0 auto;
-    padding: 20px 24px 40px;
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    justify-content: center;
-  }
-  .welcome-top{
-    display: flex; justify-content: center;
-    margin-bottom: 28px;
-  }
-  .welcome-logo{
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 14px;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    border-radius: 99px;
-  }
-  .welcome-logo .brand-mark{
-    width: 26px; height: 26px; border-radius: 7px; font-size: 13px;
-  }
-  .welcome-logo .brand-name{
-    font-size: 11px; letter-spacing: .3em;
-  }
-
-  .welcome-content{
+  .welcome-screen {
+    justify-content: space-between;
     text-align: center;
-    animation: stepIn .5s ease-out;
+    padding: 60px 20px 40px;
   }
-  .welcome-eyebrow{
-    font-size: 11px; font-weight: 700;
-    letter-spacing: .2em; text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-  .welcome-title{
-    font-size: 30px; line-height: 1.18;
-    font-weight: 700; letter-spacing: -.02em;
-    color: var(--text);
-    margin: 0 0 14px;
-  }
-  .welcome-subtitle{
-    font-size: 15px; color: var(--text-tertiary);
-    line-height: 1.55;
-    margin: 0 0 8px;
-    max-width: 340px; margin-left: auto; margin-right: auto;
-  }
-  .welcome-rotate{
-    font-size: 13.5px; color: var(--text-secondary);
-    margin: 0 0 32px;
-    min-height: 20px;
-    transition: opacity .3s;
-  }
-
-  .welcome-actions{ text-align: left; }
-  .welcome-actions .btn-primary{
-    box-shadow: 0 6px 16px rgba(11,18,32,.16);
-  }
-
-  .about{
-    margin-top: 24px;
-    padding: 16px 18px;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 13px; color: var(--text-tertiary);
-    line-height: 1.65;
-    text-align: left;
-  }
-  .about strong{
-    display: block; color: var(--text);
-    font-size: 12px; letter-spacing: .04em;
-    margin-bottom: 6px; text-transform: uppercase;
+  .logo-text {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-top: 40px;
   }
 
   /* =========================================================
-     REVISÃO
+     CHECKLIST E AVISOS
      ========================================================= */
-  .review-block{
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg);
-    margin-bottom: 12px;
-    overflow: hidden;
+  .checklist {
+    background: var(--bg-input);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin: 24px 0;
   }
-  .review-head{
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 14px;
-    background: var(--bg-subtle);
-    border-bottom: 1px solid var(--border);
+  .checklist-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    line-height: 1.4;
   }
-  .review-head > span{
-    font-size: 11.5px; font-weight: 700;
-    letter-spacing: .12em; text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-  .review-body{ padding: 8px 14px 10px; }
-  .review-row{
-    display: flex; justify-content: space-between; gap: 14px;
-    padding: 7px 0;
-    font-size: 13.5px;
-    border-bottom: 1px dashed transparent;
-  }
-  .review-row + .review-row{ border-top: 1px solid var(--border); }
-  .review-row .rk{ color: var(--text-tertiary); flex: 0 0 42%; }
-  .review-row .rv{
-    color: var(--text); text-align: right;
-    word-break: break-word; font-weight: 500;
-  }
-
-  /* =========================================================
-     CONTRATOS
-     ========================================================= */
-  .contract{
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    overflow: hidden;
-    background: var(--bg);
-  }
-  .contract-head{
-    padding: 13px 15px;
-    font-size: 13.5px; font-weight: 600;
-    color: var(--text);
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-subtle);
-  }
-  .contract-body{
-    max-height: 140px; overflow-y: auto;
-    padding: 14px 15px;
-    font-size: 13px; color: var(--text-secondary);
-    line-height: 1.65;
-  }
-  .contract-body::-webkit-scrollbar{ width: 6px; }
-  .contract-body::-webkit-scrollbar-thumb{
-    background: var(--border-strong); border-radius: 99px;
-  }
-  .contract-body p{ margin: 0 0 10px; }
-  .contract-body p:last-child{ margin-bottom: 0; }
-  .contract-check{
-    display: flex; align-items: flex-start; gap: 11px;
-    padding: 13px 15px;
-    border-top: 1px solid var(--border);
-    cursor: pointer;
-    font-size: 13px;
-    user-select: none;
-  }
-  .contract-check input{
-    appearance: none; -webkit-appearance: none;
-    width: 19px; height: 19px; flex: 0 0 19px;
-    margin: 1px 0 0;
-    border: 1.5px solid var(--border-strong);
-    border-radius: 5px;
-    background: var(--bg);
-    cursor: pointer;
-    position: relative;
-    transition: .15s;
-  }
-  .contract-check input:checked{
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-  .contract-check input:checked::after{
-    content: "";
-    position: absolute;
-    left: 5px; top: 1px;
-    width: 5px; height: 10px;
-    border: solid #fff;
+  .checklist-item:last-child { margin-bottom: 0; }
+  .check-mark {
+    width: 12px; height: 20px;
+    border: solid var(--text-main);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
-  }
-  .contract-check span{ color: var(--text-secondary); line-height: 1.5; }
-
-  /* =========================================================
-     FORÇA DE SENHA
-     ========================================================= */
-  .strength{ display: flex; gap: 5px; margin-top: 10px; }
-  .strength span{
-    height: 3px; flex: 1;
-    border-radius: 99px;
-    background: var(--bg-muted);
-    transition: background .3s;
-  }
-  .strength.s1 span:nth-child(1){ background: #DC2626; }
-  .strength.s2 span:nth-child(-n+2){ background: #D97706; }
-  .strength.s3 span:nth-child(-n+3){ background: #059669; }
-  .strength.s4 span{ background: var(--accent); }
-  .reqs{
-    margin-top: 10px;
-    font-size: 12.5px; color: var(--text-tertiary);
-    line-height: 1.9;
-  }
-  .reqs .ok{ color: var(--success); font-weight: 500; }
-  .reqs .ok::before{ content: "· "; }
-
-  /* =========================================================
-     CAPTURA DE DOCUMENTO
-     ========================================================= */
-  .capture-row{
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 12px;
-    padding: 14px 15px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 10px;
-    background: var(--bg);
-  }
-  .capture-row .ct{ font-size: 14px; font-weight: 500; color: var(--text); }
-  .capture-row .cs{ font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
-  .capture-btn{
-    padding: 9px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 11.5px; font-weight: 700;
-    letter-spacing: .06em;
-    background: var(--bg);
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-    font-family: inherit;
-    cursor: pointer;
-    flex: 0 0 auto;
-    transition: background .15s, border-color .15s, color .15s;
-  }
-  .capture-btn:hover{ background: var(--bg-subtle); }
-  .capture-btn.done{
-    background: var(--success-soft);
-    border-color: var(--success);
-    color: var(--success);
+    flex-shrink: 0;
+    margin-top: 4px;
+    margin-left: 6px;
   }
 
-  /* =========================================================
-     TIMELINE (STATUS)
-     ========================================================= */
-  .timeline{ margin: 20px 0 0; }
-  .tl-item{
-    position: relative;
-    padding: 0 0 22px 28px;
-    font-size: 14px;
-    color: var(--text-muted);
-    transition: color .35s;
+  .error-text { color: #FF453A; font-size: 14px; margin-top: 8px; display: none; }
+
+  /* Contratos */
+  .contract-box {
+    background: var(--bg-input);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
   }
-  .tl-item::before{
-    content: "";
-    position: absolute; left: 0; top: 4px;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    border: 2px solid var(--border-strong);
-    background: var(--bg);
-    transition: .35s;
+  .contract-title { font-weight: 600; margin-bottom: 8px; }
+  .contract-text { font-size: 14px; color: var(--text-muted); max-height: 100px; overflow-y: auto; }
+  .checkbox-row {
+    display: flex; align-items: flex-start; gap: 12px; margin-top: 16px; cursor: pointer;
   }
-  .tl-item::after{
-    content: "";
-    position: absolute; left: 5px; top: 18px; bottom: 0;
-    width: 1px; background: var(--border);
+  .checkbox-square {
+    width: 24px; height: 24px; border: 2px solid var(--text-muted); border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  .tl-item:last-child::after{ display: none; }
-  .tl-item.done{ color: var(--text); }
-  .tl-item.done::before{
-    border-color: var(--accent);
-    background: var(--accent);
-  }
-  .tl-item.current{ color: var(--accent); font-weight: 600; }
-  .tl-item.current::before{
-    border-color: var(--accent);
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse{
-    0%,100%{ box-shadow: 0 0 0 0 rgba(29,78,216,.35); }
-    50%{ box-shadow: 0 0 0 8px rgba(29,78,216,0); }
+  .checkbox-row.checked .checkbox-square { background: var(--text-main); border-color: var(--text-main); }
+  .checkbox-row.checked .checkbox-square::after {
+    content: ""; width: 6px; height: 12px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg);
+    margin-top: -2px;
   }
 
-  /* =========================================================
-     TOAST
-     ========================================================= */
-  .toast{
-    position: fixed; left: 50%; bottom: 24px;
-    transform: translate(-50%, 20px);
-    background: var(--primary);
-    color: #fff;
-    padding: 13px 20px;
-    border-radius: var(--radius);
-    font-size: 13.5px;
-    max-width: 88vw;
-    text-align: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: .3s;
-    z-index: 50;
-    box-shadow: 0 12px 28px rgba(11,18,32,.22);
-  }
-  .toast.show{ opacity: 1; transform: translate(-50%, 0); }
-
-  /* =========================================================
-     RESPONSIVO
-     ========================================================= */
-  @media (max-width: 380px){
-    .card{ padding: 22px 18px 20px; }
-    .shell{ padding: 16px 14px 36px; }
-    h2{ font-size: 20px; }
-    .welcome-title{ font-size: 26px; }
-  }
 </style>
 </head>
 <body>
 
-<main id="app"></main>
-<div class="toast" id="toast"></div>
+<div id="app"></div>
 
 <script>
 /* =========================================================
-   AURORA — MÓDULO 1 — ABERTURA DE CONTA
+   DADOS E ESTADO
    ========================================================= */
+const $ = (s) => document.querySelector(s);
 
-const $  = (s, r = document) => r.querySelector(s);
-const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const COUNTRIES = [
+  { n: 'Brasil', c: 'BR', d: '55' },
+  { n: 'Estados Unidos', c: 'US', d: '1' },
+  { n: 'Portugal', c: 'PT', d: '351' },
+  { n: 'Reino Unido', c: 'GB', d: '44' },
+  { n: 'Espanha', c: 'ES', d: '34' },
+  { n: 'Alemanha', c: 'DE', d: '49' },
+  { n: 'Angola', c: 'AO', d: '244' },
+  { n: 'Moçambique', c: 'MZ', d: '258' },
+  { n: 'Japão', c: 'JP', d: '81' },
+  { n: 'França', c: 'FR', d: '33' },
+  { n: 'Itália', c: 'IT', d: '39' },
+  { n: 'Argentina', c: 'AR', d: '54' }
+];
 
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
-  { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
-));
-const norm = s => (s || '').toString().toLowerCase()
-  .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const PROFESSIONS = [
+  'Médico', 'Enfermeiro', 'Dentista', 'Psicólogo', 'Fisioterapeuta', 'Nutricionista',
+  'Professor', 'Pedagogo', 'Diretor escolar', 'Desenvolvedor', 'Programador', 'Analista de sistemas',
+  'Engenheiro de software', 'Analista de dados', 'Administrador', 'Gerente', 'Assistente administrativo',
+  'Contador', 'Auditor', 'Vendedor', 'Comerciante', 'Atendente', 'Pedreiro', 'Eletricista',
+  'Engenheiro civil', 'Arquiteto', 'Motorista', 'Entregador', 'Advogado', 'Consultor jurídico',
+  'Designer gráfico', 'Jornalista', 'Publicitário', 'Autônomo', 'Empresário', 'Servidor público',
+  'Estudante', 'Aposentado', 'Desempregado', 'Dona ou dono de casa', 'Trabalhador informal'
+].sort();
 
-function getPath(obj, path){
-  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
-}
-function setPath(obj, path, value){
-  const parts = path.split('.');
-  let o = obj;
-  for (let i = 0; i < parts.length - 1; i++){
-    if (typeof o[parts[i]] !== 'object' || o[parts[i]] === null) o[parts[i]] = {};
-    o = o[parts[i]];
+let state = {
+  step: 0,
+  data: {
+    phoneCountry: 'BR',
+    phoneNumber: '',
+    phoneCode: '',
+    phoneVerified: false,
+    nationality: '',
+    residence: '',
+    docType: '',
+    fullName: '',
+    birthDate: '',
+    addressZip: '',
+    addressStreet: '',
+    addressNumber: '',
+    addressCity: '',
+    addressState: '',
+    profession: '',
+    income: '',
+    password: '',
+    contracts: { account: false, terms: false, privacy: false }
   }
-  o[parts[parts.length - 1]] = value;
-}
-
-/* ---------- catálogo de países ---------- */
-const COUNTRIES_RAW = `Afeganistão|AF|93
-África do Sul|ZA|27
-Albânia|AL|355
-Alemanha|DE|49
-Andorra|AD|376
-Angola|AO|244
-Antígua e Barbuda|AG|1
-Arábia Saudita|SA|966
-Argélia|DZ|213
-Argentina|AR|54
-Armênia|AM|374
-Austrália|AU|61
-Áustria|AT|43
-Azerbaijão|AZ|994
-Bahamas|BS|1
-Bahrain|BH|973
-Bangladesh|BD|880
-Barbados|BB|1
-Bélgica|BE|32
-Belize|BZ|501
-Benin|BJ|229
-Bielorrússia|BY|375
-Bolívia|BO|591
-Bósnia e Herzegovina|BA|387
-Botsuana|BW|267
-Brasil|BR|55
-Brunei|BN|673
-Bulgária|BG|359
-Burkina Faso|BF|226
-Burundi|BI|257
-Butão|BT|975
-Cabo Verde|CV|238
-Camarões|CM|237
-Camboja|KH|855
-Canadá|CA|1
-Catar|QA|974
-Cazaquistão|KZ|7
-Chade|TD|235
-Chile|CL|56
-China|CN|86
-Chipre|CY|357
-Colômbia|CO|57
-Comores|KM|269
-Congo|CG|242
-Coreia do Norte|KP|850
-Coreia do Sul|KR|82
-Costa do Marfim|CI|225
-Costa Rica|CR|506
-Croácia|HR|385
-Cuba|CU|53
-Dinamarca|DK|45
-Djibuti|DJ|253
-Dominica|DM|1
-Egito|EG|20
-El Salvador|SV|503
-Emirados Árabes Unidos|AE|971
-Equador|EC|593
-Eritreia|ER|291
-Eslováquia|SK|421
-Eslovênia|SI|386
-Espanha|ES|34
-Estados Unidos|US|1
-Estônia|EE|372
-Essuatíni|SZ|268
-Etiópia|ET|251
-Fiji|FJ|679
-Filipinas|PH|63
-Finlândia|FI|358
-França|FR|33
-Gabão|GA|241
-Gâmbia|GM|220
-Gana|GH|233
-Geórgia|GE|995
-Granada|GD|1
-Grécia|GR|30
-Groenlândia|GL|299
-Guatemala|GT|502
-Guiana|GY|592
-Guiné|GN|224
-Guiné-Bissau|GW|245
-Guiné Equatorial|GQ|240
-Haiti|HT|509
-Holanda|NL|31
-Honduras|HN|504
-Hong Kong|HK|852
-Hungria|HU|36
-Iêmen|YE|967
-Ilhas Marshall|MH|692
-Ilhas Salomão|SB|677
-Índia|IN|91
-Indonésia|ID|62
-Irã|IR|98
-Iraque|IQ|964
-Irlanda|IE|353
-Islândia|IS|354
-Israel|IL|972
-Itália|IT|39
-Jamaica|JM|1
-Japão|JP|81
-Jordânia|JO|962
-Kiribati|KI|686
-Kosovo|XK|383
-Kuwait|KW|965
-Laos|LA|856
-Lesoto|LS|266
-Letônia|LV|371
-Líbano|LB|961
-Libéria|LR|231
-Líbia|LY|218
-Liechtenstein|LI|423
-Lituânia|LT|370
-Luxemburgo|LU|352
-Macau|MO|853
-Macedônia do Norte|MK|389
-Madagascar|MG|261
-Malásia|MY|60
-Malawi|MW|265
-Maldivas|MV|960
-Mali|ML|223
-Malta|MT|356
-Marrocos|MA|212
-Maurício|MU|230
-Mauritânia|MR|222
-México|MX|52
-Mianmar|MM|95
-Micronésia|FM|691
-Moçambique|MZ|258
-Moldávia|MD|373
-Mônaco|MC|377
-Mongólia|MN|976
-Montenegro|ME|382
-Namíbia|NA|264
-Nauru|NR|674
-Nepal|NP|977
-Nicarágua|NI|505
-Níger|NE|227
-Nigéria|NG|234
-Noruega|NO|47
-Nova Zelândia|NZ|64
-Omã|OM|968
-Palau|PW|680
-Palestina|PS|970
-Panamá|PA|507
-Papua-Nova Guiné|PG|675
-Paquistão|PK|92
-Paraguai|PY|595
-Peru|PE|51
-Polônia|PL|48
-Porto Rico|PR|1
-Portugal|PT|351
-Quênia|KE|254
-Quirguistão|KG|996
-Reino Unido|GB|44
-República Centro-Africana|CF|236
-República Democrática do Congo|CD|243
-República Dominicana|DO|1
-República Tcheca|CZ|420
-Romênia|RO|40
-Ruanda|RW|250
-Rússia|RU|7
-Samoa|WS|685
-San Marino|SM|378
-Santa Lúcia|LC|1
-São Cristóvão e Névis|KN|1
-São Tomé e Príncipe|ST|239
-São Vicente e Granadinas|VC|1
-Seicheles|SC|248
-Senegal|SN|221
-Serra Leoa|SL|232
-Sérvia|RS|381
-Singapura|SG|65
-Síria|SY|963
-Somália|SO|252
-Sri Lanka|LK|94
-Sudão|SD|249
-Sudão do Sul|SS|211
-Suécia|SE|46
-Suíça|CH|41
-Suriname|SR|597
-Tailândia|TH|66
-Taiwan|TW|886
-Tajiquistão|TJ|992
-Tanzânia|TZ|255
-Timor-Leste|TL|670
-Togo|TG|228
-Tonga|TO|676
-Trinidad e Tobago|TT|1
-Tunísia|TN|216
-Turcomenistão|TM|993
-Turquia|TR|90
-Tuvalu|TV|688
-Ucrânia|UA|380
-Uganda|UG|256
-Uruguai|UY|598
-Uzbequistão|UZ|998
-Vanuatu|VU|678
-Vaticano|VA|379
-Venezuela|VE|58
-Vietnã|VN|84
-Zâmbia|ZM|260
-Zimbábue|ZW|263`;
-
-let COUNTRIES = COUNTRIES_RAW.trim().split('\n').map(line => {
-  const [n, c, d] = line.split('|');
-  return { n, c, d };
-}).sort((a, b) => a.n.localeCompare(b.n, 'pt-BR'));
-
-(async function loadCountriesAPI(){
-  try{
-    const res = await fetch('https://restcountries.com/v3.1/all?fields=name,translations,cca2,idd');
-    if (!res.ok) return;
-    const json = await res.json();
-    const list = json.map(c => {
-      const name = (c.translations && c.translations.por && c.translations.por.common) || c.name.common;
-      const dial = c.idd && c.idd.root ? (c.idd.root + ((c.idd.suffixes && c.idd.suffixes[0]) || '')).replace('+', '') : '';
-      return { n: name, c: c.cca2, d: dial };
-    }).filter(x => x.c && x.n);
-    if (list.length > 150){
-      COUNTRIES = list.sort((a, b) => a.n.localeCompare(b.n, 'pt-BR'));
-    }
-  }catch(e){ /* mantém local */ }
-})();
-
-function countryName(iso){
-  const c = COUNTRIES.find(x => x.c === iso);
-  return c ? c.n : iso;
-}
-function countryDial(iso){
-  const c = COUNTRIES.find(x => x.c === iso);
-  return c ? c.d : '';
-}
-
-/* ---------- profissões ---------- */
-const PROFESSIONS = Array.from(new Set([
-  'Médico','Enfermeiro','Dentista','Psicólogo','Fisioterapeuta','Nutricionista','Farmacêutico',
-  'Biomédico','Veterinário','Fonoaudiólogo','Terapeuta ocupacional','Radiologista',
-  'Técnico de enfermagem','Auxiliar de enfermagem','Optometrista','Acupunturista','Massoterapeuta',
-  'Educador físico','Sanitarista','Anestesista','Cardiologista','Pediatra','Psiquiatra',
-  'Farmacêutico hospitalar','Técnico em radiologia',
-  'Professor','Pedagogo','Diretor escolar','Coordenador pedagógico','Orientador educacional',
-  'Psicopedagogo','Instrutor de cursos','Professor de idiomas','Professor de música',
-  'Professor de educação física','Tutor','Monitor escolar','Bibliotecário','Pesquisador',
-  'Professor universitário','Auxiliar de classe',
-  'Desenvolvedor','Programador','Analista de sistemas','Engenheiro de software','Analista de dados',
-  'Cientista de dados','Engenheiro de dados','Administrador de redes',
-  'Analista de segurança da informação','Designer de UX/UI','Product Manager','Scrum Master',
-  'Analista de suporte','Técnico de informática','Especialista em DevOps','Especialista em cloud',
-  'Analista de BI','Testador de software','Arquiteto de software',
-  'Especialista em inteligência artificial','Analista de infraestrutura','Gestor de TI',
-  'Administrador','Gerente','Assistente administrativo','Analista financeiro','Contador','Auditor',
-  'Controller','Analista de RH','Recrutador','Secretária executiva','Analista de logística',
-  'Comprador','Almoxarife','Recepcionista','Analista de planejamento','Gestor de projetos',
-  'Analista de processos','Assistente financeiro',
-  'Vendedor','Comerciante','Atendente','Operador de caixa','Gerente de loja',
-  'Representante comercial','Consultor de vendas','Promotor de vendas','Corretor de imóveis',
-  'Corretor de seguros','Vendedor externo','Operador de telemarketing','Repositor','Estoquista',
-  'Pedreiro','Eletricista','Encanador','Pintor de obras','Carpinteiro','Marceneiro','Serralheiro',
-  'Soldador','Armador','Montador','Gesseiro','Azulejista','Engenheiro civil','Arquiteto',
-  'Mestre de obras','Técnico em edificações','Topógrafo','Vidraceiro',
-  'Motorista','Entregador','Motoboy','Piloto','Comissário de bordo','Maquinista','Cobrador',
-  'Frentista','Operador de logística','Motorista de aplicativo','Caminhoneiro','Taxista',
-  'Controlador de tráfego aéreo','Estivador',
-  'Vigilante','Bombeiro','Policial','Segurança patrimonial','Agente penitenciário',
-  'Guarda municipal','Investigador','Porteiro','Controlador de acesso','Socorrista',
-  'Agente de trânsito',
-  'Cabeleireiro','Barbeiro','Esteticista','Manicure','Maquiador','Depilador',
-  'Designer de sobrancelhas','Massagista','Podólogo','Tatuador','Penteadista',
-  'Jornalista','Publicitário','Designer gráfico','Redator','Editor','Fotógrafo','Cinegrafista',
-  'Locutor','Apresentador','Produtor de conteúdo','Social media','Relações públicas','Revisor',
-  'Tradutor','Ilustrador',
-  'Advogado','Consultor jurídico','Juiz','Promotor','Defensor público','Delegado','Paralegal',
-  'Escrivão','Tabelião','Perito judicial','Analista jurídico',
-  'Operador de produção','Mecânico industrial','Técnico em manutenção','Eletromecânico',
-  'Torneiro mecânico','Fresador','Controlador de qualidade','Supervisor de produção',
-  'Engenheiro de produção','Engenheiro mecânico','Engenheiro elétrico','Engenheiro químico',
-  'Químico','Técnico em segurança do trabalho','Operador de empilhadeira','Caldeireiro',
-  'Cozinheiro','Chef de cozinha','Confeiteiro','Padeiro','Açougueiro','Garçom','Barman','Barista',
-  'Atendente de lanchonete','Gerente de restaurante','Churrasqueiro','Sushiman','Auxiliar de cozinha',
-  'Agricultor','Pecuarista','Agrônomo','Zootecnista','Tratorista','Trabalhador rural',
-  'Floricultor','Pescador','Técnico agrícola',
-  'Ator','Músico','Dançarino','Artista plástico','Escultor','Artesão','Cantor','DJ',
-  'Diretor de arte','Figurinista',
-  'Atleta','Personal trainer','Treinador esportivo','Árbitro','Instrutor de academia',
-  'Biólogo','Físico','Matemático','Estatístico','Geólogo','Astrônomo','Arqueólogo','Historiador',
-  'Sociólogo','Filósofo','Antropólogo','Geógrafo','Oceanógrafo',
-  'Autônomo','Empresário','Servidor público','Estudante','Aposentado','Desempregado',
-  'Dona ou dono de casa','Trabalhador informal','Microempreendedor','Freelancer',
-  'Influenciador digital','Criador de conteúdo','Gestor de tráfego','Analista de marketing',
-  'Diarista','Cuidador de idosos','Babá','Jardineiro','Zelador','Caseiro','Governanta',
-  'Auxiliar de serviços gerais','Office boy','Gestor de recursos humanos','Analista de qualidade',
-  'Consultor','Diplomata','Militar','Piloto de drone','Operador de câmera','Cerimonialista'
-])).sort((a, b) => a.localeCompare(b, 'pt-BR'));
-
-/* ---------- validações ---------- */
-function validCPF(cpf){
-  cpf = (cpf || '').replace(/\D/g, '');
-  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-  let s = 0;
-  for (let i = 0; i < 9; i++) s += parseInt(cpf[i]) * (10 - i);
-  let d1 = (s * 10) % 11; if (d1 === 10) d1 = 0;
-  if (d1 !== parseInt(cpf[9])) return false;
-  s = 0;
-  for (let i = 0; i < 10; i++) s += parseInt(cpf[i]) * (11 - i);
-  let d2 = (s * 10) % 11; if (d2 === 10) d2 = 0;
-  return d2 === parseInt(cpf[10]);
-}
-function calcAge(dateStr){
-  if (!dateStr) return -1;
-  const b = new Date(dateStr + 'T00:00:00');
-  if (isNaN(b.getTime())) return -1;
-  const t = new Date();
-  let a = t.getFullYear() - b.getFullYear();
-  const m = t.getMonth() - b.getMonth();
-  if (m < 0 || (m === 0 && t.getDate() < b.getDate())) a--;
-  return a;
-}
-function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || '').trim()); }
-
-/* ---------- estado ---------- */
-const STORAGE_KEY = 'aurora_modulo1_v2';
-
-const DEFAULT_DATA = {
-  nationality: '', otherNationality: null, otherNationalities: [], residence: '',
-  docType: '', docNumber: '', cpf: '', docName: '', docIssue: '', docIssuer: '',
-  docCountry: '', docExpiry: '',
-  fullName: '', socialName: '', birthDate: '', sex: '', maritalStatus: '', motherName: '',
-  fatherName: '', naturality: '', birthCountry: '',
-  addr: { country: '', zip: '', state: '', city: '', district: '', street: '', number: '',
-          complement: '', type: '' },
-  phone: { dial: '', ddd: '', number: '', code: '', sentCode: '', verified: false },
-  email: { value: '', code: '', sentCode: '', verified: false },
-  profession: '', professionOther: '', situation: '',
-  income: '', extraIncome: null, extraSources: [], extraValue: '',
-  patrimony: '', patrimonyRange: '',
-  idv: { front: false, back: false, face: false, live: false },
-  pep: null, pepRelated: null, purpose: [], movement: '',
-  password: '', passwordConfirm: '',
-  contracts: { account: false, terms: false, privacy: false, fees: false },
-  protocol: ''
 };
 
-let state = { step: 0, data: JSON.parse(JSON.stringify(DEFAULT_DATA)) };
-let syncAll = () => {};
-let phraseTimer = null;
+// Recuperar progresso
+try {
+  const saved = localStorage.getItem('aurora_fintech_v1');
+  if (saved) state = JSON.parse(saved);
+} catch(e){}
 
-function save(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+function save() {
+  localStorage.setItem('aurora_fintech_v1', JSON.stringify(state));
 }
-function load(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    const merged = JSON.parse(JSON.stringify(DEFAULT_DATA));
-    const src = parsed.data || {};
-    for (const k in merged){
-      if (src[k] === undefined) continue;
-      if (typeof merged[k] === 'object' && merged[k] !== null && !Array.isArray(merged[k])){
-        merged[k] = Object.assign({}, merged[k], src[k]);
-      } else {
-        merged[k] = src[k];
-      }
-    }
-    state = { step: typeof parsed.step === 'number' ? parsed.step : 0, data: merged };
-  }catch(e){}
-}
-function resetAll(){
-  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-  state = { step: 0, data: JSON.parse(JSON.stringify(DEFAULT_DATA)) };
-  render(true);
-}
-
-/* ---------- toast ---------- */
-let toastTimer = null;
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3400);
-}
-
-/* ---------- meta das etapas ---------- */
-const STEP_META = {
-  1:  { next: 'CONTINUAR' },
-  2:  { next: 'CONTINUAR' },
-  3:  { next: 'CONTINUAR' },
-  4:  { next: 'CONTINUAR' },
-  5:  { next: 'CONTINUAR' },
-  6:  { next: 'CONTINUAR' },
-  7:  { next: 'CONTINUAR' },
-  8:  { next: 'CONTINUAR' },
-  9:  { next: 'CONTINUAR' },
-  10: { next: 'CONTINUAR' },
-  11: { next: 'CONTINUAR' },
-  12: { next: 'CONTINUAR' },
-  13: { next: 'CONTINUAR' },
-  14: { next: 'ENVIAR SOLICITAÇÃO' }
-};
-const TOTAL_STEPS = 14;
 
 /* =========================================================
-   COMPONENTES
+   CONTROLE DE TELAS
    ========================================================= */
-function optGroup(group, items, current, extraClass){
-  return `<div class="options ${extraClass || ''}" data-group="${group}">` + items.map(it => {
-    const v = typeof it === 'string' ? it : it.v;
-    const l = typeof it === 'string' ? it : it.l;
-    const sel = String(current) === String(v) ? 'selected' : '';
-    return `<button type="button" class="opt ${sel}" data-value="${esc(v)}">${esc(l)}</button>`;
-  }).join('') + `</div>`;
+function render() {
+  const app = $('#app');
+  app.innerHTML = '';
+
+  // Calcula progresso (ex: step 1 até 15)
+  const progressPct = state.step === 0 || state.step === 16 ? 0 : (state.step / 15) * 100;
+
+  const screen = document.createElement('div');
+  screen.className = 'screen';
+
+  // Barra de progresso no topo
+  if (state.step > 0 && state.step < 16) {
+    const progress = document.createElement('div');
+    progress.className = 'progress-line';
+    progress.style.width = `${progressPct}%`;
+    screen.appendChild(progress);
+  }
+
+  // Lógica de renderização de cada etapa
+  switch (state.step) {
+    case 0: renderWelcome(screen); break;
+    case 1: renderPhone(screen); break;
+    case 2: renderOTP(screen); break;
+    case 3: renderNationality(screen); break;
+    case 4: renderDocType(screen); break;
+    case 5: renderName(screen); break;
+    case 6: renderBirthDate(screen); break;
+    case 7: renderAddress(screen); break;
+    case 8: renderProfession(screen); break;
+    case 9: renderIncome(screen); break;
+    case 10: renderIdentity(screen); break;
+    case 11: renderSecurity(screen); break;
+    case 12: renderPassword(screen); break;
+    case 13: renderReview(screen); break;
+    case 14: renderContracts(screen); break;
+    case 15: renderStatus(screen); break;
+  }
+
+  app.appendChild(screen);
+  window.scrollTo(0, 0);
 }
-function multiGroup(group, items, current){
-  const cur = current || [];
-  return `<div class="options" data-multi="${group}">` + items.map(it => {
-    const v = typeof it === 'string' ? it : it.v;
-    const l = typeof it === 'string' ? it : it.l;
-    const sel = cur.includes(v) ? 'selected' : '';
-    return `<button type="button" class="opt ${sel}" data-value="${esc(v)}">${esc(l)}</button>`;
-  }).join('') + `</div>`;
+
+function go(step) {
+  state.step = step;
+  save();
+  render();
 }
-function countrySelectOptions(selected){
-  return `<option value="">Selecione</option>` + COUNTRIES.map(c =>
-    `<option value="${c.c}" ${c.c === selected ? 'selected' : ''}>${esc(c.n)}</option>`
-  ).join('');
+
+function next() { go(state.step + 1); }
+function back() {
+  if (state.step > 0) go(state.step - 1);
 }
-function chipCountry(iso){
-  return iso ? `<span class="chip">${esc(countryName(iso))}</span>` : '';
+
+// Componente visual: Header com botão Voltar/Close
+function headerNav(showBack = true) {
+  return `
+    <div class="header-nav">
+      ${showBack ? '<button class="btn-back" onclick="back()"></button>' : '<div></div>'}
+    </div>
+  `;
 }
-function renderCountryList(container, query, onPick, limit){
-  if (!container) return;
-  const q = norm(query);
-  const items = COUNTRIES.filter(c => !q || norm(c.n).includes(q)).slice(0, limit || 80);
-  container.innerHTML = items.length
-    ? items.map(c => `<button type="button" class="list-item" data-iso="${c.c}">${esc(c.n)}</button>`).join('')
-    : '<div class="empty">Nenhum resultado encontrado</div>';
-  $$('[data-iso]', container).forEach(btn => {
-    btn.onclick = () => onPick(btn.dataset.iso);
+
+/* =========================================================
+   TELAS
+   ========================================================= */
+
+function renderWelcome(screen) {
+  screen.className = 'screen welcome-screen';
+  screen.innerHTML = `
+    <div>
+      <div class="logo-text">AURORA</div>
+    </div>
+    <div class="footer-actions">
+      <button class="btn btn-primary" onclick="go(1)">Criar conta</button>
+      <button class="btn btn-secondary" onclick="alert('Módulo de login separado.')">Fazer login</button>
+    </div>
+  `;
+}
+
+function renderPhone(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Abra uma conta Aurora</h1>
+    <p class="subtitle">Insira seu número de celular para começar</p>
+    
+    <div class="row" style="margin-top: 20px;">
+      <div style="flex: 0 0 100px;">
+        <select class="input-pill" id="phoneCountry">
+          ${COUNTRIES.map(c => `<option value="${c.c}" ${state.data.phoneCountry === c.c ? 'selected' : ''}>+${c.d}</option>`).join('')}
+        </select>
+      </div>
+      <div style="flex: 1;">
+        <input type="tel" class="input-pill" id="phoneNumber" placeholder="Insira seu celular" value="${state.data.phoneNumber}">
+      </div>
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" id="btnContinue" disabled onclick="submitPhone()">Continuar</button>
+    </div>
+  `;
+
+  const input = $('#phoneNumber');
+  const btn = $('#btnContinue');
+  
+  input.addEventListener('input', (e) => {
+    state.data.phoneNumber = e.target.value;
+    btn.disabled = e.target.value.length < 8;
+  });
+  if (input.value.length >= 8) btn.disabled = false;
+}
+
+function submitPhone() {
+  state.data.phoneCountry = $('#phoneCountry').value;
+  state.data.phoneVerified = false;
+  state.data.phoneCode = Math.floor(100000 + Math.random() * 900000).toString(); // Código simulado
+  save();
+  next();
+}
+
+function renderOTP(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Código de seis dígitos</h1>
+    <p class="subtitle">Insira o código enviado para +${COUNTRIES.find(c=>c.c===state.data.phoneCountry).d} *****-${state.data.phoneNumber.slice(-4)}</p>
+    
+    <div class="otp-container" id="otpBox">
+      <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
+      <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
+      <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
+      <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
+      <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
+      <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
+    </div>
+    
+    <p style="font-size: 14px; font-weight: 600;">Código simulado: ${state.data.phoneCode}</p>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" onclick="verifyOTP()">Verificar</button>
+    </div>
+  `;
+
+  // Auto-focus nos inputs do OTP
+  const inputs = document.querySelectorAll('.otp-input');
+  inputs[0].focus();
+  inputs.forEach((inp, idx) => {
+    inp.addEventListener('input', () => {
+      if (inp.value.length === 1 && idx < 5) inputs[idx + 1].focus();
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && inp.value.length === 0 && idx > 0) inputs[idx - 1].focus();
+    });
   });
 }
 
-/* =========================================================
-   RENDER
-   ========================================================= */
-function render(scrollTop){
-  clearInterval(phraseTimer);
-  const app = document.getElementById('app');
-
-  if (state.step === 0){
-    app.innerHTML = welcomeHTML();
-    bindWelcome();
-  } else if (state.step === 15){
-    app.innerHTML = statusHTML();
-    bindStatus();
+function verifyOTP() {
+  const inputs = document.querySelectorAll('.otp-input');
+  let code = '';
+  inputs.forEach(i => code += i.value);
+  
+  if (code === state.data.phoneCode) {
+    state.data.phoneVerified = true;
+    next();
   } else {
-    syncAll = () => {};
-    app.innerHTML = shellHTML(stepBody());
-    bindStep();
-    bindCommon();
-    syncAll();
-  }
-  if (scrollTop) window.scrollTo({ top: 0, behavior: 'auto' });
-}
-
-function go(step){ state.step = step; save(); render(true); }
-function rerender(){ render(false); }
-
-/* ---------- estrutura base ---------- */
-function shellHTML(content){
-  const pct = Math.round(((state.step - 1) / TOTAL_STEPS) * 100);
-  const meta = STEP_META[state.step] || {};
-  return `
-  <div class="appbar">
-    <div class="appbar-inner">
-      <div class="brand">
-        <span class="brand-mark">A</span>
-        <span class="brand-name">AURORA</span>
-      </div>
-      <button class="link" id="btnExit">SAIR</button>
-    </div>
-  </div>
-
-  <div class="shell">
-    <div class="progress">
-      <div class="progress-head">
-        <span class="progress-label">Etapa ${state.step} de ${TOTAL_STEPS}</span>
-        <span class="progress-pct">${pct}%</span>
-      </div>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-    </div>
-
-    <section class="card step">
-      ${content}
-      <div class="nav">
-        <button class="btn btn-ghost" id="btnBack">VOLTAR</button>
-        <button class="btn btn-primary" id="btnNext">${meta.next || 'CONTINUAR'}</button>
-      </div>
-    </section>
-
-    <p class="foot">Ambiente de demonstração. Nenhum dado é enviado a instituições financeiras.</p>
-  </div>`;
-}
-
-/* =========================================================
-   TELA INICIAL
-   ========================================================= */
-const PHRASES = [
-  'Conta digital completa, sem burocracia.',
-  'Abertura em poucos minutos, direto do celular.',
-  'Segurança e controle em um só aplicativo.',
-  'Seu dinheiro, suas regras.'
-];
-
-function welcomeHTML(){
-  const hasProgress = state.step > 0 && state.step < 15;
-  return `
-  <div class="welcome">
-    <div class="welcome-top">
-      <div class="welcome-logo">
-        <span class="brand-mark">A</span>
-        <span class="brand-name">AURORA</span>
-      </div>
-    </div>
-
-    <div class="welcome-content">
-      <div class="welcome-eyebrow">Banco digital</div>
-      <h1 class="welcome-title">Sua vida financeira<br>em um só lugar.</h1>
-      <p class="welcome-subtitle">
-        Abra sua conta em poucos minutos, com verificação de identidade e segurança de ponta a ponta.
-      </p>
-      <p class="welcome-rotate" id="rotate">${PHRASES[0]}</p>
-
-      <div class="welcome-actions">
-        <button class="btn btn-primary" id="btnOpen">ABRIR MINHA CONTA</button>
-        ${hasProgress ? '<button class="btn btn-ghost" id="btnResume">CONTINUAR CADASTRO</button>' : ''}
-        <button class="btn btn-ghost" id="btnLogin">JÁ TENHO CONTA</button>
-        <button class="link center" id="btnAbout">Conheça o banco</button>
-      </div>
-
-      <div class="about" id="about" hidden>
-        <strong>Aurora Banco Digital</strong>
-        Plataforma de conta digital com abertura por etapas, verificação de identidade e análise
-        cadastral. Este ambiente é uma demonstração do fluxo do produto. Para operar como
-        instituição financeira no Brasil é necessária autorização regulatória aplicável ou atuação
-        por meio de instituição parceira autorizada.
-      </div>
-    </div>
-  </div>`;
-}
-
-function bindWelcome(){
-  let i = 0;
-  const rotate = document.getElementById('rotate');
-  phraseTimer = setInterval(() => {
-    if (!document.body.contains(rotate)){ clearInterval(phraseTimer); return; }
-    i = (i + 1) % PHRASES.length;
-    rotate.style.opacity = '0';
-    setTimeout(() => {
-      rotate.textContent = PHRASES[i];
-      rotate.style.opacity = '1';
-    }, 320);
-  }, 3800);
-
-  const open = document.getElementById('btnOpen');
-  if (open) open.onclick = () => {
-    if (state.step === 0) state.step = 1;
-    save(); render(true);
-  };
-
-  const resume = document.getElementById('btnResume');
-  if (resume) resume.onclick = () => render(true);
-
-  const login = document.getElementById('btnLogin');
-  if (login) login.onclick = () => toast('O acesso à conta faz parte de outro módulo do aplicativo.');
-
-  const about = document.getElementById('btnAbout');
-  if (about) about.onclick = () => {
-    const box = document.getElementById('about');
-    box.hidden = !box.hidden;
-  };
-}
-
-/* =========================================================
-   ETAPAS
-   ========================================================= */
-function stepBody(){
-  switch (state.step){
-    case 1:  return stepNacionalidade();
-    case 2:  return stepDocumentos();
-    case 3:  return stepDadosPessoais();
-    case 4:  return stepEndereco();
-    case 5:  return stepContato();
-    case 6:  return stepProfissao();
-    case 7:  return stepRenda();
-    case 8:  return stepRendaExtra();
-    case 9:  return stepPatrimonio();
-    case 10: return stepIdentidade();
-    case 11: return stepSeguranca();
-    case 12: return stepSenha();
-    case 13: return stepRevisao();
-    case 14: return stepContratos();
-    default: return '';
+    alert('Código incorreto.');
   }
 }
 
-/* ETAPA 1 */
-function stepNacionalidade(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Identificação</span>
-    <h2>Qual é a sua nacionalidade?</h2>
-    <p class="sub">Pesquise e selecione o país ou território no catálogo internacional.</p>
-  </div>
-
-  <div class="field">
-    <input class="input" id="natSearch" placeholder="Pesquisar país ou território" autocomplete="off">
-    <div class="list" id="natList"></div>
-    <div class="selection" id="natSel">${chipCountry(d.nationality)}</div>
-  </div>
-
-  <div class="field">
-    <label class="label">Você possui outra nacionalidade?</label>
-    ${optGroup('otherNationality', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.otherNationality)}
-  </div>
-
-  <div class="field" id="otherBox">
-    <label class="label">Outras nacionalidades</label>
-    <input class="input" id="otherSearch" placeholder="Pesquisar país" autocomplete="off">
-    <div class="list" id="otherList"></div>
-    <div class="chips" id="otherChips">
-      ${(d.otherNationalities || []).map(iso => `
-        <span class="chip">${esc(countryName(iso))}<button type="button" data-remove="${iso}">remover</button></span>
+function renderNationality(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Sua nacionalidade</h1>
+    <p class="subtitle">Selecione para verificarmos sua identidade e residência.</p>
+    
+    <div class="search-bar">
+      <input type="text" id="searchCountry" placeholder="Pesquisar">
+    </div>
+    
+    <div class="list-container" id="countryList" style="max-height: 400px; overflow-y: auto;">
+      ${COUNTRIES.map(c => `
+        <div class="list-item ${state.data.nationality === c.c ? 'selected' : ''}" onclick="selectNationality('${c.c}')">
+          <span>${c.n}</span>
+        </div>
       `).join('')}
     </div>
-  </div>
+  `;
 
-  <div class="field">
-    <label class="label">Qual é o seu país de residência atual?</label>
-    <input class="input" id="resSearch" placeholder="Pesquisar país" autocomplete="off">
-    <div class="list" id="resList"></div>
-    <div class="selection" id="resSel">${chipCountry(d.residence)}</div>
-  </div>`;
-}
-
-/* ETAPA 2 */
-function docOptions(){
-  const d = state.data;
-  const brNat = d.nationality === 'BR';
-  const brRes = d.residence === 'BR';
-  if (brRes && brNat) return [
-    { v: 'CPF', l: 'CPF' },
-    { v: 'RG', l: 'RG' },
-    { v: 'CIN', l: 'CIN (Carteira de Identidade Nacional)' },
-    { v: 'CNH', l: 'CNH' },
-    { v: 'PASSAPORTE_BR', l: 'Passaporte brasileiro' }
-  ];
-  if (brRes && !brNat) return [
-    { v: 'CRNM', l: 'CRNM (Carteira de Registro Nacional Migratório)' },
-    { v: 'PROTOCOLO', l: 'Protocolo de solicitação de residência' },
-    { v: 'PASSAPORTE', l: 'Passaporte' },
-    { v: 'DOC_ESTRANGEIRO', l: 'Documento de identidade estrangeiro' }
-  ];
-  return [
-    { v: 'PASSAPORTE', l: 'Passaporte' },
-    { v: 'ID_NACIONAL', l: 'Documento de identidade nacional' },
-    { v: 'CNH', l: 'Carteira de habilitação' },
-    { v: 'DOC_RESIDENCIA', l: 'Documento de residência' }
-  ];
-}
-
-function stepDocumentos(){
-  const d = state.data;
-  const opts = docOptions();
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Documentação</span>
-    <h2>Qual documento de identificação você possui?</h2>
-    <p class="sub">As opções são carregadas conforme a nacionalidade e o país de residência informados.</p>
-  </div>
-
-  <div class="field">
-    ${optGroup('docType', opts, d.docType)}
-  </div>
-
-  <div class="field">
-    <label class="label">Número do documento</label>
-    <input class="input" data-bind="docNumber" placeholder="Informe o número" autocomplete="off">
-  </div>
-
-  <div class="field" id="cpfBox">
-    <label class="label">CPF</label>
-    <input class="input" data-bind="cpf" placeholder="000.000.000-00" inputmode="numeric" autocomplete="off">
-    <div class="hint">Obrigatório para residentes no Brasil.</div>
-  </div>
-
-  <div class="field">
-    <label class="label">Nome conforme o documento</label>
-    <input class="input" data-bind="docName" placeholder="Nome completo sem abreviações" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Data de emissão (quando aplicável)</label>
-    <input class="input" type="date" data-bind="docIssue">
-  </div>
-
-  <div class="field">
-    <label class="label">Órgão emissor (quando aplicável)</label>
-    <input class="input" data-bind="docIssuer" placeholder="Ex.: SSP, DPF, Consulado" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">País emissor</label>
-    <select class="input" data-bind="docCountry">${countrySelectOptions(d.docCountry || d.residence)}</select>
-  </div>
-
-  <div class="field">
-    <label class="label">Data de validade (quando aplicável)</label>
-    <input class="input" type="date" data-bind="docExpiry">
-  </div>`;
-}
-
-/* ETAPA 3 */
-function stepDadosPessoais(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Dados pessoais</span>
-    <h2>Informe seus dados pessoais</h2>
-    <p class="sub">Preencha exatamente como consta no documento apresentado.</p>
-  </div>
-
-  <div class="field">
-    <label class="label">Nome completo</label>
-    <input class="input" data-bind="fullName" placeholder="Nome e sobrenomes" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Nome social (opcional)</label>
-    <input class="input" data-bind="socialName" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Data de nascimento</label>
-    <input class="input" type="date" data-bind="birthDate" id="birthDate">
-    <div id="minorWarn" hidden class="warn">
-      Cadastro de menor de idade. O sistema encaminha para o fluxo próprio de conta de menor,
-      com participação do responsável legal conforme as regras aplicáveis.
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label">Sexo (para fins cadastrais)</label>
-    ${optGroup('sex', ['Feminino','Masculino','Outro','Prefiro não informar'], d.sex)}
-  </div>
-
-  <div class="field">
-    <label class="label">Estado civil</label>
-    <select class="input" data-bind="maritalStatus">
-      <option value="">Selecione</option>
-      ${['Solteiro(a)','Casado(a)','Divorciado(a)','Viúvo(a)','União estável','Separado(a)']
-        .map(v => `<option value="${v}" ${d.maritalStatus === v ? 'selected' : ''}>${v}</option>`).join('')}
-    </select>
-  </div>
-
-  <div class="field">
-    <label class="label">Nome da mãe</label>
-    <input class="input" data-bind="motherName" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Nome do pai (quando necessário)</label>
-    <input class="input" data-bind="fatherName" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Naturalidade</label>
-    <input class="input" data-bind="naturality" placeholder="Cidade e estado de nascimento" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">País de nascimento</label>
-    <select class="input" data-bind="birthCountry">${countrySelectOptions(d.birthCountry || d.nationality)}</select>
-  </div>`;
-}
-
-/* ETAPA 4 */
-function stepEndereco(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Endereço</span>
-    <h2>Onde você mora atualmente?</h2>
-    <p class="sub">O endereço é adaptado ao país selecionado.</p>
-  </div>
-
-  <div class="field">
-    <label class="label">País</label>
-    <select class="input" data-bind="addr.country">${countrySelectOptions(d.addr.country || d.residence)}</select>
-  </div>
-
-  <div class="field">
-    <label class="label">CEP ou código postal</label>
-    <input class="input" data-bind="addr.zip" inputmode="numeric" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Estado ou província</label>
-    <input class="input" data-bind="addr.state" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Cidade</label>
-    <input class="input" data-bind="addr.city" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Bairro ou distrito</label>
-    <input class="input" data-bind="addr.district" autocomplete="off">
-  </div>
-
-  <div class="field">
-    <label class="label">Rua ou avenida</label>
-    <input class="input" data-bind="addr.street" autocomplete="off">
-  </div>
-
-  <div class="row field">
-    <div>
-      <label class="label">Número</label>
-      <input class="input" data-bind="addr.number" autocomplete="off">
-    </div>
-    <div>
-      <label class="label">Complemento</label>
-      <input class="input" data-bind="addr.complement" autocomplete="off">
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label">Tipo de residência</label>
-    ${optGroup('addr.type', [
-      'Casa própria','Casa alugada','Apartamento próprio','Apartamento alugado',
-      'Mora com familiares','Outra situação'
-    ], d.addr.type)}
-  </div>`;
-}
-
-/* ETAPA 5 */
-function stepContato(){
-  const d = state.data;
-  if (!d.phone.dial) d.phone.dial = countryDial(d.residence || d.nationality);
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Contato</span>
-    <h2>Qual é o seu telefone?</h2>
-    <p class="sub">Os dois contatos precisam ser verificados por código.</p>
-  </div>
-
-  <div class="row field">
-    <div style="flex:0 0 92px">
-      <label class="label">Código</label>
-      <input class="input" data-bind="phone.dial" inputmode="numeric" autocomplete="off">
-    </div>
-    <div style="flex:0 0 78px">
-      <label class="label">DDD</label>
-      <input class="input" data-bind="phone.ddd" inputmode="numeric" maxlength="3" autocomplete="off">
-    </div>
-    <div>
-      <label class="label">Celular</label>
-      <input class="input" data-bind="phone.number" inputmode="numeric" autocomplete="off">
-    </div>
-  </div>
-
-  <div class="field">
-    <button type="button" class="btn btn-ghost" id="btnSendPhone">ENVIAR CÓDIGO POR SMS</button>
-    ${d.phone.sentCode ? `<div class="hint">Ambiente de teste — código simulado: <strong>${d.phone.sentCode}</strong></div>` : ''}
-    ${d.phone.sentCode ? `
-      <div style="margin-top:12px">
-        <label class="label">Código recebido</label>
-        <input class="input" data-bind="phone.code" inputmode="numeric" maxlength="6" placeholder="000000">
-        <button type="button" class="btn btn-ghost" id="btnConfirmPhone" style="margin-top:10px">CONFIRMAR TELEFONE</button>
-      </div>` : ''}
-    ${d.phone.verified ? `<div class="hint" style="color:var(--success)">Telefone verificado.</div>` : ''}
-  </div>
-
-  <div class="field">
-    <label class="label">Qual é o seu endereço de e-mail?</label>
-    <input class="input" data-bind="email.value" type="email" placeholder="nome@dominio.com" autocomplete="off">
-    <button type="button" class="btn btn-ghost" id="btnSendEmail" style="margin-top:10px">ENVIAR CÓDIGO POR E-MAIL</button>
-    ${d.email.sentCode ? `<div class="hint">Ambiente de teste — código simulado: <strong>${d.email.sentCode}</strong></div>` : ''}
-    ${d.email.sentCode ? `
-      <div style="margin-top:12px">
-        <label class="label">Código recebido</label>
-        <input class="input" data-bind="email.code" inputmode="numeric" maxlength="6" placeholder="000000">
-        <button type="button" class="btn btn-ghost" id="btnConfirmEmail" style="margin-top:10px">CONFIRMAR E-MAIL</button>
-      </div>` : ''}
-    ${d.email.verified ? `<div class="hint" style="color:var(--success)">E-mail verificado.</div>` : ''}
-  </div>`;
-}
-
-/* ETAPA 6 */
-function stepProfissao(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Profissão</span>
-    <h2>Qual é a sua profissão atualmente?</h2>
-    <p class="sub">Pesquise no catálogo com mais de 200 profissões.</p>
-  </div>
-
-  <div class="field">
-    <input class="input" id="profSearch" placeholder="Pesquisar profissão" autocomplete="off">
-    <div class="list" id="profList"></div>
-    <div class="selection" id="profSel">
-      ${d.profession ? `<span class="chip">${esc(d.profession)}<button type="button" id="clearProf">remover</button></span>` : ''}
-      ${d.professionOther ? `<span class="chip">${esc(d.professionOther)}<button type="button" id="clearProfOther">remover</button></span>` : ''}
-    </div>
-    <button type="button" class="btn btn-ghost" id="btnOtherProf" style="margin-top:12px">MINHA PROFISSÃO NÃO ESTÁ NA LISTA</button>
-    <div id="otherProfBox" hidden style="margin-top:12px">
-      <label class="label">Informe sua profissão</label>
-      <input class="input" data-bind="professionOther" autocomplete="off">
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label">Qual é sua situação profissional?</label>
-    ${optGroup('situation', [
-      'Trabalho com carteira assinada','Sou autônomo','Sou empresário','Sou servidor público',
-      'Trabalho informalmente','Sou estudante','Estou desempregado','Sou aposentado','Outra situação'
-    ], d.situation, 'col')}
-  </div>`;
-}
-
-/* ETAPA 7 */
-function stepRenda(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Renda</span>
-    <h2>Quanto você recebe mensalmente?</h2>
-    <p class="sub">Selecione a faixa aproximada. Não é necessário informar valor exato.</p>
-  </div>
-  <div class="field">
-    ${optGroup('income', [
-      'Sem renda','Até R$ 1.000','R$ 1.000 a R$ 2.000','R$ 2.000 a R$ 3.000',
-      'R$ 3.000 a R$ 5.000','R$ 5.000 a R$ 10.000','R$ 10.000 a R$ 20.000',
-      'R$ 20.000 a R$ 50.000','Acima de R$ 50.000'
-    ], d.income, 'col')}
-  </div>`;
-}
-
-/* ETAPA 8 */
-function stepRendaExtra(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Renda extra</span>
-    <h2>Você possui outra fonte de renda?</h2>
-  </div>
-
-  <div class="field">
-    ${optGroup('extraIncome', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.extraIncome)}
-  </div>
-
-  <div id="extraBox">
-    <div class="field">
-      <label class="label">De onde vem sua renda extra?</label>
-      ${multiGroup('extraSources', [
-        'Vendas pela internet','Comércio','Marketing digital','Redes sociais',
-        'Prestação de serviços','Aluguel de imóveis','Investimentos','Trabalho freelancer',
-        'Comissões','Aplicativos de transporte','Entregas','Atividades autônomas','Outros'
-      ], d.extraSources)}
-    </div>
-
-    <div class="field">
-      <label class="label">Valor aproximado da renda extra mensal</label>
-      ${optGroup('extraValue', [
-        'Até R$ 500','R$ 500 a R$ 1.000','R$ 1.000 a R$ 2.000',
-        'R$ 2.000 a R$ 5.000','R$ 5.000 a R$ 10.000','Acima de R$ 10.000'
-      ], d.extraValue, 'col')}
-    </div>
-  </div>`;
-}
-
-/* ETAPA 9 */
-function stepPatrimonio(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Patrimônio</span>
-    <h2>Você possui patrimônio?</h2>
-    <p class="sub">Os dados são tratados com confidencialidade e utilizados para finalidades regulatórias e de avaliação de perfil.</p>
-  </div>
-
-  <div class="field">
-    ${optGroup('patrimony', [
-      {v:'sim',l:'Sim'},{v:'nao',l:'Não'},{v:'posterior',l:'Prefiro informar posteriormente'}
-    ], d.patrimony)}
-  </div>
-
-  <div id="patrimonyBox">
-    <div class="field">
-      <label class="label">Faixa aproximada</label>
-      ${optGroup('patrimonyRange', [
-        'Até R$ 10 mil','R$ 10 mil a R$ 50 mil','R$ 50 mil a R$ 100 mil',
-        'R$ 100 mil a R$ 500 mil','R$ 500 mil a R$ 1 milhão','Acima de R$ 1 milhão'
-      ], d.patrimonyRange, 'col')}
-    </div>
-  </div>`;
-}
-
-/* ETAPA 10 */
-function stepIdentidade(){
-  const d = state.data;
-  const items = [
-    { key: 'front', title: 'Frente do documento', sub: 'Fotografe a frente do documento escolhido' },
-    { key: 'back',  title: 'Verso do documento', sub: 'Quando aplicável ao documento' },
-    { key: 'face',  title: 'Reconhecimento facial', sub: 'Comparação da fotografia com o documento' },
-    { key: 'live',  title: 'Prova de vida', sub: 'Confirmação de que você está presente' }
-  ];
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Verificação de identidade</span>
-    <h2>Precisamos confirmar sua identidade</h2>
-    <p class="sub">As capturas abaixo são simuladas neste ambiente de demonstração.</p>
-  </div>
-
-  ${items.map(it => `
-    <div class="capture-row">
-      <div>
-        <div class="ct">${it.title}</div>
-        <div class="cs">${it.sub}</div>
+  $('#searchCountry').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    const list = $('#countryList');
+    const filtered = COUNTRIES.filter(c => c.n.toLowerCase().includes(q));
+    list.innerHTML = filtered.map(c => `
+      <div class="list-item ${state.data.nationality === c.c ? 'selected' : ''}" onclick="selectNationality('${c.c}')">
+        <span>${c.n}</span>
       </div>
-      <button type="button" class="capture-btn ${d.idv[it.key] ? 'done' : ''}" data-capture="${it.key}">
-        ${d.idv[it.key] ? 'REGISTRADA' : 'CAPTURAR'}
-      </button>
-    </div>
-  `).join('')}
-
-  <div class="hint">A verificação de autenticidade, a comparação biométrica e a prova de vida
-  são executadas por fornecedor especializado em ambiente de produção.</div>`;
-}
-
-/* ETAPA 11 */
-function stepSeguranca(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Segurança</span>
-    <h2>Informações adicionais</h2>
-    <p class="sub">Perguntas obrigatórias conforme o perfil de risco e as obrigações legais.</p>
-  </div>
-
-  <div class="field">
-    <label class="label">Você é uma pessoa exposta politicamente (PEP)?</label>
-    ${optGroup('pep', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.pep)}
-  </div>
-
-  <div class="field">
-    <label class="label">Possui relação próxima ou familiar com uma pessoa exposta politicamente?</label>
-    ${optGroup('pepRelated', [{v:'sim',l:'Sim'},{v:'nao',l:'Não'}], d.pepRelated)}
-  </div>
-
-  <div class="field">
-    <label class="label">Qual é a finalidade principal da conta?</label>
-    ${multiGroup('purpose', [
-      'Receber salário','Fazer pagamentos','Guardar dinheiro','Receber transferências',
-      'Utilizar Pix','Receber pagamentos de clientes','Outras finalidades'
-    ], d.purpose)}
-  </div>
-
-  <div class="field">
-    <label class="label">Qual movimentação mensal aproximada espera realizar?</label>
-    ${optGroup('movement', [
-      'Até R$ 1.000','R$ 1.000 a R$ 5.000','R$ 5.000 a R$ 10.000',
-      'R$ 10.000 a R$ 50.000','Acima de R$ 50.000'
-    ], d.movement, 'col')}
-  </div>`;
-}
-
-/* ETAPA 12 */
-function stepSenha(){
-  const d = state.data;
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Senha de acesso</span>
-    <h2>Crie sua senha de acesso</h2>
-    <p class="sub">A senha protege o acesso ao aplicativo.</p>
-  </div>
-
-  <div class="field">
-    <label class="label">Senha</label>
-    <input class="input" type="password" id="pwd" data-bind="password" autocomplete="new-password">
-    <div class="strength" id="strength"><span></span><span></span><span></span><span></span></div>
-    <div class="reqs" id="reqs">
-      <div data-req="len">Mínimo de 8 caracteres</div>
-      <div data-req="upper">Uma letra maiúscula</div>
-      <div data-req="lower">Uma letra minúscula</div>
-      <div data-req="digit">Um número</div>
-      <div data-req="special">Um caractere especial</div>
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label">Confirmação da senha</label>
-    <input class="input" type="password" id="pwd2" data-bind="passwordConfirm" autocomplete="new-password">
-  </div>
-
-  <div class="field">
-    <label class="contract-check" style="border:1px solid var(--border);border-radius:var(--radius)">
-      <input type="checkbox" id="showPwd">
-      <span>Visualizar senha</span>
-    </label>
-    <div class="hint">A recuperação de acesso é feita por procedimento seguro com validação de identidade.
-    O sistema bloqueia temporariamente após tentativas excessivas.</div>
-  </div>`;
-}
-
-/* ETAPA 13 */
-function reviewSection(title, target, rows){
-  return `
-  <div class="review-block">
-    <div class="review-head">
-      <span>${title}</span>
-      <button type="button" class="link" data-goto="${target}">EDITAR</button>
-    </div>
-    <div class="review-body">
-      ${rows.map(r => `<div class="review-row"><span class="rk">${r[0]}</span><span class="rv">${esc(r[1] || '—')}</span></div>`).join('')}
-    </div>
-  </div>`;
-}
-
-function stepRevisao(){
-  const d = state.data;
-  const otherNats = (d.otherNationalities || []).map(countryName).join(', ');
-  const cpfMasked = d.cpf ? d.cpf.replace(/\d(?=\d{2})/g, '•') : '';
-
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Revisão</span>
-    <h2>Revise seus dados</h2>
-    <p class="sub">Confira as informações antes de enviar a solicitação.</p>
-  </div>
-
-  ${reviewSection('Nacionalidade', 1, [
-    ['Nacionalidade', countryName(d.nationality)],
-    ['Outra nacionalidade', otherNats],
-    ['Residência', countryName(d.residence)]
-  ])}
-
-  ${reviewSection('Documentação', 2, [
-    ['Documento', d.docType],
-    ['Número', d.docNumber],
-    ['CPF', cpfMasked],
-    ['Nome no documento', d.docName],
-    ['Órgão emissor', d.docIssuer],
-    ['País emissor', d.docCountry ? countryName(d.docCountry) : '']
-  ])}
-
-  ${reviewSection('Dados pessoais', 3, [
-    ['Nome completo', d.fullName],
-    ['Nome social', d.socialName],
-    ['Nascimento', d.birthDate],
-    ['Sexo', d.sex],
-    ['Estado civil', d.maritalStatus],
-    ['Nome da mãe', d.motherName],
-    ['Nome do pai', d.fatherName],
-    ['Naturalidade', d.naturality],
-    ['País de nascimento', d.birthCountry ? countryName(d.birthCountry) : '']
-  ])}
-
-  ${reviewSection('Endereço', 4, [
-    ['País', d.addr.country ? countryName(d.addr.country) : ''],
-    ['CEP / código postal', d.addr.zip],
-    ['Estado / província', d.addr.state],
-    ['Cidade', d.addr.city],
-    ['Bairro / distrito', d.addr.district],
-    ['Logradouro', [d.addr.street, d.addr.number, d.addr.complement].filter(Boolean).join(', ')],
-    ['Tipo de residência', d.addr.type]
-  ])}
-
-  ${reviewSection('Contatos', 5, [
-    ['Telefone', [d.phone.dial ? '+' + d.phone.dial : '', d.phone.ddd, d.phone.number].filter(Boolean).join(' ')],
-    ['Telefone verificado', d.phone.verified ? 'Sim' : 'Não'],
-    ['E-mail', d.email.value],
-    ['E-mail verificado', d.email.verified ? 'Sim' : 'Não']
-  ])}
-
-  ${reviewSection('Profissão', 6, [
-    ['Profissão', d.profession || d.professionOther],
-    ['Situação profissional', d.situation]
-  ])}
-
-  ${reviewSection('Renda', 7, [
-    ['Renda mensal', d.income]
-  ])}
-
-  ${reviewSection('Renda extra', 8, [
-    ['Possui renda extra', d.extraIncome === 'sim' ? 'Sim' : (d.extraIncome === 'nao' ? 'Não' : '')],
-    ['Fontes', (d.extraSources || []).join(', ')],
-    ['Valor aproximado', d.extraValue]
-  ])}
-
-  ${reviewSection('Informações adicionais', 11, [
-    ['PEP', d.pep === 'sim' ? 'Sim' : (d.pep === 'nao' ? 'Não' : '')],
-    ['Relação com PEP', d.pepRelated === 'sim' ? 'Sim' : (d.pepRelated === 'nao' ? 'Não' : '')],
-    ['Finalidade', (d.purpose || []).join(', ')],
-    ['Movimentação esperada', d.movement]
-  ])}`;
-}
-
-/* ETAPA 14 */
-function stepContratos(){
-  const blocks = [
-    { key: 'account', title: 'Contrato de abertura de conta',
-      text: 'Este contrato estabelece as condições de abertura e manutenção da conta digital, os direitos e as obrigações do titular e da instituição, as hipóteses de bloqueio e encerramento, além dos canais de atendimento disponíveis. A contratação é realizada de forma eletrônica, com registro de aceite e trilha de auditoria.' },
-    { key: 'terms', title: 'Termos e condições de uso',
-      text: 'Os termos descrevem as regras de utilização do aplicativo, as responsabilidades do usuário quanto à guarda de senhas e dispositivos, os limites operacionais e as condições de suspensão do acesso por motivo de segurança.' },
-    { key: 'privacy', title: 'Política de privacidade',
-      text: 'Os dados pessoais são tratados para fins de identificação, qualificação, prevenção a fraudes, cumprimento de obrigações regulatórias e prestação dos serviços contratados. O titular pode exercer os direitos previstos na legislação aplicável pelos canais oficiais de atendimento.' },
-    { key: 'fees', title: 'Informações sobre tarifas',
-      text: 'A instituição informa previamente os serviços sujeitos a cobrança, os valores praticados e os canais para consulta da tabela vigente. Serviços essenciais permanecem disponíveis conforme a regulamentação aplicável.' }
-  ];
-
-  return `
-  <div class="step-head">
-    <span class="eyebrow">Contratos e envio</span>
-    <h2>Leia e confirme os documentos</h2>
-    <p class="sub">Todos os aceites são obrigatórios para enviar a solicitação.</p>
-  </div>
-
-  ${blocks.map(b => `
-    <div class="contract">
-      <div class="contract-head">${b.title}</div>
-      <div class="contract-body">
-        <p>${b.text}</p>
-        <p>Documento de demonstração. O texto completo deve ser disponibilizado para leitura antes do aceite.</p>
-      </div>
-      <label class="contract-check">
-        <input type="checkbox" data-bind="contracts.${b.key}">
-        <span>Li e concordo com o documento acima.</span>
-      </label>
-    </div>
-  `).join('')}
-
-  <div class="hint">Ao enviar, a solicitação entra na fila de análise. A aprovação não é automática.</div>`;
-}
-
-/* =========================================================
-   STATUS (ETAPA 16)
-   ========================================================= */
-const STATUS_STEPS = [
-  'Solicitação recebida',
-  'Verificando documentos',
-  'Verificando identidade',
-  'Análise cadastral'
-];
-
-function statusHTML(){
-  const protocol = state.data.protocol || '—';
-  return `
-  <div class="appbar">
-    <div class="appbar-inner">
-      <div class="brand">
-        <span class="brand-mark">A</span>
-        <span class="brand-name">AURORA</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="shell">
-    <section class="card step">
-      <span class="eyebrow">Solicitação enviada</span>
-      <h2>Recebemos sua solicitação</h2>
-      <p class="sub">Protocolo ${esc(protocol)}</p>
-
-      <div class="timeline" id="timeline">
-        ${STATUS_STEPS.map(s => `<div class="tl-item">${s}</div>`).join('')}
-      </div>
-
-      <p class="hint" id="statusNote" hidden style="margin-top:20px">
-        A solicitação permanece em análise pelo time responsável. O status exibido é simulado
-        neste ambiente. Em produção, o status viria do sistema real de análise cadastral.
-      </p>
-
-      <div class="nav" style="margin-top:26px">
-        <button class="btn btn-ghost" id="btnCancel" style="flex:1">CANCELAR</button>
-        <button class="btn btn-primary" id="btnHome" style="flex:1.4">VOLTAR AO INÍCIO</button>
-      </div>
-    </section>
-
-    <p class="foot">Ambiente de demonstração. Nenhum dado é enviado a instituições financeiras.</p>
-  </div>`;
-}
-
-function bindStatus(){
-  const items = $$('#timeline .tl-item');
-  let i = 0;
-  const run = () => {
-    if (i >= items.length){
-      const note = document.getElementById('statusNote');
-      if (note) note.hidden = false;
-      return;
-    }
-    items[i].classList.add('current');
-    setTimeout(() => {
-      items[i].classList.remove('current');
-      items[i].classList.add('done');
-      i++;
-      run();
-    }, 1100);
-  };
-  setTimeout(run, 400);
-
-  const home = document.getElementById('btnHome');
-  if (home) home.onclick = () => { state.step = 0; save(); render(true); };
-
-  const cancel = document.getElementById('btnCancel');
-  if (cancel) cancel.onclick = () => {
-    if (confirm('Deseja cancelar a solicitação e apagar os dados preenchidos?')) resetAll();
-  };
-}
-
-/* =========================================================
-   BINDINGS
-   ========================================================= */
-function bindCommon(){
-  $$('[data-bind]').forEach(inp => {
-    const p = inp.dataset.bind;
-    const v = getPath(state.data, p);
-    if (inp.type === 'checkbox') inp.checked = !!v;
-    else if (v !== undefined && v !== null && document.activeElement !== inp) inp.value = v;
-
-    const handler = () => {
-      const value = inp.type === 'checkbox' ? inp.checked : inp.value;
-      setPath(state.data, p, value);
-      save();
-      if (typeof syncAll === 'function') syncAll();
-    };
-    inp.addEventListener('input', handler);
-    inp.addEventListener('change', handler);
-  });
-
-  bindOptions();
-
-  const back = document.getElementById('btnBack');
-  if (back) back.onclick = () => {
-    if (state.step <= 1){ state.step = 0; save(); render(true); return; }
-    go(state.step - 1);
-  };
-
-  const next = document.getElementById('btnNext');
-  if (next) next.onclick = () => {
-    const res = validateStep(state.step);
-    if (!res.ok){ toast(res.msg); return; }
-    if (state.step === 14){ submitRequest(); return; }
-    go(state.step + 1);
-  };
-
-  const exit = document.getElementById('btnExit');
-  if (exit) exit.onclick = () => { state.step = 0; save(); render(true); };
-
-  $$('[data-goto]').forEach(btn => {
-    btn.onclick = () => go(parseInt(btn.dataset.goto, 10));
+    `).join('');
   });
 }
 
-function bindOptions(){
-  $$('.options[data-group]').forEach(box => {
-    const g = box.dataset.group;
-    const refresh = () => {
-      const cur = String(getPath(state.data, g));
-      $$('.opt', box).forEach(b => b.classList.toggle('selected', cur === b.dataset.value));
-    };
-    refresh();
-    $$('.opt', box).forEach(btn => {
-      btn.onclick = () => {
-        setPath(state.data, g, btn.dataset.value);
-        save(); refresh(); syncAll();
-      };
-    });
-  });
+function selectNationality(iso) {
+  state.data.nationality = iso;
+  state.data.residence = iso; // Simplificação: residência = nacionalidade
+  save();
+  next();
+}
 
-  $$('.options[data-multi]').forEach(box => {
-    const g = box.dataset.multi;
-    const refresh = () => {
-      const cur = getPath(state.data, g) || [];
-      $$('.opt', box).forEach(b => b.classList.toggle('selected', cur.includes(b.dataset.value)));
-    };
-    refresh();
-    $$('.opt', box).forEach(btn => {
-      btn.onclick = () => {
-        const cur = (getPath(state.data, g) || []).slice();
-        const i = cur.indexOf(btn.dataset.value);
-        if (i >= 0) cur.splice(i, 1); else cur.push(btn.dataset.value);
-        setPath(state.data, g, cur);
-        save(); refresh(); syncAll();
-      };
-    });
+function renderDocType(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Escolha uma opção de verificação</h1>
+    <p class="subtitle">Selecione um documento para verificarmos sua identidade.</p>
+    
+    <div style="margin-top: 24px;">
+      <div class="option-card ${state.data.docType === 'CNH' ? 'selected' : ''}" onclick="selectDoc('CNH')">
+        <div class="radio-circle"></div>
+        <div class="option-text">Carteira de habilitação</div>
+        <div class="option-badge">Mais rápido</div>
+      </div>
+      <div class="option-card ${state.data.docType === 'RG' ? 'selected' : ''}" onclick="selectDoc('RG')">
+        <div class="radio-circle"></div>
+        <div class="option-text">Documento de identificação nacional</div>
+      </div>
+      <div class="option-card ${state.data.docType === 'PASSAPORTE' ? 'selected' : ''}" onclick="selectDoc('PASSAPORTE')">
+        <div class="radio-circle"></div>
+        <div class="option-text">Passaporte</div>
+      </div>
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" onclick="next()" ${!state.data.docType ? 'disabled' : ''}>Continuar</button>
+    </div>
+  `;
+}
+
+function selectDoc(doc) {
+  state.data.docType = doc;
+  save();
+  render();
+}
+
+function renderName(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Nome conforme identificação oficial</h1>
+    <p class="subtitle">Seu nome completo conforme documento oficial de identificação.</p>
+    
+    <div class="input-group" style="margin-top: 24px;">
+      <input type="text" class="input-pill" id="fullName" placeholder="Nome completo" value="${state.data.fullName}">
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" id="btnName" onclick="submitName()" disabled>Continuar</button>
+    </div>
+  `;
+
+  const input = $('#fullName');
+  const btn = $('#btnName');
+  
+  input.addEventListener('input', (e) => {
+    state.data.fullName = e.target.value;
+    btn.disabled = e.target.value.trim().split(' ').length < 2;
+  });
+  if (input.value.trim().split(' ').length >= 2) btn.disabled = false;
+}
+
+function submitName() {
+  save();
+  next();
+}
+
+function renderBirthDate(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Data de nascimento</h1>
+    
+    <div class="row" style="margin-top: 24px;">
+      <input type="number" class="input-pill" id="birthDate" placeholder="DD/MM/AAAA" value="${state.data.birthDate}">
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" id="btnDate" onclick="submitDate()" disabled>Continuar</button>
+    </div>
+  `;
+
+  const input = $('#birthDate');
+  const btn = $('#btnDate');
+  
+  input.addEventListener('input', (e) => {
+    state.data.birthDate = e.target.value;
+    btn.disabled = e.target.value.length < 8;
   });
 }
 
-/* ---------- bindings específicos ---------- */
-function bindStep(){
-  const d = state.data;
+function submitDate() {
+  save();
+  next();
+}
 
-  switch (state.step){
-    case 1: {
-      const natSearch = document.getElementById('natSearch');
-      const natList = document.getElementById('natList');
-      const resSearch = document.getElementById('resSearch');
-      const resList = document.getElementById('resList');
-      const otherSearch = document.getElementById('otherSearch');
-      const otherList = document.getElementById('otherList');
+function renderAddress(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Endereço residencial</h1>
+    <p class="subtitle">Precisamos do seu endereço residencial para abrir uma conta.</p>
+    
+    <div class="search-bar" style="margin-bottom: 16px;">
+      <input type="text" placeholder="Pesquisar endereço">
+    </div>
+    
+    <div class="input-group">
+      <input type="text" class="input-pill" id="street" placeholder="Rua ou avenida" value="${state.data.addressStreet}">
+    </div>
+    <div class="row input-group">
+      <input type="text" class="input-pill" id="number" placeholder="Número" value="${state.data.addressNumber}">
+      <input type="text" class="input-pill" id="zip" placeholder="CEP" value="${state.data.addressZip}">
+    </div>
+    <div class="row input-group">
+      <input type="text" class="input-pill" id="city" placeholder="Cidade" value="${state.data.addressCity}">
+      <input type="text" class="input-pill" id="state" placeholder="Estado" value="${state.data.addressState}">
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" onclick="submitAddress()">Continuar</button>
+    </div>
+  `;
+}
 
-      renderCountryList(natList, '', iso => { d.nationality = iso; save(); rerender(); });
-      natSearch.oninput = () => renderCountryList(natList, natSearch.value, iso => { d.nationality = iso; save(); rerender(); });
+function submitAddress() {
+  state.data.addressStreet = $('#street').value;
+  state.data.addressNumber = $('#number').value;
+  state.data.addressZip = $('#zip').value;
+  state.data.addressCity = $('#city').value;
+  state.data.addressState = $('#state').value;
+  save();
+  next();
+}
 
-      renderCountryList(resList, '', iso => { d.residence = iso; save(); rerender(); });
-      resSearch.oninput = () => renderCountryList(resList, resSearch.value, iso => { d.residence = iso; save(); rerender(); });
+function renderProfession(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Sua profissão</h1>
+    <p class="subtitle">Selecione sua ocupação atual.</p>
+    
+    <div class="search-bar">
+      <input type="text" id="searchProf" placeholder="Pesquisar">
+    </div>
+    
+    <div class="list-container" id="profList" style="max-height: 350px; overflow-y: auto;">
+      ${PROFESSIONS.map(p => `
+        <div class="list-item ${state.data.profession === p ? 'selected' : ''}" onclick="selectProf('${p}')">
+          <span>${p}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
 
-      const addOther = iso => {
-        if (iso === d.nationality){ toast('A nacionalidade principal já foi informada.'); return; }
-        if (!d.otherNationalities.includes(iso)) d.otherNationalities.push(iso);
-        save(); rerender();
-      };
-      renderCountryList(otherList, '', addOther);
-      otherSearch.oninput = () => renderCountryList(otherList, otherSearch.value, addOther);
+  $('#searchProf').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    const list = $('#profList');
+    const filtered = PROFESSIONS.filter(p => p.toLowerCase().includes(q));
+    list.innerHTML = filtered.map(p => `
+      <div class="list-item ${state.data.profession === p ? 'selected' : ''}" onclick="selectProf('${p}')">
+        <span>${p}</span>
+      </div>
+    `).join('');
+  });
+}
 
-      $$('[data-remove]').forEach(btn => {
-        btn.onclick = () => {
-          d.otherNationalities = d.otherNationalities.filter(x => x !== btn.dataset.remove);
-          save(); rerender();
-        };
-      });
+function selectProf(prof) {
+  state.data.profession = prof;
+  save();
+  next();
+}
 
-      syncAll = () => {
-        const box = document.getElementById('otherBox');
-        if (box) box.hidden = d.otherNationality !== 'sim';
-      };
-      break;
-    }
+function renderIncome(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Renda mensal antes do imposto</h1>
+    
+    <div class="input-group" style="margin-top: 24px;">
+      <div style="position: relative;">
+        <span style="position: absolute; left: 20px; top: 18px; color: var(--text-muted);">R$</span>
+        <input type="number" class="input-pill" id="income" placeholder="0" style="padding-left: 50px;" value="${state.data.income}">
+      </div>
+    </div>
+    
+    <div class="checklist">
+      <div class="checklist-item">
+        <div class="check-mark"></div>
+        <span>A renda inclui dinheiro recebido como salário, aluguel, investimentos ou trabalho autônomo.</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-mark"></div>
+        <span>Certifique-se de que o valor seja fornecido antes de impostos.</span>
+      </div>
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" id="btnIncome" onclick="submitIncome()" disabled>Continuar</button>
+    </div>
+  `;
 
-    case 2: {
-      syncAll = () => {
-        const box = document.getElementById('cpfBox');
-        if (!box) return;
-        const br = d.nationality === 'BR' || d.residence === 'BR';
-        box.hidden = !(br && d.docType !== 'CPF');
-      };
-      break;
-    }
+  const input = $('#income');
+  const btn = $('#btnIncome');
+  
+  input.addEventListener('input', (e) => {
+    state.data.income = e.target.value;
+    btn.disabled = !e.target.value;
+  });
+}
 
-    case 3: {
-      const birth = document.getElementById('birthDate');
-      syncAll = () => {
-        const warn = document.getElementById('minorWarn');
-        if (!warn) return;
-        const a = calcAge(d.birthDate);
-        warn.hidden = !(a >= 0 && a < 18);
-      };
-      if (birth) birth.addEventListener('change', syncAll);
-      break;
-    }
+function submitIncome() {
+  save();
+  next();
+}
 
-    case 5: {
-      const sendPhone = document.getElementById('btnSendPhone');
-      if (sendPhone) sendPhone.onclick = () => {
-        if (!d.phone.ddd || !d.phone.number){ toast('Informe DDD e número do celular.'); return; }
-        d.phone.sentCode = String(Math.floor(100000 + Math.random() * 900000));
-        d.phone.verified = false;
-        save();
-        toast('Código simulado enviado por SMS: ' + d.phone.sentCode);
-        rerender();
-      };
+function renderIdentity(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Antes de continuar</h1>
+    <p class="subtitle">Certifique-se de que seu documento atenda aos seguintes critérios.</p>
+    
+    <div style="margin: 40px auto; width: 100px; height: 140px; border: 2px solid var(--text-main); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <div style="width: 30px; height: 30px; border: 2px solid var(--text-main); border-radius: 50%;"></div>
+      <div style="width: 40px; height: 3px; background: var(--text-main); margin-top: 16px;"></div>
+    </div>
+    
+    <div class="checklist">
+      <div class="checklist-item">
+        <div class="check-mark"></div>
+        <span>Seu documento deve estar dentro da validade.</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-mark"></div>
+        <span>O documento deve estar nítido e bem iluminado.</span>
+      </div>
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" onclick="next()">Iniciar captura simulada</button>
+    </div>
+  `;
+}
 
-      const confirmPhone = document.getElementById('btnConfirmPhone');
-      if (confirmPhone) confirmPhone.onclick = () => {
-        if (d.phone.code === d.phone.sentCode && d.phone.sentCode){
-          d.phone.verified = true; save(); toast('Telefone verificado.');
-        } else toast('Código incorreto.');
-        rerender();
-      };
+function renderSecurity(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Segurança</h1>
+    <p class="subtitle">Essas informações são obrigatórias por lei.</p>
+    
+    <div style="margin-top: 24px;">
+      <p class="label">Você é uma pessoa exposta politicamente (PEP)?</p>
+      <div class="option-card" onclick="next()">
+        <div class="radio-circle"></div>
+        <div class="option-text">Não</div>
+      </div>
+      <div class="option-card" onclick="next()">
+        <div class="radio-circle"></div>
+        <div class="option-text">Sim</div>
+      </div>
+    </div>
+  `;
+}
 
-      const sendEmail = document.getElementById('btnSendEmail');
-      if (sendEmail) sendEmail.onclick = () => {
-        if (!validEmail(d.email.value)){ toast('Informe um e-mail válido.'); return; }
-        d.email.sentCode = String(Math.floor(100000 + Math.random() * 900000));
-        d.email.verified = false;
-        save();
-        toast('Código simulado enviado por e-mail: ' + d.email.sentCode);
-        rerender();
-      };
+function renderPassword(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Crie uma senha</h1>
+    <p class="subtitle">Mínimo de 8 caracteres.</p>
+    
+    <div class="input-group" style="margin-top: 24px;">
+      <input type="password" class="input-pill" id="pwd" placeholder="Senha">
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" id="btnPwd" onclick="submitPassword()" disabled>Continuar</button>
+    </div>
+  `;
 
-      const confirmEmail = document.getElementById('btnConfirmEmail');
-      if (confirmEmail) confirmEmail.onclick = () => {
-        if (d.email.code === d.email.sentCode && d.email.sentCode){
-          d.email.verified = true; save(); toast('E-mail verificado.');
-        } else toast('Código incorreto.');
-        rerender();
-      };
+  const input = $('#pwd');
+  const btn = $('#btnPwd');
+  
+  input.addEventListener('input', (e) => {
+    state.data.password = e.target.value;
+    btn.disabled = e.target.value.length < 8;
+  });
+}
 
-      syncAll = () => {};
-      break;
-    }
+function submitPassword() {
+  save();
+  next();
+}
 
-    case 6: {
-      const search = document.getElementById('profSearch');
-      const list = document.getElementById('profList');
-      const otherBox = document.getElementById('otherProfBox');
-      if (otherBox) otherBox.hidden = !d.professionOther;
+function renderReview(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Revise seus dados</h1>
+    <p class="subtitle">Confira as informações antes de enviar.</p>
+    
+    <div class="contract-box">
+      <div class="contract-title">Dados Pessoais</div>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Nome:</strong> ${state.data.fullName}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Nascimento:</strong> ${state.data.birthDate}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Profissão:</strong> ${state.data.profession}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Renda:</strong> R$ ${state.data.income}</p>
+    </div>
+    
+    <div class="contract-box">
+      <div class="contract-title">Contato e Endereço</div>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Telefone:</strong> +${COUNTRIES.find(c=>c.c===state.data.phoneCountry).d} ${state.data.phoneNumber}</p>
+      <p style="font-size: 14px; margin-bottom: 8px;"><strong>Endereço:</strong> ${state.data.addressStreet}, ${state.data.addressNumber} - ${state.data.addressCity}</p>
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" onclick="next()">Continuar</button>
+    </div>
+  `;
+}
 
-      const renderList = (q) => {
-        const query = norm(q);
-        const items = PROFESSIONS.filter(p => !query || norm(p).includes(query)).slice(0, 200);
-        list.innerHTML = items.length
-          ? items.map(p => `<button type="button" class="list-item" data-prof="${esc(p)}">${esc(p)}</button>`).join('')
-          : '<div class="empty">Nenhuma profissão encontrada. Use a opção abaixo.</div>';
-        $$('[data-prof]', list).forEach(btn => {
-          btn.onclick = () => {
-            d.profession = btn.dataset.prof;
-            d.professionOther = '';
-            save(); rerender();
-          };
-        });
-      };
-      renderList('');
-      search.oninput = () => renderList(search.value);
+function renderContracts(screen) {
+  screen.innerHTML = `
+    ${headerNav()}
+    <h1>Contratos</h1>
+    <p class="subtitle">Leia e aceite os termos para abrir sua conta.</p>
+    
+    <div class="contract-box">
+      <div class="contract-title">Contrato de abertura de conta</div>
+      <div class="contract-text">Este contrato estabelece as condições de abertura e manutenção da conta digital, os direitos e as obrigações do titular e da instituição, além dos canais de atendimento disponíveis...</div>
+      
+      <div class="checkbox-row" id="checkAccount" onclick="toggleCheck('account')">
+        <div class="checkbox-square"></div>
+        <span>Li e concordo com o Contrato de Abertura.</span>
+      </div>
+    </div>
+    
+    <div class="contract-box">
+      <div class="contract-title">Política de Privacidade</div>
+      <div class="contract-text">Os dados pessoais são tratados para fins de identificação, prevenção a fraudes e cumprimento de obrigações regulatórias...</div>
+      
+      <div class="checkbox-row" id="checkPrivacy" onclick="toggleCheck('privacy')">
+        <div class="checkbox-square"></div>
+        <span>Li e concordo com a Política de Privacidade.</span>
+      </div>
+    </div>
+    
+    <div class="footer-actions" style="margin-top: auto;">
+      <button class="btn btn-primary" id="btnContracts" onclick="submitContracts()" disabled>Enviar solicitação</button>
+    </div>
+  `;
+}
 
-      const otherBtn = document.getElementById('btnOtherProf');
-      if (otherBtn) otherBtn.onclick = () => {
-        const box = document.getElementById('otherProfBox');
-        box.hidden = !box.hidden;
-        if (!box.hidden) setTimeout(() => $('[data-bind="professionOther"]', box).focus(), 60);
-      };
-
-      const clearProf = document.getElementById('clearProf');
-      if (clearProf) clearProf.onclick = () => { d.profession = ''; save(); rerender(); };
-
-      const clearOther = document.getElementById('clearProfOther');
-      if (clearOther) clearOther.onclick = () => { d.professionOther = ''; save(); rerender(); };
-
-      syncAll = () => {};
-      break;
-    }
-
-    case 8: {
-      syncAll = () => {
-        const box = document.getElementById('extraBox');
-        if (box) box.hidden = d.extraIncome !== 'sim';
-      };
-      break;
-    }
-
-    case 9: {
-      syncAll = () => {
-        const box = document.getElementById('patrimonyBox');
-        if (box) box.hidden = d.patrimony !== 'sim';
-      };
-      break;
-    }
-
-    case 10: {
-      $$('[data-capture]').forEach(btn => {
-        btn.onclick = () => {
-          const key = btn.dataset.capture;
-          d.idv[key] = !d.idv[key];
-          save(); rerender();
-        };
-      });
-      syncAll = () => {};
-      break;
-    }
-
-    case 12: {
-      const pwd = document.getElementById('pwd');
-      const pwd2 = document.getElementById('pwd2');
-      const bar = document.getElementById('strength');
-      const reqs = document.getElementById('reqs');
-      const show = document.getElementById('showPwd');
-
-      const evaluate = () => {
-        const v = pwd.value || '';
-        const checks = {
-          len: v.length >= 8,
-          upper: /[A-Z]/.test(v),
-          lower: /[a-z]/.test(v),
-          digit: /\d/.test(v),
-          special: /[^A-Za-z0-9]/.test(v)
-        };
-        let score = 0;
-        Object.keys(checks).forEach(k => {
-          const el = reqs.querySelector(`[data-req="${k}"]`);
-          if (el) el.classList.toggle('ok', checks[k]);
-          if (checks[k]) score++;
-        });
-        bar.className = 'strength s' + Math.min(score, 4);
-      };
-
-      if (pwd) pwd.addEventListener('input', evaluate);
-      evaluate();
-
-      if (show) show.addEventListener('change', () => {
-        const t = show.checked ? 'text' : 'password';
-        if (pwd) pwd.type = t;
-        if (pwd2) pwd2.type = t;
-      });
-
-      syncAll = () => {};
-      break;
-    }
+function toggleCheck(type) {
+  state.data.contracts[type] = !state.data.contracts[type];
+  save();
+  
+  const el = $(`#check${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  if (state.data.contracts[type]) {
+    el.classList.add('checked');
+  } else {
+    el.classList.remove('checked');
   }
+  
+  const btn = $('#btnContracts');
+  btn.disabled = !(state.data.contracts.account && state.data.contracts.privacy);
+}
+
+function submitContracts() {
+  next();
+}
+
+function renderStatus(screen) {
+  screen.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; margin-top: 40px;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-input); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+        <div class="check-mark" style="border-color: var(--text-main); width: 20px; height: 40px; margin: 0;"></div>
+      </div>
+      
+      <h1>Solicitação enviada</h1>
+      <p class="subtitle" style="margin-top: 12px;">Recebemos seus dados. Estamos analisando suas informações e você receberá uma resposta em breve.</p>
+      
+      <button class="btn btn-primary" onclick="resetApp()" style="margin-top: 40px;">Voltar ao início</button>
+    </div>
+  `;
+}
+
+function resetApp() {
+  localStorage.removeItem('aurora_fintech_v1');
+  state = { step: 0, data: { phoneCountry: 'BR', phoneNumber: '', phoneCode: '', phoneVerified: false, nationality: '', residence: '', docType: '', fullName: '', birthDate: '', addressZip: '', addressStreet: '', addressNumber: '', addressCity: '', addressState: '', profession: '', income: '', password: '', contracts: { account: false, terms: false, privacy: false } } };
+  render();
 }
 
 /* =========================================================
-   VALIDAÇÃO
+   INICIALIZAÇÃO
    ========================================================= */
-function validateStep(step){
-  const d = state.data;
-
-  switch (step){
-    case 1:
-      if (!d.nationality) return { ok: false, msg: 'Selecione sua nacionalidade.' };
-      if (!d.otherNationality) return { ok: false, msg: 'Informe se possui outra nacionalidade.' };
-      if (d.otherNationality === 'sim' && (!d.otherNationalities || d.otherNationalities.length === 0))
-        return { ok: false, msg: 'Adicione ao menos uma outra nacionalidade.' };
-      if (!d.residence) return { ok: false, msg: 'Selecione o país de residência atual.' };
-      return { ok: true };
-
-    case 2:
-      if (!d.docType) return { ok: false, msg: 'Selecione o documento de identificação.' };
-      if (!d.docNumber || d.docNumber.length < 4) return { ok: false, msg: 'Informe o número do documento.' };
-      if (!d.docName || d.docName.trim().length < 5) return { ok: false, msg: 'Informe o nome conforme o documento.' };
-      {
-        const br = d.nationality === 'BR' || d.residence === 'BR';
-        if (br && d.docType !== 'CPF' && !validCPF(d.cpf))
-          return { ok: false, msg: 'Informe um CPF válido.' };
-        if (d.docType === 'CPF' && !validCPF(d.docNumber))
-          return { ok: false, msg: 'Informe um CPF válido.' };
-      }
-      return { ok: true };
-
-    case 3:
-      if (!d.fullName || d.fullName.trim().split(' ').length < 2)
-        return { ok: false, msg: 'Informe o nome completo.' };
-      if (!d.birthDate) return { ok: false, msg: 'Informe a data de nascimento.' };
-      {
-        const a = calcAge(d.birthDate);
-        if (a < 0) return { ok: false, msg: 'Data de nascimento inválida.' };
-        if (a < 18) return { ok: false, msg: 'Cadastro de menor de idade segue fluxo próprio com responsável legal.' };
-        if (a > 120) return { ok: false, msg: 'Data de nascimento inválida.' };
-      }
-      if (!d.sex) return { ok: false, msg: 'Selecione a opção de sexo para fins cadastrais.' };
-      if (!d.maritalStatus) return { ok: false, msg: 'Selecione o estado civil.' };
-      if (!d.motherName || d.motherName.trim().length < 3) return { ok: false, msg: 'Informe o nome da mãe.' };
-      if (!d.birthCountry) return { ok: false, msg: 'Selecione o país de nascimento.' };
-      return { ok: true };
-
-    case 4:
-      if (!d.addr.country) return { ok: false, msg: 'Selecione o país do endereço.' };
-      if (!d.addr.zip) return { ok: false, msg: 'Informe o CEP ou código postal.' };
-      if (!d.addr.state) return { ok: false, msg: 'Informe o estado ou província.' };
-      if (!d.addr.city) return { ok: false, msg: 'Informe a cidade.' };
-      if (!d.addr.district) return { ok: false, msg: 'Informe o bairro ou distrito.' };
-      if (!d.addr.street) return { ok: false, msg: 'Informe a rua ou avenida.' };
-      if (!d.addr.number) return { ok: false, msg: 'Informe o número do endereço.' };
-      if (!d.addr.type) return { ok: false, msg: 'Selecione o tipo de residência.' };
-      return { ok: true };
-
-    case 5:
-      if (!d.phone.dial || !d.phone.ddd || !d.phone.number)
-        return { ok: false, msg: 'Preencha código internacional, DDD e número.' };
-      if (!d.phone.verified) return { ok: false, msg: 'Confirme o código enviado ao telefone.' };
-      if (!validEmail(d.email.value)) return { ok: false, msg: 'Informe um e-mail válido.' };
-      if (!d.email.verified) return { ok: false, msg: 'Confirme o código enviado ao e-mail.' };
-      return { ok: true };
-
-    case 6:
-      if (!d.profession && !(d.professionOther && d.professionOther.trim()))
-        return { ok: false, msg: 'Selecione ou informe sua profissão.' };
-      if (!d.situation) return { ok: false, msg: 'Selecione sua situação profissional.' };
-      return { ok: true };
-
-    case 7:
-      if (!d.income) return { ok: false, msg: 'Selecione a faixa de renda mensal.' };
-      return { ok: true };
-
-    case 8:
-      if (!d.extraIncome) return { ok: false, msg: 'Informe se possui outra fonte de renda.' };
-      if (d.extraIncome === 'sim'){
-        if (!d.extraSources || d.extraSources.length === 0)
-          return { ok: false, msg: 'Selecione ao menos uma fonte de renda extra.' };
-        if (!d.extraValue) return { ok: false, msg: 'Selecione o valor aproximado da renda extra.' };
-      }
-      return { ok: true };
-
-    case 9:
-      if (!d.patrimony) return { ok: false, msg: 'Responda sobre a existência de patrimônio.' };
-      if (d.patrimony === 'sim' && !d.patrimonyRange)
-        return { ok: false, msg: 'Selecione a faixa aproximada do patrimônio.' };
-      return { ok: true };
-
-    case 10:
-      if (!d.idv.front) return { ok: false, msg: 'Registre a frente do documento.' };
-      if (!d.idv.face) return { ok: false, msg: 'Realize o reconhecimento facial.' };
-      if (!d.idv.live) return { ok: false, msg: 'Realize a prova de vida.' };
-      return { ok: true };
-
-    case 11:
-      if (!d.pep) return { ok: false, msg: 'Responda à pergunta sobre PEP.' };
-      if (!d.pepRelated) return { ok: false, msg: 'Responda à pergunta sobre relação com PEP.' };
-      if (!d.purpose || d.purpose.length === 0) return { ok: false, msg: 'Selecione a finalidade principal da conta.' };
-      if (!d.movement) return { ok: false, msg: 'Selecione a movimentação mensal esperada.' };
-      return { ok: true };
-
-    case 12: {
-      const v = d.password || '';
-      if (v.length < 8) return { ok: false, msg: 'A senha precisa ter no mínimo 8 caracteres.' };
-      if (!/[A-Z]/.test(v) || !/[a-z]/.test(v) || !/\d/.test(v) || !/[^A-Za-z0-9]/.test(v))
-        return { ok: false, msg: 'A senha precisa conter maiúscula, minúscula, número e caractere especial.' };
-      if (v !== d.passwordConfirm) return { ok: false, msg: 'A confirmação da senha não confere.' };
-      return { ok: true };
-    }
-
-    case 13: return { ok: true };
-
-    case 14: {
-      const c = d.contracts;
-      if (!c.account || !c.terms || !c.privacy || !c.fees)
-        return { ok: false, msg: 'É necessário aceitar todos os documentos para enviar.' };
-      return { ok: true };
-    }
-
-    default: return { ok: true };
-  }
-}
-
-function submitRequest(){
-  state.data.protocol = 'AU' + Date.now().toString().slice(-9);
-  state.step = 15;
-  save(); render(true);
-}
-
-/* =========================================================
-   INIT
-   ========================================================= */
-load();
-render(true);
+render();
 </script>
 </body>
 </html>
