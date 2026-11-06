@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeoBank - Abertura de Conta</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --bg-color: #0f0f13;
+            --chat-bg: #0f0f13;
+            --bot-bubble: #1e1e24;
+            --user-bubble: #ffffff;
+            --text-light: #ffffff;
+            --text-dark: #000000;
+            --text-gray: #a1a1aa;
+            --accent: #8b5cf6; /* Roxo Neon no lugar do amarelo */
+            --accent-hover: #7c3aed;
+            --border-radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Simulador de Celular */
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 850px;
+            background-color: var(--bg-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        @media (min-width: 400px) {
+            .mobile-container {
+                height: 90vh;
+                border-radius: 30px;
+                border: 1px solid #333;
+            }
+        }
+
+        /* Barra de Status */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            padding: 5px 20px;
+            z-index: 10;
+        }
+
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid #333;
+            color: #888;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Área do Chat */
+        .chat-container {
+            flex: 1;
+            padding: 10px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Bolhas de Mensagem */
+        .message {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease forwards;
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            background-color: var(--bot-bubble);
+            color: var(--text-light);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user-message {
+            background-color: var(--user-bubble);
+            color: var(--text-dark);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Botões dentro do chat */
+        .chat-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background-color: transparent;
+            border: 1px solid #444;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover {
+            background-color: #2a2a35;
+            border-color: var(--accent);
+        }
+
+        /* Área de Input */
+        .input-area {
+            padding: 15px 20px 20px;
+            background: var(--bg-color);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .input-box {
+            flex: 1;
+            background-color: #1e1e24;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 5px 15px;
+        }
+
+        .input-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 12px 0;
+            outline: none;
+        }
+
+        .input-box input::placeholder {
+            color: #666;
+        }
+
+        .send-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Modal (Tela Cheia) */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: flex-end;
+            flex-direction: column;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #1c1c24;
+            width: 100%;
+            border-radius: 25px 25px 0 0;
+            padding: 25px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .radio-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 15px;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+        .radio-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .radio-option.selected .radio-circle {
+            border-color: var(--accent);
+        }
+
+        .radio-option.selected .radio-circle::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .confirm-btn:disabled {
+            background-color: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Teclado Numérico Simulado */
+        .numeric-keypad {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 10px 20px 20px;
+            background: #1e1e24;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .keypad-btn {
+            background: #2a2a35;
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+        .keypad-btn:active {
+            background: #3f3f4e;
+        }
+
+        /* Câmera Mock */
+        .camera-mock {
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border: 2px dashed #444;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .camera-mock .face-outline {
+            width: 150px;
+            height: 200px;
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.5s;
+        }
+
+        /* Typing Indicator */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 15px 20px;
+        }
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background-color: #888;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing span:nth-child(1) { animation-delay: -0.32s; }
+        .typing span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    <!-- Barra de Status -->
+    <div class="status-bar">
+        <span id="clock">19:33</span>
+        <div class="status-icons">
+            <span>📶</span>
+            <span>🔋</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="close-btn">✕</div>
+    </div>
+
+    <!-- Área do Chat -->
+    <div class="chat-container" id="chat-container">
+        <!-- As mensagens aparecerão aqui -->
+    </div>
+
+    <!-- Área de Input -->
+    <div class="input-area" id="input-area" style="display: none;">
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="Digite aqui..." autocomplete="off">
+        </div>
+        <button class="send-btn" id="send-btn">➤</button>
+    </div>
+
+    <!-- Modal de Seleção Inicial (PF/PJ) -->
+    <div class="modal-overlay" id="account-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Que tipo de conta você quer abrir?</h2>
+            <div class="radio-group">
+                <div class="radio-option" onclick="selectAccountType('PF', this)">
+                    <span>Abrir uma conta pessoal (PF)</span>
+                    <div class="radio-circle"></div>
+                </div>
+                <div class="radio-option" onclick="selectAccountType('PJ', this)">
+                    <span>Abrir uma conta empresarial (PJ)</span>
+                    <div class="radio-circle"></div>
+                </div>
+            </div>
+            <button class="confirm-btn" id="confirm-account-btn" disabled onclick="confirmAccountType()">Confirmar</button>
+        </div>
+    </div>
+
+    <!-- Modal para Selfie (Pago/Simulado) -->
+    <div class="modal-overlay" id="camera-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Verificação Facial</h2>
+            <div class="camera-mock" id="camera-view">
+                <div class="face-outline"></div>
+                <p style="color: #666; position: absolute; bottom: 20px;">Mova a cabeça para cima e para baixo</p>
+            </div>
+            <button class="confirm-btn" id="take-selfie-btn" onclick="simulateSelfie()">Tirar Selfie</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Variáveis de Estado
+    const chatContainer = document.getElementById('chat-container');
+    const inputArea = document.getElementById('input-area');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const accountModal = document.getElementById('account-modal');
+    const cameraModal = document.getElementById('camera-modal');
+    
+    let currentStep = 0;
+    let selectedAccountType = '';
+    let userData = {};
+
+    // Iniciar Fluxo
+    window.onload = () => {
+        updateClock();
+        setInterval(updateClock, 60000);
+        
+        // Inicia a conversa após um pequeno delay
+        setTimeout(() => {
+            botMessage("Olá! 😊");
+            setTimeout(() => botMessage("Que bom ver você aqui!"), 800);
+            setTimeout(() => botMessage("A abertura da sua conta é rápida, segura e leva poucos minutos."), 1800);
+            setTimeout(() => {
+                botMessage("Primeiro, qual tipo de conta você quer abrir?");
+                setTimeout(() => {
+                    accountModal.classList.add('active');
+                }, 500);
+            }, 3000);
+        }, 500);
+    };
+
+    // Relógio do Celular
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('clock').innerText = `${hours}:${minutes}`;
+    }
+
+    // Função para adicionar mensagem do Bot
+    function botMessage(text, isTyping = true) {
+        if (isTyping) {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message typing';
+            typingDiv.innerHTML = '<span></span><span></span><span></span>';
+            chatContainer.appendChild(typingDiv);
+            scrollToBottom();
+            
+            setTimeout(() => {
+                chatContainer.removeChild(typingDiv);
+                createMessageElement(text, 'bot-message');
+            }, 1000);
+        } else {
+            createMessageElement(text, 'bot-message');
+        }
+    }
+
+    // Função para adicionar mensagem do Usuário
+    function userMessage(text) {
+        createMessageElement(text, 'user-message');
+    }
+
+    function createMessageElement(text, className) {
+        const div = document.createElement('div');
+        div.className = `message ${className}`;
+        div.innerText = text;
+        chatContainer.appendChild(div);
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // --- LÓGICA DO MODAL INICIAL (PF/PJ) ---
+    function selectAccountType(type, element) {
+        selectedAccountType = type;
+        document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('confirm-account-btn').disabled = false;
+    }
+
+    function confirmAccountType() {
+        accountModal.classList.remove('active');
+        userMessage(selectedAccountType === 'PF' ? 'Abrir uma conta pessoal (PF)' : 'Abrir uma conta empresarial (PJ)');
+        
+        setTimeout(() => {
+            botMessage("As contas do NeoBank são para clientes acima de 18 anos e ficam vinculadas ao CPF.");
+            setTimeout(() => {
+                botMessage("Por isso, digite o número do seu CPF.");
+                showInput("Digite seu CPF...", "numeric");
+                currentStep = 1;
+            }, 2000);
+        }, 1000);
+    }
+
+    // --- CONTROLE DE INPUT ---
+    function showInput(placeholder, type = "text") {
+        inputArea.style.display = 'flex';
+        userInput.placeholder = placeholder;
+        userInput.type = type === "numeric" ? "tel" : "text";
+        userInput.value = '';
+        userInput.focus();
+    }
+
+    function hideInput() {
+        inputArea.style.display = 'none';
+        userInput.blur();
+    }
+
+    // Enviar mensagem
+    sendBtn.addEventListener('click', handleUserSubmit);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleUserSubmit();
+    });
+
+    function handleUserSubmit() {
+        const value = userInput.value.trim();
+        if (!value) return;
+
+        userMessage(value);
+        userInput.value = '';
+        hideInput();
+        
+        processStep(value);
+    }
+
+    // --- FLUXO PASSO A PASSO ---
+    function processStep(value) {
+        userData[currentStep] = value;
+
+        switch (currentStep) {
+            case 1: // CPF
+                setTimeout(() => {
+                    botMessage("Como podemos chamar você?");
+                    setTimeout(() => {
+                        botMessage("Pode ser seu primeiro nome ou apelido.");
+                        showInput("Digite seu nome...");
+                        currentStep = 2;
+                    }, 1500);
+                }, 1000);
+                break;
+
+            case 2: // Nome
+                setTimeout(() => {
+                    botMessage("Qual seu e-mail pessoal?");
+                    showInput("exemplo@email.com", "email");
+                    currentStep = 3;
+                }, 1000);
+                break;
+
+            case 3: // Email
+                setTimeout(() => {
+                    botMessage("E qual é o número do seu celular?");
+                    showInput("(DD) 99999-9999", "numeric");
+                    currentStep = 4;
+                }, 1000);
+                break;
+
+            case 4: // Celular
+                setTimeout(() => {
+                    botMessage("Agora, crie uma senha de 6 números para acessar o app.");
+                    setTimeout(() => {
+                        botMessage("Uma dica: Não use números sequenciais, como 123456.");
+                        showInput("Digite sua senha de 6 dígitos...", "password");
+                        currentStep = 5;
+                    }, 2000);
+                }, 1000);
+                break;
+
+            case 5: // Senha
+                if (value.length !== 6) {
+                    setTimeout(() => {
+                        botMessage("A senha precisa ter exatamente 6 números. Tente novamente.");
+                        showInput("Digite sua senha de 6 dígitos...", "password");
+                    }, 1000);
+                    return;
+                }
+                setTimeout(() => {
+                    botMessage("Vamos continuar com o cadastro do seu endereço residencial. Qual seu CEP?");
+                    showInput("00000-000", "numeric");
+                    currentStep = 6;
+                }, 1000);
+                break;
+
+            case 6: // CEP
+                setTimeout(() => {
+                    botMessage("Endereço encontrado: Rua das Flores, 123 - Centro.");
+                    setTimeout(() => {
+                        botMessage("Qual o número da sua residência?");
+                        showInput("Ex: 45");
+                        currentStep = 7;
+                    }, 2000);
+                }, 1000);
+                break;
+
+            case 7: // Número da casa
+                setTimeout(() => {
+                    botMessage("Agora, qual é a sua renda mensal aproximada?");
+                    showInput("R$ 0,00", "numeric");
+                    currentStep = 8;
+                }, 1000);
+                break;
+
+            case 8: // Renda
+                setTimeout(() => {
+                    botMessage("Para continuar, envie uma selfie para confirmar quem é você.");
+                    setTimeout(() => {
+                        botMessage("Ela não será utilizada como foto de perfil.");
+                        setTimeout(() => {
+                            cameraModal.classList.add('active');
+                            currentStep = 9;
+                        }, 1500);
+                    }, 1500);
+                }, 1000);
+                break;
+
+            case 9: // Indicação
+                setTimeout(() => {
+                    botMessage("Você tem um convite ou código de indicação para abertura de conta?");
+                    showInput("Digite o código ou 'Não'");
+                    currentStep = 10;
+                }, 1000);
+                break;
+
+            case 10: // Finalização
+                setTimeout(() => {
+                    botMessage("Pronto! Vamos analisar essas informações e te responderemos em breve por e-mail e push.");
+                    setTimeout(() => {
+                        botMessage("Obrigado por escolher o NeoBank. 💜");
+                        setTimeout(() => {
+                            botMessage("Sua conta foi criada com sucesso! Bem-vindo(a) ao futuro.");
+                        }, 2000);
+                    }, 2000);
+                }, 1000);
+                break;
+        }
+    }
+
+    // --- SIMULAÇÃO DE CÂMERA (PAGO/SIMULADO) ---
+    function simulateSelfie() {
+        const btn = document.getElementById('take-selfie-btn');
+        const cameraView = document.getElementById('camera-view');
+        
+        btn.innerText = "Analisando rosto...";
+        btn.disabled = true;
+        
+        // Simula biometria
+        cameraView.style.borderColor = 'var(--accent)';
+        cameraView.innerHTML = `
+            <div class="face-outline" style="border-color: #00ff00;"></div>
+            <p style="color: #00ff00; position: absolute; bottom: 20px;">Rosto detectado...</p>
+            <div class="loading-bar"><div class="loading-progress" id="load-bar"></div></div>
+        `;
+        
+        setTimeout(() => { document.getElementById('load-bar').style.width = '50%'; }, 500);
+        setTimeout(() => { document.getElementById('load-bar').style.width = '100%'; }, 1500);
+
+        setTimeout(() => {
+            cameraModal.classList.remove('active');
+            userMessage("Selfie enviada");
+            btn.innerText = "Tirar Selfie";
+            btn.disabled = false;
+            processStep("Selfie enviada");
+        }, 2500);
+    }
+
+</script>
+</body>
+</html>
