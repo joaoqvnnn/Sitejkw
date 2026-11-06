@@ -6,7 +6,7 @@
 <title>Aurora - Abertura de Conta</title>
 <style>
   /* =========================================================
-     DESIGN SYSTEM - PADRÃO FINTECH INTERNACIONAL (DARK MODE)
+     DESIGN SYSTEM - PADRÃO FINTECH (DARK MODE)
      ========================================================= */
   :root {
     --bg: #000000;
@@ -17,9 +17,8 @@
     --primary: #FFFFFF;
     --primary-text: #000000;
     --btn-secondary: #2C2C2E;
-    --border-color: #38383A;
     --radius-pill: 9999px;
-    --radius-lg: 24px;
+    --radius-lg: 20px;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
@@ -37,7 +36,7 @@
   }
 
   /* =========================================================
-     ESTRUTURA E LAYOUT
+     ESTRUTURA
      ========================================================= */
   #app {
     display: flex;
@@ -54,11 +53,11 @@
     flex-direction: column;
     flex: 1;
     padding: 24px 20px;
-    animation: slideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation: fadeSlide 0.3s ease-out;
   }
 
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(20px); }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(15px); }
     to { opacity: 1; transform: translateX(0); }
   }
 
@@ -70,7 +69,7 @@
     height: 40px;
   }
 
-  /* Seta de voltar puramente em CSS */
+  /* Seta de voltar (CSS puro) */
   .btn-back {
     width: 40px; height: 40px;
     border-radius: 50%;
@@ -90,30 +89,14 @@
     margin-left: 4px;
   }
 
-  .btn-close {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: var(--bg-input);
-    border: none;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-  }
-  .btn-close::before, .btn-close::after {
-    content: "";
-    position: absolute;
-    width: 14px; height: 2px;
-    background: var(--text-main);
-  }
-  .btn-close::before { transform: rotate(45deg); }
-  .btn-close::after { transform: rotate(-45deg); }
-
+  /* Barra de progresso */
   .progress-line {
     position: absolute;
     top: 0; left: 0; height: 3px;
     background: var(--text-main);
     transition: width 0.4s ease;
     border-radius: 0 4px 4px 0;
+    z-index: 10;
   }
 
   /* =========================================================
@@ -123,7 +106,7 @@
     font-size: 32px;
     font-weight: 800;
     line-height: 1.1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     margin-bottom: 12px;
   }
   .subtitle {
@@ -138,10 +121,11 @@
     color: var(--text-muted);
     margin-bottom: 8px;
     font-weight: 500;
+    margin-left: 16px;
   }
 
   /* =========================================================
-     CAMPOS E INPUTS
+     INPUTS
      ========================================================= */
   .input-group { margin-bottom: 20px; }
   
@@ -155,11 +139,19 @@
     font-size: 16px;
     font-family: inherit;
     outline: none;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s;
   }
   .input-pill::placeholder { color: #5C5C60; }
-  .input-pill:focus { border-color: var(--text-main); background: var(--bg-input-hover); }
-  select.input-pill { appearance: none; cursor: pointer; }
+  .input-pill:focus { border-color: var(--text-main); }
+  
+  select.input-pill { 
+    appearance: none; 
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%238E8E93%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px top 50%;
+    background-size: 12px auto;
+  }
 
   .row { display: flex; gap: 12px; }
   .row > * { flex: 1; }
@@ -172,22 +164,21 @@
     padding: 18px;
     border-radius: var(--radius-pill);
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
     font-family: inherit;
     border: none;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.1s;
-    margin-top: auto;
   }
   .btn:active { transform: scale(0.98); }
   .btn-primary { background: var(--primary); color: var(--primary-text); }
-  .btn-primary:disabled { background: var(--btn-secondary); color: #5C5C60; cursor: not-allowed; }
+  .btn-primary:disabled { background: #2C2C2E; color: #5C5C60; cursor: not-allowed; }
   .btn-secondary { background: var(--btn-secondary); color: var(--text-main); }
   
-  .footer-actions { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+  .footer-actions { margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding-top: 20px;}
 
   /* =========================================================
-     SELEÇÕES (RÁDIO / CHECK)
+     OPÇÕES (CARTÕES)
      ========================================================= */
   .option-card {
     display: flex;
@@ -197,21 +188,18 @@
     padding: 20px;
     margin-bottom: 12px;
     cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.2s;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
   }
-  .option-card:hover { background: var(--bg-input-hover); }
   .option-card.selected { border-color: var(--text-main); }
   
-  /* Círculo de seleção */
   .radio-circle {
     width: 22px; height: 22px;
     border-radius: 50%;
-    border: 2px solid var(--text-muted);
+    border: 2px solid #5C5C60;
     margin-right: 16px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    transition: border-color 0.2s;
   }
   .option-card.selected .radio-circle { border-color: var(--text-main); }
   .option-card.selected .radio-circle::after {
@@ -227,7 +215,7 @@
     color: var(--bg);
     font-size: 12px;
     font-weight: 700;
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: var(--radius-pill);
   }
 
@@ -256,64 +244,63 @@
   .list-container {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    overflow-y: auto;
   }
   .list-item {
     padding: 16px 20px;
     background: var(--bg-input);
     border-radius: 12px;
     cursor: pointer;
-    transition: background 0.2s;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 2px solid transparent;
   }
-  .list-item:hover { background: var(--bg-input-hover); }
   .list-item.selected {
-    background: var(--text-main);
-    color: var(--bg);
+    border-color: var(--text-main);
   }
   .list-item .country-code { color: var(--text-muted); font-size: 14px; }
-  .list-item.selected .country-code { color: #555; }
 
   /* =========================================================
-     OTP (CÓDIGO DE VERIFICAÇÃO)
+     OTP
      ========================================================= */
   .otp-container {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: space-between;
     margin-bottom: 32px;
   }
   .otp-input {
-    width: 48px;
-    height: 56px;
+    width: 100%;
+    height: 60px;
     background: var(--bg-input);
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     border-radius: 12px;
     color: var(--text-main);
     font-size: 24px;
     font-weight: 700;
     text-align: center;
     outline: none;
-    transition: border-color 0.2s;
   }
   .otp-input:focus { border-color: var(--text-main); }
 
   /* =========================================================
-     TELA INICIAL (WELCOME)
+     TELA INICIAL
      ========================================================= */
   .welcome-screen {
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 60px 20px 40px;
+    padding-bottom: 60px;
   }
   .logo-text {
-    font-size: 48px;
+    font-size: 56px;
     font-weight: 900;
-    letter-spacing: -2px;
-    margin-top: 40px;
+    letter-spacing: -3px;
+    margin-bottom: 40px;
   }
+  .welcome-actions { width: 100%; margin-top: 40px; display: flex; flex-direction: column; gap: 12px; }
 
   /* =========================================================
      CHECKLIST E AVISOS
@@ -329,20 +316,19 @@
     gap: 16px;
     margin-bottom: 16px;
     font-size: 15px;
+    font-weight: 500;
     line-height: 1.4;
   }
   .checklist-item:last-child { margin-bottom: 0; }
   .check-mark {
     width: 12px; height: 20px;
     border: solid var(--text-main);
-    border-width: 0 2px 2px 0;
+    border-width: 0 2.5px 2.5px 0;
     transform: rotate(45deg);
     flex-shrink: 0;
-    margin-top: 4px;
+    margin-top: 2px;
     margin-left: 6px;
   }
-
-  .error-text { color: #FF453A; font-size: 14px; margin-top: 8px; display: none; }
 
   /* Contratos */
   .contract-box {
@@ -351,21 +337,20 @@
     padding: 20px;
     margin-bottom: 16px;
   }
-  .contract-title { font-weight: 600; margin-bottom: 8px; }
-  .contract-text { font-size: 14px; color: var(--text-muted); max-height: 100px; overflow-y: auto; }
+  .contract-title { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+  .contract-text { font-size: 14px; color: var(--text-muted); max-height: 100px; overflow-y: auto; line-height: 1.5; }
   .checkbox-row {
-    display: flex; align-items: flex-start; gap: 12px; margin-top: 16px; cursor: pointer;
+    display: flex; align-items: flex-start; gap: 12px; margin-top: 20px; cursor: pointer;
   }
   .checkbox-square {
-    width: 24px; height: 24px; border: 2px solid var(--text-muted); border-radius: 6px; flex-shrink: 0;
+    width: 24px; height: 24px; border: 2px solid #5C5C60; border-radius: 8px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
   .checkbox-row.checked .checkbox-square { background: var(--text-main); border-color: var(--text-main); }
   .checkbox-row.checked .checkbox-square::after {
-    content: ""; width: 6px; height: 12px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg);
+    content: ""; width: 6px; height: 12px; border: solid var(--bg); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
     margin-top: -2px;
   }
-
 </style>
 </head>
 <body>
@@ -380,61 +365,65 @@ const $ = (s) => document.querySelector(s);
 
 const COUNTRIES = [
   { n: 'Brasil', c: 'BR', d: '55' },
-  { n: 'Estados Unidos', c: 'US', d: '1' },
-  { n: 'Portugal', c: 'PT', d: '351' },
-  { n: 'Reino Unido', c: 'GB', d: '44' },
-  { n: 'Espanha', c: 'ES', d: '34' },
   { n: 'Alemanha', c: 'DE', d: '49' },
-  { n: 'Angola', c: 'AO', d: '244' },
-  { n: 'Moçambique', c: 'MZ', d: '258' },
-  { n: 'Japão', c: 'JP', d: '81' },
+  { n: 'Argentina', c: 'AR', d: '54' },
+  { n: 'Estados Unidos', c: 'US', d: '1' },
+  { n: 'Espanha', c: 'ES', d: '34' },
   { n: 'França', c: 'FR', d: '33' },
   { n: 'Itália', c: 'IT', d: '39' },
-  { n: 'Argentina', c: 'AR', d: '54' }
+  { n: 'Japão', c: 'JP', d: '81' },
+  { n: 'Portugal', c: 'PT', d: '351' },
+  { n: 'Reino Unido', c: 'GB', d: '44' }
 ];
 
 const PROFESSIONS = [
-  'Médico', 'Enfermeiro', 'Dentista', 'Psicólogo', 'Fisioterapeuta', 'Nutricionista',
-  'Professor', 'Pedagogo', 'Diretor escolar', 'Desenvolvedor', 'Programador', 'Analista de sistemas',
-  'Engenheiro de software', 'Analista de dados', 'Administrador', 'Gerente', 'Assistente administrativo',
-  'Contador', 'Auditor', 'Vendedor', 'Comerciante', 'Atendente', 'Pedreiro', 'Eletricista',
-  'Engenheiro civil', 'Arquiteto', 'Motorista', 'Entregador', 'Advogado', 'Consultor jurídico',
-  'Designer gráfico', 'Jornalista', 'Publicitário', 'Autônomo', 'Empresário', 'Servidor público',
-  'Estudante', 'Aposentado', 'Desempregado', 'Dona ou dono de casa', 'Trabalhador informal'
+  'Advogado', 'Analista de dados', 'Analista de sistemas', 'Arquiteto', 'Assistente administrativo',
+  'Atendente', 'Auditor', 'Autônomo', 'Aposentado', 'Comerciante', 'Consultor jurídico', 'Contador',
+  'Dentista', 'Desempregado', 'Desenvolvedor', 'Designer gráfico', 'Diretor escolar', 'Dona ou dono de casa',
+  'Eletricista', 'Empresário', 'Enfermeiro', 'Engenheiro civil', 'Engenheiro de software', 'Entregador',
+  'Estudante', 'Fisioterapeuta', 'Gerente', 'Jornalista', 'Médico', 'Motorista', 'Nutricionista',
+  'Pedagogo', 'Pedreiro', 'Professor', 'Programador', 'Psicólogo', 'Publicitário', 'Servidor público',
+  'Trabalhador informal', 'Vendedor'
 ].sort();
+
+const defaultData = {
+  phoneCountry: 'BR',
+  phoneNumber: '',
+  phoneCode: '',
+  nationality: 'BR',
+  residence: 'BR',
+  docType: '',
+  fullName: '',
+  birthDate: '',
+  addressZip: '',
+  addressStreet: '',
+  addressNumber: '',
+  addressCity: '',
+  addressState: '',
+  profession: '',
+  income: '',
+  password: '',
+  contracts: { account: false, privacy: false }
+};
 
 let state = {
   step: 0,
-  data: {
-    phoneCountry: 'BR',
-    phoneNumber: '',
-    phoneCode: '',
-    phoneVerified: false,
-    nationality: '',
-    residence: '',
-    docType: '',
-    fullName: '',
-    birthDate: '',
-    addressZip: '',
-    addressStreet: '',
-    addressNumber: '',
-    addressCity: '',
-    addressState: '',
-    profession: '',
-    income: '',
-    password: '',
-    contracts: { account: false, terms: false, privacy: false }
-  }
+  data: { ...defaultData }
 };
 
-// Recuperar progresso
+// Recuperar progresso com segurança
 try {
-  const saved = localStorage.getItem('aurora_fintech_v1');
-  if (saved) state = JSON.parse(saved);
+  const saved = localStorage.getItem('aurora_fintech_v2');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    if (typeof parsed.step === 'number' && parsed.step >= 0 && parsed.step <= 15) {
+      state = parsed;
+    }
+  }
 } catch(e){}
 
 function save() {
-  localStorage.setItem('aurora_fintech_v1', JSON.stringify(state));
+  try { localStorage.setItem('aurora_fintech_v2', JSON.stringify(state)); } catch(e){}
 }
 
 /* =========================================================
@@ -442,23 +431,23 @@ function save() {
    ========================================================= */
 function render() {
   const app = $('#app');
-  app.innerHTML = '';
+  app.innerHTML = ''; // Limpa a tela
 
-  // Calcula progresso (ex: step 1 até 15)
-  const progressPct = state.step === 0 || state.step === 16 ? 0 : (state.step / 15) * 100;
-
+  // Cria a tela e JÁ INSERE no DOM (evita erro de querySelector nulo)
   const screen = document.createElement('div');
   screen.className = 'screen';
+  app.appendChild(screen);
 
-  // Barra de progresso no topo
-  if (state.step > 0 && state.step < 16) {
+  // Barra de progresso
+  if (state.step > 0 && state.step < 15) {
+    const pct = (state.step / 14) * 100;
     const progress = document.createElement('div');
     progress.className = 'progress-line';
-    progress.style.width = `${progressPct}%`;
+    progress.style.width = `${pct}%`;
     screen.appendChild(progress);
   }
 
-  // Lógica de renderização de cada etapa
+  // Renderiza o conteúdo baseado no step
   switch (state.step) {
     case 0: renderWelcome(screen); break;
     case 1: renderPhone(screen); break;
@@ -476,9 +465,9 @@ function render() {
     case 13: renderReview(screen); break;
     case 14: renderContracts(screen); break;
     case 15: renderStatus(screen); break;
+    default: renderWelcome(screen); break;
   }
 
-  app.appendChild(screen);
   window.scrollTo(0, 0);
 }
 
@@ -493,26 +482,24 @@ function back() {
   if (state.step > 0) go(state.step - 1);
 }
 
-// Componente visual: Header com botão Voltar/Close
-function headerNav(showBack = true) {
+function headerNav() {
   return `
     <div class="header-nav">
-      ${showBack ? '<button class="btn-back" onclick="back()"></button>' : '<div></div>'}
+      <button class="btn-back" onclick="back()"></button>
     </div>
   `;
 }
 
 /* =========================================================
-   TELAS
+   TELAS (PASSO A PASSO)
    ========================================================= */
 
 function renderWelcome(screen) {
   screen.className = 'screen welcome-screen';
   screen.innerHTML = `
-    <div>
-      <div class="logo-text">AURORA</div>
-    </div>
-    <div class="footer-actions">
+    <div class="logo-text">Aurora</div>
+    
+    <div class="welcome-actions">
       <button class="btn btn-primary" onclick="go(1)">Criar conta</button>
       <button class="btn btn-secondary" onclick="alert('Módulo de login separado.')">Fazer login</button>
     </div>
@@ -525,8 +512,8 @@ function renderPhone(screen) {
     <h1>Abra uma conta Aurora</h1>
     <p class="subtitle">Insira seu número de celular para começar</p>
     
-    <div class="row" style="margin-top: 20px;">
-      <div style="flex: 0 0 100px;">
+    <div class="row" style="margin-top: 10px;">
+      <div style="flex: 0 0 90px;">
         <select class="input-pill" id="phoneCountry">
           ${COUNTRIES.map(c => `<option value="${c.c}" ${state.data.phoneCountry === c.c ? 'selected' : ''}>+${c.d}</option>`).join('')}
         </select>
@@ -536,7 +523,7 @@ function renderPhone(screen) {
       </div>
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" id="btnContinue" disabled onclick="submitPhone()">Continuar</button>
     </div>
   `;
@@ -544,28 +531,28 @@ function renderPhone(screen) {
   const input = $('#phoneNumber');
   const btn = $('#btnContinue');
   
+  if (input.value.length >= 8) btn.disabled = false;
   input.addEventListener('input', (e) => {
     state.data.phoneNumber = e.target.value;
     btn.disabled = e.target.value.length < 8;
   });
-  if (input.value.length >= 8) btn.disabled = false;
 }
 
 function submitPhone() {
   state.data.phoneCountry = $('#phoneCountry').value;
-  state.data.phoneVerified = false;
-  state.data.phoneCode = Math.floor(100000 + Math.random() * 900000).toString(); // Código simulado
+  state.data.phoneCode = Math.floor(100000 + Math.random() * 900000).toString();
   save();
   next();
 }
 
 function renderOTP(screen) {
+  const ddi = COUNTRIES.find(c=>c.c===state.data.phoneCountry).d;
   screen.innerHTML = `
     ${headerNav()}
     <h1>Código de seis dígitos</h1>
-    <p class="subtitle">Insira o código enviado para +${COUNTRIES.find(c=>c.c===state.data.phoneCountry).d} *****-${state.data.phoneNumber.slice(-4)}</p>
+    <p class="subtitle">Insira o código enviado para +${ddi} *****-${state.data.phoneNumber.slice(-4)}</p>
     
-    <div class="otp-container" id="otpBox">
+    <div class="otp-container">
       <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
       <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
       <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
@@ -574,14 +561,13 @@ function renderOTP(screen) {
       <input type="tel" class="otp-input" maxlength="1" inputmode="numeric">
     </div>
     
-    <p style="font-size: 14px; font-weight: 600;">Código simulado: ${state.data.phoneCode}</p>
+    <p style="font-size: 14px; font-weight: 600; color: var(--text-muted);">Código simulado: <span style="color: var(--text-main)">${state.data.phoneCode}</span></p>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" onclick="verifyOTP()">Verificar</button>
     </div>
   `;
 
-  // Auto-focus nos inputs do OTP
   const inputs = document.querySelectorAll('.otp-input');
   inputs[0].focus();
   inputs.forEach((inp, idx) => {
@@ -600,10 +586,9 @@ function verifyOTP() {
   inputs.forEach(i => code += i.value);
   
   if (code === state.data.phoneCode) {
-    state.data.phoneVerified = true;
     next();
   } else {
-    alert('Código incorreto.');
+    alert('Código incorreto. Use o código simulado exibido na tela.');
   }
 }
 
@@ -611,16 +596,17 @@ function renderNationality(screen) {
   screen.innerHTML = `
     ${headerNav()}
     <h1>Sua nacionalidade</h1>
-    <p class="subtitle">Selecione para verificarmos sua identidade e residência.</p>
+    <p class="subtitle">Selecione uma nacionalidade para verificarmos sua identidade.</p>
     
     <div class="search-bar">
       <input type="text" id="searchCountry" placeholder="Pesquisar">
     </div>
     
-    <div class="list-container" id="countryList" style="max-height: 400px; overflow-y: auto;">
+    <div class="list-container" id="countryList" style="max-height: 380px;">
       ${COUNTRIES.map(c => `
         <div class="list-item ${state.data.nationality === c.c ? 'selected' : ''}" onclick="selectNationality('${c.c}')">
           <span>${c.n}</span>
+          ${state.data.nationality === c.c ? '<div class="check-mark"></div>' : ''}
         </div>
       `).join('')}
     </div>
@@ -633,6 +619,7 @@ function renderNationality(screen) {
     list.innerHTML = filtered.map(c => `
       <div class="list-item ${state.data.nationality === c.c ? 'selected' : ''}" onclick="selectNationality('${c.c}')">
         <span>${c.n}</span>
+        ${state.data.nationality === c.c ? '<div class="check-mark"></div>' : ''}
       </div>
     `).join('');
   });
@@ -640,7 +627,7 @@ function renderNationality(screen) {
 
 function selectNationality(iso) {
   state.data.nationality = iso;
-  state.data.residence = iso; // Simplificação: residência = nacionalidade
+  state.data.residence = iso;
   save();
   next();
 }
@@ -651,7 +638,7 @@ function renderDocType(screen) {
     <h1>Escolha uma opção de verificação</h1>
     <p class="subtitle">Selecione um documento para verificarmos sua identidade.</p>
     
-    <div style="margin-top: 24px;">
+    <div style="margin-top: 10px;">
       <div class="option-card ${state.data.docType === 'CNH' ? 'selected' : ''}" onclick="selectDoc('CNH')">
         <div class="radio-circle"></div>
         <div class="option-text">Carteira de habilitação</div>
@@ -659,7 +646,7 @@ function renderDocType(screen) {
       </div>
       <div class="option-card ${state.data.docType === 'RG' ? 'selected' : ''}" onclick="selectDoc('RG')">
         <div class="radio-circle"></div>
-        <div class="option-text">Documento de identificação nacional</div>
+        <div class="option-text">Documento de identificação</div>
       </div>
       <div class="option-card ${state.data.docType === 'PASSAPORTE' ? 'selected' : ''}" onclick="selectDoc('PASSAPORTE')">
         <div class="radio-circle"></div>
@@ -667,7 +654,7 @@ function renderDocType(screen) {
       </div>
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" onclick="next()" ${!state.data.docType ? 'disabled' : ''}>Continuar</button>
     </div>
   `;
@@ -682,14 +669,14 @@ function selectDoc(doc) {
 function renderName(screen) {
   screen.innerHTML = `
     ${headerNav()}
-    <h1>Nome conforme identificação oficial</h1>
+    <h1>Nome conforme identificação</h1>
     <p class="subtitle">Seu nome completo conforme documento oficial de identificação.</p>
     
-    <div class="input-group" style="margin-top: 24px;">
+    <div class="input-group" style="margin-top: 20px;">
       <input type="text" class="input-pill" id="fullName" placeholder="Nome completo" value="${state.data.fullName}">
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" id="btnName" onclick="submitName()" disabled>Continuar</button>
     </div>
   `;
@@ -697,11 +684,11 @@ function renderName(screen) {
   const input = $('#fullName');
   const btn = $('#btnName');
   
+  if (input.value.trim().split(' ').length >= 2) btn.disabled = false;
   input.addEventListener('input', (e) => {
     state.data.fullName = e.target.value;
     btn.disabled = e.target.value.trim().split(' ').length < 2;
   });
-  if (input.value.trim().split(' ').length >= 2) btn.disabled = false;
 }
 
 function submitName() {
@@ -714,11 +701,11 @@ function renderBirthDate(screen) {
     ${headerNav()}
     <h1>Data de nascimento</h1>
     
-    <div class="row" style="margin-top: 24px;">
-      <input type="number" class="input-pill" id="birthDate" placeholder="DD/MM/AAAA" value="${state.data.birthDate}">
+    <div class="row" style="margin-top: 20px;">
+      <input type="text" class="input-pill" id="birthDate" placeholder="DD/MM/AAAA" maxlength="10" value="${state.data.birthDate}">
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" id="btnDate" onclick="submitDate()" disabled>Continuar</button>
     </div>
   `;
@@ -726,9 +713,14 @@ function renderBirthDate(screen) {
   const input = $('#birthDate');
   const btn = $('#btnDate');
   
+  if (input.value.length === 10) btn.disabled = false;
   input.addEventListener('input', (e) => {
-    state.data.birthDate = e.target.value;
-    btn.disabled = e.target.value.length < 8;
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length > 2) v = v.replace(/^(\d{2})(\d)/, '$1/$2');
+    if (v.length > 5) v = v.replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3');
+    e.target.value = v;
+    state.data.birthDate = v;
+    btn.disabled = v.length < 10;
   });
 }
 
@@ -741,9 +733,9 @@ function renderAddress(screen) {
   screen.innerHTML = `
     ${headerNav()}
     <h1>Endereço residencial</h1>
-    <p class="subtitle">Precisamos do seu endereço residencial para abrir uma conta.</p>
+    <p class="subtitle">Precisamos do seu endereço para abrir sua conta.</p>
     
-    <div class="search-bar" style="margin-bottom: 16px;">
+    <div class="search-bar">
       <input type="text" placeholder="Pesquisar endereço">
     </div>
     
@@ -759,7 +751,7 @@ function renderAddress(screen) {
       <input type="text" class="input-pill" id="state" placeholder="Estado" value="${state.data.addressState}">
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" onclick="submitAddress()">Continuar</button>
     </div>
   `;
@@ -785,10 +777,11 @@ function renderProfession(screen) {
       <input type="text" id="searchProf" placeholder="Pesquisar">
     </div>
     
-    <div class="list-container" id="profList" style="max-height: 350px; overflow-y: auto;">
+    <div class="list-container" id="profList" style="max-height: 350px;">
       ${PROFESSIONS.map(p => `
         <div class="list-item ${state.data.profession === p ? 'selected' : ''}" onclick="selectProf('${p}')">
           <span>${p}</span>
+          ${state.data.profession === p ? '<div class="check-mark"></div>' : ''}
         </div>
       `).join('')}
     </div>
@@ -801,6 +794,7 @@ function renderProfession(screen) {
     list.innerHTML = filtered.map(p => `
       <div class="list-item ${state.data.profession === p ? 'selected' : ''}" onclick="selectProf('${p}')">
         <span>${p}</span>
+        ${state.data.profession === p ? '<div class="check-mark"></div>' : ''}
       </div>
     `).join('');
   });
@@ -817,10 +811,10 @@ function renderIncome(screen) {
     ${headerNav()}
     <h1>Renda mensal antes do imposto</h1>
     
-    <div class="input-group" style="margin-top: 24px;">
+    <div class="input-group" style="margin-top: 20px;">
       <div style="position: relative;">
-        <span style="position: absolute; left: 20px; top: 18px; color: var(--text-muted);">R$</span>
-        <input type="number" class="input-pill" id="income" placeholder="0" style="padding-left: 50px;" value="${state.data.income}">
+        <span style="position: absolute; left: 20px; top: 18px; color: var(--text-muted); font-weight: 600;">R$</span>
+        <input type="number" class="input-pill" id="income" placeholder="0" style="padding-left: 55px;" value="${state.data.income}">
       </div>
     </div>
     
@@ -835,7 +829,7 @@ function renderIncome(screen) {
       </div>
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" id="btnIncome" onclick="submitIncome()" disabled>Continuar</button>
     </div>
   `;
@@ -843,6 +837,7 @@ function renderIncome(screen) {
   const input = $('#income');
   const btn = $('#btnIncome');
   
+  if (input.value) btn.disabled = false;
   input.addEventListener('input', (e) => {
     state.data.income = e.target.value;
     btn.disabled = !e.target.value;
@@ -860,9 +855,9 @@ function renderIdentity(screen) {
     <h1>Antes de continuar</h1>
     <p class="subtitle">Certifique-se de que seu documento atenda aos seguintes critérios.</p>
     
-    <div style="margin: 40px auto; width: 100px; height: 140px; border: 2px solid var(--text-main); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-      <div style="width: 30px; height: 30px; border: 2px solid var(--text-main); border-radius: 50%;"></div>
-      <div style="width: 40px; height: 3px; background: var(--text-main); margin-top: 16px;"></div>
+    <div style="margin: 40px auto; width: 100px; height: 140px; border: 3px solid var(--text-main); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <div style="width: 30px; height: 30px; border: 3px solid var(--text-main); border-radius: 50%;"></div>
+      <div style="width: 40px; height: 4px; background: var(--text-main); margin-top: 16px; border-radius: 4px;"></div>
     </div>
     
     <div class="checklist">
@@ -876,7 +871,7 @@ function renderIdentity(screen) {
       </div>
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" onclick="next()">Iniciar captura simulada</button>
     </div>
   `;
@@ -888,7 +883,7 @@ function renderSecurity(screen) {
     <h1>Segurança</h1>
     <p class="subtitle">Essas informações são obrigatórias por lei.</p>
     
-    <div style="margin-top: 24px;">
+    <div style="margin-top: 10px;">
       <p class="label">Você é uma pessoa exposta politicamente (PEP)?</p>
       <div class="option-card" onclick="next()">
         <div class="radio-circle"></div>
@@ -908,11 +903,11 @@ function renderPassword(screen) {
     <h1>Crie uma senha</h1>
     <p class="subtitle">Mínimo de 8 caracteres.</p>
     
-    <div class="input-group" style="margin-top: 24px;">
+    <div class="input-group" style="margin-top: 20px;">
       <input type="password" class="input-pill" id="pwd" placeholder="Senha">
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" id="btnPwd" onclick="submitPassword()" disabled>Continuar</button>
     </div>
   `;
@@ -951,7 +946,7 @@ function renderReview(screen) {
       <p style="font-size: 14px; margin-bottom: 8px;"><strong>Endereço:</strong> ${state.data.addressStreet}, ${state.data.addressNumber} - ${state.data.addressCity}</p>
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
+    <div class="footer-actions">
       <button class="btn btn-primary" onclick="next()">Continuar</button>
     </div>
   `;
@@ -967,7 +962,7 @@ function renderContracts(screen) {
       <div class="contract-title">Contrato de abertura de conta</div>
       <div class="contract-text">Este contrato estabelece as condições de abertura e manutenção da conta digital, os direitos e as obrigações do titular e da instituição, além dos canais de atendimento disponíveis...</div>
       
-      <div class="checkbox-row" id="checkAccount" onclick="toggleCheck('account')">
+      <div class="checkbox-row ${state.data.contracts.account ? 'checked' : ''}" onclick="toggleCheck('account')">
         <div class="checkbox-square"></div>
         <span>Li e concordo com o Contrato de Abertura.</span>
       </div>
@@ -977,14 +972,14 @@ function renderContracts(screen) {
       <div class="contract-title">Política de Privacidade</div>
       <div class="contract-text">Os dados pessoais são tratados para fins de identificação, prevenção a fraudes e cumprimento de obrigações regulatórias...</div>
       
-      <div class="checkbox-row" id="checkPrivacy" onclick="toggleCheck('privacy')">
+      <div class="checkbox-row ${state.data.contracts.privacy ? 'checked' : ''}" onclick="toggleCheck('privacy')">
         <div class="checkbox-square"></div>
         <span>Li e concordo com a Política de Privacidade.</span>
       </div>
     </div>
     
-    <div class="footer-actions" style="margin-top: auto;">
-      <button class="btn btn-primary" id="btnContracts" onclick="submitContracts()" disabled>Enviar solicitação</button>
+    <div class="footer-actions">
+      <button class="btn btn-primary" id="btnContracts" onclick="submitContracts()" ${!(state.data.contracts.account && state.data.contracts.privacy) ? 'disabled' : ''}>Enviar solicitação</button>
     </div>
   `;
 }
@@ -992,16 +987,7 @@ function renderContracts(screen) {
 function toggleCheck(type) {
   state.data.contracts[type] = !state.data.contracts[type];
   save();
-  
-  const el = $(`#check${type.charAt(0).toUpperCase() + type.slice(1)}`);
-  if (state.data.contracts[type]) {
-    el.classList.add('checked');
-  } else {
-    el.classList.remove('checked');
-  }
-  
-  const btn = $('#btnContracts');
-  btn.disabled = !(state.data.contracts.account && state.data.contracts.privacy);
+  render();
 }
 
 function submitContracts() {
@@ -1010,9 +996,10 @@ function submitContracts() {
 
 function renderStatus(screen) {
   screen.innerHTML = `
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; margin-top: 40px;">
-      <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-input); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-        <div class="check-mark" style="border-color: var(--text-main); width: 20px; height: 40px; margin: 0;"></div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center;">
+      
+      <div style="width: 90px; height: 90px; border-radius: 50%; background: var(--bg-input); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+        <div class="check-mark" style="border-color: var(--text-main); width: 24px; height: 45px; margin: 0;"></div>
       </div>
       
       <h1>Solicitação enviada</h1>
@@ -1024,8 +1011,8 @@ function renderStatus(screen) {
 }
 
 function resetApp() {
-  localStorage.removeItem('aurora_fintech_v1');
-  state = { step: 0, data: { phoneCountry: 'BR', phoneNumber: '', phoneCode: '', phoneVerified: false, nationality: '', residence: '', docType: '', fullName: '', birthDate: '', addressZip: '', addressStreet: '', addressNumber: '', addressCity: '', addressState: '', profession: '', income: '', password: '', contracts: { account: false, terms: false, privacy: false } } };
+  localStorage.removeItem('aurora_fintech_v2');
+  state = { step: 0, data: { ...defaultData } };
   render();
 }
 
